@@ -1,109 +1,176 @@
-import { NavButton } from "../components/shared";
-import { styles } from "../styles/appStyles";
-import type { CreatorView } from "./creatorView";
+﻿import type { CreatorView } from "./creatorView";
 
 interface CreatorSidebarProps {
   view: CreatorView;
   connected: boolean;
+  collapsed?: boolean;
+  mobileOpen?: boolean;
+  onCollapse?: () => void;
+  onMobileClose?: () => void;
   onViewChange: (view: CreatorView) => void;
 }
 
-export default function CreatorSidebar(
-  props: CreatorSidebarProps,
-) {
+const navigationGroups: Array<{
+  label: string;
+  items: Array<{
+    view: CreatorView;
+    label: string;
+    icon: string;
+  }>;
+}> = [
+  {
+    label: "COMMAND CENTER",
+    items: [
+      {
+        view: "dashboard",
+        label: "Dashboard",
+        icon: "⌂",
+      },
+      {
+        view: "projects",
+        label: "Projects",
+        icon: "▦",
+      },
+      {
+        view: "scripts",
+        label: "Scripts",
+        icon: "✎",
+      },
+      {
+        view: "calendar",
+        label: "Content Calendar",
+        icon: "▣",
+      },
+    ],
+  },
+  {
+    label: "INTELLIGENCE",
+    items: [
+      {
+        view: "ai-content",
+        label: "AI Content Studio",
+        icon: "✦",
+      },
+      {
+        view: "prompts",
+        label: "Prompt Library",
+        icon: "◇",
+      },
+    ],
+  },
+];
+
+export default function CreatorSidebar({
+  view,
+  connected,
+  collapsed,
+  onCollapse,
+  onMobileClose,
+  onViewChange,
+}: CreatorSidebarProps) {
+  function selectView(nextView: CreatorView) {
+    onViewChange(nextView);
+    onMobileClose?.();
+  }
+
   return (
-    <aside style={styles.sidebar}>
-      <div style={styles.brand}>
-        <div style={styles.logo}>C</div>
+    <div className="creator-sidebar">
+      <header className="creator-sidebar__brand">
+        <span className="creator-sidebar__logo">C</span>
 
-        <div>
-          <strong style={styles.brandName}>
-            CreatorOS
-          </strong>
-
-          <div style={styles.brandSubtitle}>
-            AI MEDIA OPERATING SYSTEM
-          </div>
+        <div className="creator-sidebar__brand-text">
+          <strong>CreatorOS</strong>
+          <span>Enterprise</span>
         </div>
-      </div>
 
-      <nav style={styles.nav}>
-        <NavButton
-          active={props.view === "dashboard"}
-          icon="⌂"
-          label="لوحة التحكم"
-          onClick={() =>
-            props.onViewChange("dashboard")
+        <button
+          type="button"
+          className="creator-sidebar__collapse"
+          aria-label={
+            collapsed
+              ? "Expand navigation"
+              : "Collapse navigation"
           }
-        />
+          onClick={onCollapse}
+        >
+          {collapsed ? "›" : "‹"}
+        </button>
+      </header>
 
-        <NavButton
-          active={props.view === "projects"}
-          icon="▦"
-          label="المشاريع"
-          onClick={() =>
-            props.onViewChange("projects")
-          }
-        />
+      <nav
+        className="creator-sidebar__navigation"
+        aria-label="CreatorOS navigation"
+      >
+        {navigationGroups.map((group) => (
+          <section
+            className="creator-sidebar__section"
+            key={group.label}
+          >
+            <p className="creator-sidebar__section-title">
+              {group.label}
+            </p>
 
-        <NavButton
-          active={props.view === "scripts"}
-          icon="✎"
-          label="محرر السكربت"
-          onClick={() =>
-            props.onViewChange("scripts")
-          }
-        />
+            <div className="creator-sidebar__items">
+              {group.items.map((item) => {
+                const active = view === item.view;
 
-        <NavButton
-          active={props.view === "calendar"}
-          icon="▣"
-          label="تقويم المحتوى"
-          onClick={() =>
-            props.onViewChange("calendar")
-          }
-        />
+                return (
+                  <button
+                    type="button"
+                    key={item.view}
+                    className={[
+                      "creator-sidebar__item",
+                      active
+                        ? "creator-sidebar__item--active"
+                        : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    onClick={() => selectView(item.view)}
+                  >
+                    <span className="creator-sidebar__icon">
+                      {item.icon}
+                    </span>
 
-        <NavButton
-          active={props.view === "prompts"}
-          icon="✦"
-          label="القوالب الذكية"
-          onClick={() =>
-            props.onViewChange("prompts")
-          }
-        />
-        <NavButton
-          active={props.view === "ai-content"}
-          icon="✦"
-          label="استوديو المحتوى الذكي"
-          onClick={() =>
-            props.onViewChange("ai-content")
-          }
-        />
+                    <span className="creator-sidebar__label">
+                      {item.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        ))}
       </nav>
 
-      <div style={styles.connectionBox}>
+      <footer className="creator-sidebar__footer">
         <div
-          style={{
-            ...styles.connectionDot,
-            background: props.connected
-              ? "#42e8a1"
-              : "#ff5f74",
-          }}
-        />
+          className={[
+            "creator-sidebar__status",
+            connected
+              ? ""
+              : "creator-sidebar__status--offline",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+        >
+          <span className="creator-sidebar__status-dot" />
 
-        <div>
-          <strong>
-            {props.connected
-              ? "Backend API متصل"
-              : "Backend API غير متصل"}
-          </strong>
+          <div className="creator-sidebar__status-text">
+            <strong>
+              {connected
+                ? "System operational"
+                : "System disconnected"}
+            </strong>
 
-          <div style={styles.mutedSmall}>
-            البيانات محفوظة في الخادم
+            <span>
+              {connected
+                ? "Frontend and backend connected"
+                : "Backend connection unavailable"}
+            </span>
           </div>
         </div>
-      </div>
-    </aside>
+      </footer>
+    </div>
   );
 }
