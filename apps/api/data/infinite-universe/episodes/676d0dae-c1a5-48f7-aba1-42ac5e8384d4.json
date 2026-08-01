@@ -1,0 +1,318 @@
+{
+  "worldId": "676d0dae-c1a5-48f7-aba1-42ac5e8384d4",
+  "version": 1,
+  "updatedAt": "2026-07-31T19:40:07.605Z",
+  "episodes": [
+    {
+      "episodeId": "a4e63358-63db-4c8f-9b70-d049cc8148a5",
+      "worldId": "676d0dae-c1a5-48f7-aba1-42ac5e8384d4",
+      "episodeNumber": 1,
+      "worldYear": 15,
+      "title": "الحلقة 1: أثر موقع الأرشيف الحقيقي",
+      "logline": "نُور وسَاهِر ورَام يواجهون تطورًا جديدًا يكشف جانبًا غير متوقع من \"موقع الأرشيف الحقيقي\".",
+      "synopsis": "تبدأ الحلقة بإشارة مرتبطة بـ \"موقع الأرشيف الحقيقي\"، فتدخل نُور وسَاهِر ورَام في سلسلة قرارات تختبر الثقة والخوف والفضول. يتصاعد الضغط النفسي حول curiosity قبل ظهور نتيجة تفتح احتمالات جديدة للحلقات القادمة.",
+      "audienceTier": "kids",
+      "tone": "mystery",
+      "sourceStoryThread": "موقع الأرشيف الحقيقي",
+      "secondaryStoryThreads": [
+        "هوية من أنشأه",
+        "سبب إخفائه"
+      ],
+      "selectedCharacters": [
+        {
+          "characterId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+          "characterName": "نُور",
+          "role": "protagonist",
+          "narrativeReason": "ارتباط الشخصية بخيط القصة: موقع الأرشيف الحقيقي.",
+          "psychologicalReason": "الهدف الحالي \"اكتشاف حقيقة الأرشيف المخفي\" والخوف \"فقدان ثقة الأصدقاء\" يخلقان صراعًا مناسبًا.",
+          "currentDominantEmotion": "curiosity",
+          "activeGoal": "اكتشاف حقيقة الأرشيف المخفي",
+          "activeFear": "فقدان ثقة الأصدقاء",
+          "episodeFunction": "lead"
+        },
+        {
+          "characterId": "25395a20-0def-495d-9074-eedc2dba52c3",
+          "characterName": "سَاهِر",
+          "role": "rival",
+          "narrativeReason": "ارتباط الشخصية بخيط القصة: موقع الأرشيف الحقيقي.",
+          "psychologicalReason": "الهدف الحالي \"منع فتح الأرشيف\" والخوف \"اكتشاف أن عائلته أخفت الحقيقة\" يخلقان صراعًا مناسبًا.",
+          "currentDominantEmotion": "curiosity",
+          "activeGoal": "منع فتح الأرشيف",
+          "activeFear": "اكتشاف أن عائلته أخفت الحقيقة",
+          "episodeFunction": "opposition"
+        },
+        {
+          "characterId": "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6",
+          "characterName": "رَام",
+          "role": "friend",
+          "narrativeReason": "ارتباط الشخصية بخيط القصة: موقع الأرشيف الحقيقي.",
+          "psychologicalReason": "الهدف الحالي \"اختراع أداة تغيّر حياة المدينة\" والخوف \"السخرية من اختراعاته\" يخلقان صراعًا مناسبًا.",
+          "currentDominantEmotion": "curiosity",
+          "activeGoal": "اختراع أداة تغيّر حياة المدينة",
+          "activeFear": "السخرية من اختراعاته",
+          "episodeFunction": "catalyst"
+        }
+      ],
+      "scenes": [
+        {
+          "sceneNumber": 1,
+          "type": "opening-hook",
+          "title": "إشارة غير متوقعة",
+          "location": "مدينة البدايات",
+          "participatingCharacterIds": [
+            "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+            "25395a20-0def-495d-9074-eedc2dba52c3",
+            "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+          ],
+          "participatingCharacterNames": [
+            "نُور",
+            "سَاهِر",
+            "رَام"
+          ],
+          "purpose": "فتح سؤال مباشر خلال الثواني الأولى.",
+          "summary": "مشهد opening-hook يضع نُور وسَاهِر ورَام أمام تطور مرتبط بـ \"موقع الأرشيف الحقيقي\" ضمن نبرة mystery، مع الحفاظ على ضغط curiosity.",
+          "emotionalTarget": "الفضول",
+          "curiosityDelta": 18,
+          "tensionDelta": 5,
+          "empathyDelta": 0,
+          "continuityReferences": [
+            "موقع الأرشيف الحقيقي"
+          ],
+          "futureSeeds": [],
+          "estimatedDurationSeconds": 80
+        },
+        {
+          "sceneNumber": 2,
+          "type": "setup",
+          "title": "اليوم العادي الذي لن يبقى عاديًا",
+          "location": "المنطقة المتغيرة",
+          "participatingCharacterIds": [
+            "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+            "25395a20-0def-495d-9074-eedc2dba52c3",
+            "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+          ],
+          "participatingCharacterNames": [
+            "نُور",
+            "سَاهِر",
+            "رَام"
+          ],
+          "purpose": "إظهار الحالة الحالية للشخصيات قبل الصراع.",
+          "summary": "مشهد setup يضع نُور وسَاهِر ورَام أمام تطور مرتبط بـ \"موقع الأرشيف الحقيقي\" ضمن نبرة mystery، مع الحفاظ على ضغط curiosity.",
+          "emotionalTarget": "الأمان والارتباط",
+          "curiosityDelta": 5,
+          "tensionDelta": -3,
+          "empathyDelta": 12,
+          "continuityReferences": [
+            "موقع الأرشيف الحقيقي"
+          ],
+          "futureSeeds": [],
+          "estimatedDurationSeconds": 80
+        },
+        {
+          "sceneNumber": 3,
+          "type": "discovery",
+          "title": "جزء جديد من الحقيقة",
+          "location": "الأرشيف المخفي",
+          "participatingCharacterIds": [
+            "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+            "25395a20-0def-495d-9074-eedc2dba52c3",
+            "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+          ],
+          "participatingCharacterNames": [
+            "نُور",
+            "سَاهِر",
+            "رَام"
+          ],
+          "purpose": "ربط الشخصيات بخيط القصة المختار.",
+          "summary": "مشهد discovery يضع نُور وسَاهِر ورَام أمام تطور مرتبط بـ \"موقع الأرشيف الحقيقي\" ضمن نبرة mystery، مع الحفاظ على ضغط curiosity.",
+          "emotionalTarget": "الاكتشاف",
+          "curiosityDelta": 15,
+          "tensionDelta": 8,
+          "empathyDelta": 3,
+          "continuityReferences": [
+            "موقع الأرشيف الحقيقي"
+          ],
+          "futureSeeds": [],
+          "estimatedDurationSeconds": 80
+        },
+        {
+          "sceneNumber": 4,
+          "type": "conflict",
+          "title": "اختلاف في الطريق",
+          "location": "مدينة البدايات",
+          "participatingCharacterIds": [
+            "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+            "25395a20-0def-495d-9074-eedc2dba52c3",
+            "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+          ],
+          "participatingCharacterNames": [
+            "نُور",
+            "سَاهِر",
+            "رَام"
+          ],
+          "purpose": "إظهار التعارض بين الأهداف والخوف والعلاقات.",
+          "summary": "مشهد conflict يضع نُور وسَاهِر ورَام أمام تطور مرتبط بـ \"موقع الأرشيف الحقيقي\" ضمن نبرة mystery، مع الحفاظ على ضغط curiosity.",
+          "emotionalTarget": "التوتر",
+          "curiosityDelta": 5,
+          "tensionDelta": 18,
+          "empathyDelta": 8,
+          "continuityReferences": [
+            "موقع الأرشيف الحقيقي"
+          ],
+          "futureSeeds": [],
+          "estimatedDurationSeconds": 80
+        },
+        {
+          "sceneNumber": 5,
+          "type": "decision",
+          "title": "قرار لا يمكن تجاهله",
+          "location": "المنطقة المتغيرة",
+          "participatingCharacterIds": [
+            "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+            "25395a20-0def-495d-9074-eedc2dba52c3",
+            "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+          ],
+          "participatingCharacterNames": [
+            "نُور",
+            "سَاهِر",
+            "رَام"
+          ],
+          "purpose": "إجبار الشخصية الرئيسية على اختيار متوافق مع تاريخها النفسي.",
+          "summary": "مشهد decision يضع نُور وسَاهِر ورَام أمام تطور مرتبط بـ \"موقع الأرشيف الحقيقي\" ضمن نبرة mystery، مع الحفاظ على ضغط curiosity.",
+          "emotionalTarget": "التعاطف",
+          "curiosityDelta": 4,
+          "tensionDelta": 12,
+          "empathyDelta": 18,
+          "continuityReferences": [
+            "موقع الأرشيف الحقيقي"
+          ],
+          "futureSeeds": [],
+          "estimatedDurationSeconds": 80
+        },
+        {
+          "sceneNumber": 6,
+          "type": "reversal",
+          "title": "الحقيقة ليست كما بدت",
+          "location": "الأرشيف المخفي",
+          "participatingCharacterIds": [
+            "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+            "25395a20-0def-495d-9074-eedc2dba52c3",
+            "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+          ],
+          "participatingCharacterNames": [
+            "نُور",
+            "سَاهِر",
+            "رَام"
+          ],
+          "purpose": "تغيير فهم الجمهور دون كسر منطق العالم.",
+          "summary": "مشهد reversal يضع نُور وسَاهِر ورَام أمام تطور مرتبط بـ \"موقع الأرشيف الحقيقي\" ضمن نبرة mystery، مع الحفاظ على ضغط curiosity.",
+          "emotionalTarget": "المفاجأة",
+          "curiosityDelta": 20,
+          "tensionDelta": 12,
+          "empathyDelta": 3,
+          "continuityReferences": [
+            "موقع الأرشيف الحقيقي"
+          ],
+          "futureSeeds": [],
+          "estimatedDurationSeconds": 80
+        }
+      ],
+      "pressureProfile": {
+        "curiosity": 93,
+        "tension": 52.25,
+        "empathy": 78,
+        "mystery": 72,
+        "hope": 75,
+        "humor": 55,
+        "surprise": 69,
+        "emotionalSafety": 92.25,
+        "repetitionRisk": 5,
+        "fatigueRisk": 7.51,
+        "dominantPressure": "curiosity",
+        "recommendedAdjustment": [
+          "الحفاظ على التوازن الحالي مع مفاجأة واحدة منطقية."
+        ],
+        "totalPressureScore": 73.49
+      },
+      "characterImpacts": [
+        {
+          "characterId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+          "characterName": "نُور",
+          "expectedMemoryType": "discovery",
+          "expectedEmotionalImpact": 35,
+          "expectedImportance": 80,
+          "affectedTraits": [
+            "curiosity",
+            "courage"
+          ],
+          "relationshipTargets": [
+            "25395a20-0def-495d-9074-eedc2dba52c3",
+            "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+          ],
+          "psychologicalExplanation": "الحدث المرتبط بـ \"موقع الأرشيف الحقيقي\" يضغط على هدف \"اكتشاف حقيقة الأرشيف المخفي\" وخوف \"فقدان ثقة الأصدقاء\"."
+        },
+        {
+          "characterId": "25395a20-0def-495d-9074-eedc2dba52c3",
+          "characterName": "سَاهِر",
+          "expectedMemoryType": "relationship",
+          "expectedEmotionalImpact": 20,
+          "expectedImportance": 60,
+          "affectedTraits": [
+            "trust",
+            "resilience"
+          ],
+          "relationshipTargets": [
+            "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+            "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+          ],
+          "psychologicalExplanation": "الحدث المرتبط بـ \"موقع الأرشيف الحقيقي\" يضغط على هدف \"منع فتح الأرشيف\" وخوف \"اكتشاف أن عائلته أخفت الحقيقة\"."
+        },
+        {
+          "characterId": "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6",
+          "characterName": "رَام",
+          "expectedMemoryType": "lesson",
+          "expectedEmotionalImpact": 20,
+          "expectedImportance": 60,
+          "affectedTraits": [
+            "trust",
+            "resilience"
+          ],
+          "relationshipTargets": [
+            "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+            "25395a20-0def-495d-9074-eedc2dba52c3"
+          ],
+          "psychologicalExplanation": "الحدث المرتبط بـ \"موقع الأرشيف الحقيقي\" يضغط على هدف \"اختراع أداة تغيّر حياة المدينة\" وخوف \"السخرية من اختراعاته\"."
+        }
+      ],
+      "continuity": {
+        "previousEpisodeIds": [],
+        "referencedMemories": [],
+        "referencedMysteries": [
+          "موقع الأرشيف الحقيقي"
+        ],
+        "openedThreads": [
+          "أثر جديد ناتج عن الحلقة 1"
+        ],
+        "advancedThreads": [
+          "موقع الأرشيف الحقيقي"
+        ],
+        "resolvedThreads": [],
+        "continuityScore": 92,
+        "repetitionScore": 0
+      },
+      "production": {
+        "targetDurationMinutes": 8,
+        "languageCodes": [
+          "ar",
+          "en",
+          "es"
+        ],
+        "localizationRequired": true,
+        "dialogueGenerationReady": true,
+        "visualProductionReady": true
+      },
+      "status": "planned",
+      "createdAt": "2026-07-31T19:40:07.605Z"
+    }
+  ]
+}

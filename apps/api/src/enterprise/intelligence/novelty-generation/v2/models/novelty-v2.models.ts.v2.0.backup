@@ -1,0 +1,185 @@
+﻿export type IdeaDnaDimension =
+  | 'problem'
+  | 'customer'
+  | 'valueProposition'
+  | 'mechanism'
+  | 'businessModel'
+  | 'technology'
+  | 'network'
+  | 'dataMoat'
+  | 'intellectualProperty'
+  | 'execution'
+  | 'market'
+  | 'distribution'
+  | 'riskModel';
+
+export interface IdeaDna {
+  id: string;
+  generation: number;
+  parentIds: string[];
+
+  title: string;
+
+  problem: {
+    statement: string;
+    rootCause: string;
+    urgency: number;
+  };
+
+  customers: {
+    primary: string[];
+    secondary: string[];
+    beneficiaries: string[];
+  };
+
+  valueProposition: {
+    outcome: string;
+    measurableValue: string[];
+    unfairAdvantage: string[];
+  };
+
+  mechanism: {
+    core: string;
+    workflow: string[];
+    decisions: string[];
+    automationLevel: number;
+  };
+
+  businessModel: {
+    payer: string[];
+    revenueStreams: string[];
+    pricingLogic: string[];
+    unitOfValue: string;
+  };
+
+  technology: {
+    components: string[];
+    proprietaryComponents: string[];
+    integrationPoints: string[];
+  };
+
+  network: {
+    actors: string[];
+    interactions: string[];
+    networkEffects: string[];
+  };
+
+  dataMoat: {
+    capturedData: string[];
+    derivedKnowledge: string[];
+    compoundingLoop: string[];
+  };
+
+  intellectualProperty: {
+    protectableMechanisms: string[];
+    protectableProcesses: string[];
+    tradeSecrets: string[];
+    defensibility: string[];
+  };
+
+  execution: {
+    operatingModel: string[];
+    humanRoles: string[];
+    autonomousRoles: string[];
+  };
+
+  market: {
+    initialSegment: string[];
+    adjacentSegments: string[];
+    geographicScope: string[];
+  };
+
+  distribution: {
+    acquisitionChannels: string[];
+    embeddedDistribution: string[];
+    partnerships: string[];
+  };
+
+  riskModel: {
+    majorRisks: string[];
+    controls: string[];
+  };
+
+  mutationHistory: DnaMutationRecord[];
+}
+
+export interface DnaMutationRecord {
+  mutationId: string;
+  generation: number;
+  dimension: IdeaDnaDimension;
+  strategy: string;
+  before: string[];
+  after: string[];
+  rationale: string;
+}
+
+export interface DnaNoveltyScores {
+  structuralNovelty: number;
+  mechanismNovelty: number;
+  businessModelNovelty: number;
+  technologyNovelty: number;
+  marketNovelty: number;
+  networkNovelty: number;
+  dataMoatStrength: number;
+  ipProtectability: number;
+  commercialValue: number;
+  feasibility: number;
+  duplicateRisk: number;
+  diversity: number;
+  total: number;
+}
+
+export interface EvaluatedIdeaDna extends IdeaDna {
+  scores: DnaNoveltyScores;
+  weaknesses: string[];
+  acceptanceFailures: string[];
+}
+
+export interface NoveltyV2Thresholds {
+  structuralNovelty: number;
+  mechanismNovelty: number;
+  ipProtectability: number;
+  dataMoatStrength: number;
+  commercialValue: number;
+  feasibility: number;
+  maximumDuplicateRisk: number;
+  total: number;
+}
+
+export interface NoveltyV2Iteration {
+  iteration: number;
+  populationSize: number;
+  uniqueCandidates: number;
+  selectedCandidateIds: string[];
+  bestCandidateId: string;
+  bestScore: number;
+  accepted: boolean;
+}
+
+export interface NoveltyV2Result {
+  success: boolean;
+  engine: string;
+  version: string;
+  runId: string;
+  status: 'accepted' | 'best-effort';
+
+  originalDna: IdeaDna;
+  finalProtectableIdeaDna: EvaluatedIdeaDna;
+  finalProtectableIdea: {
+    title: string;
+    executiveSummary: string;
+    problem: string;
+    solution: string;
+    operatingMechanism: string[];
+    businessModel: string[];
+    proprietaryTechnology: string[];
+    protectableElements: string[];
+    defensibility: string[];
+    targetMarket: string[];
+  };
+
+  thresholds: NoveltyV2Thresholds;
+  iterations: NoveltyV2Iteration[];
+  totalCandidatesGenerated: number;
+  uniqueCandidatesEvaluated: number;
+}

@@ -1,0 +1,788 @@
+﻿import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+
+import { randomUUID } from 'node:crypto';
+
+import { PermanentUniverseMemoryService } from '../persistent-memory/permanent-universe-memory.service';
+import { ProviderCompatibilityService } from '../provider-compatibility-layer/provider-compatibility.service';
+
+import { CreateImageGenerationJobDto } from './dto/create-image-generation-job.dto';
+import { ReviewGeneratedImageDto } from './dto/review-generated-image.dto';
+
+import { ImageGenerationRequestBuilder } from './engines/image-generation-request-builder.engine';
+import { ImageProviderRegistry } from './engines/image-provider-registry.engine';
+
+import type {
+  ImageAssetCategory,
+  ImageGenerationJob,
+  ImageGenerationRequest,
+  ImageProviderId,
+} from './models/image-provider.models';
+
+@Injectable()
+export class ImageProviderAdapterService {
+  constructor(
+    private readonly memory:
+      PermanentUniverseMemoryService,
+
+    private readonly registry:
+      ImageProviderRegistry,
+
+    private readonly requestBuilder:
+      ImageGenerationRequestBuilder,
+
+    private readonly compatibility:
+      ProviderCompatibilityService,
+  ) {}
+
+  async createAndExecuteJob(
+    dto: CreateImageGenerationJobDto,
+  ): Promise<{
+    success: true;
+    engine: string;
+    version: string;
+    status: string;
+    job: ImageGenerationJob;
+  }> {
+    const bibles =
+      await this.memory
+        .loadVisualReferenceBibles(
+          dto.worldId,
+        );
+
+    const bible =
+      bibles.find(
+        (item) =>
+          item.bibleId ===
+          dto.bibleId,
+      );
+
+    if (!bible) {
+      throw new NotFoundException(
+        `Visual Reference Bible not found: ${dto.bibleId}.`,
+      );
+    }
+
+    const storyboards =
+      await this.memory
+        .loadStoryboards(
+          dto.worldId,
+        );
+
+    const storyboard =
+      dto.storyboardId
+        ? storyboards.find(
+            (item) =>
+              item.storyboardId ===
+              dto.storyboardId,
+          ) ?? null
+        : null;
+
+    if (
+      dto.storyboardId &&
+      !storyboard
+    ) {
+      throw new NotFoundException(
+        `Storyboard not found: ${dto.storyboardId}.`,
+      );
+    }
+
+    const categories = [
+      ...new Set(
+        dto.categories,
+      ),
+    ];
+
+    const includesStoryboard =
+      categories.includes(
+        'storyboard-frame',
+      );
+
+    if (
+      includesStoryboard &&
+      !storyboard
+    ) {
+      throw new BadRequestException(
+        'storyboardId is required when generating storyboard-frame assets.',
+      );
+    }
+
+    const existingJobs =
+      await this.memory
+        .loadImageGenerationJobs(
+          dto.worldId,
+        );
+
+    const referencesApproved =
+      this.referencesApproved(
+        existingJobs,
+        dto.bibleId,
+      );
+
+    if (
+      includesStoryboard &&
+      !referencesApproved &&
+      !dto.allowStoryboardBeforeReferenceApproval
+    ) {
+      throw new BadRequestException(
+        'Storyboard image generation is blocked until all required reference assets are approved.',
+      );
+    }
+
+    const requests =
+      this.requestBuilder.build(
+        dto.worldId,
+        bible,
+        storyboard,
+        dto.providerId,
+        categories,
+
+        dto.width ?? 1024,
+        dto.height ?? 1024,
+
+        dto.imageCountPerRequest ??
+          1,
+      );
+
+    await this.enforceProviderLocks(
+      dto,
+      requests,
+    );
+
+    const resolvedProviderIds = [
+      ...new Set(
+        requests.map(
+          (request) =>
+            request.resolvedProviderId ??
+            request.providerId,
+        ),
+      ),
+    ];
+
+    const mixedProvidersDetected =
+      resolvedProviderIds.length > 1;
+
+    if (
+      mixedProvidersDetected &&
+      !dto.allowMixedProvidersWithinJob
+    ) {
+      throw new BadRequestException(
+        `Mixed providers are blocked inside the same image job. Resolved providers: ${resolvedProviderIds.join(', ')}.`,
+      );
+    }
+
+    const referenceRequests =
+      requests.filter(
+        (request) =>
+          request.category !==
+          'storyboard-frame',
+      );
+
+    const job:
+      ImageGenerationJob = {
+        jobId: randomUUID(),
+
+        worldId:
+          dto.worldId,
+
+        bibleId:
+          dto.bibleId,
+
+        storyboardId:
+          dto.storyboardId,
+
+        providerId:
+          dto.providerId,
+
+        providerPolicy: {
+          requestedProviderId:
+            dto.providerId,
+
+          resolvedProviderIds,
+
+          lockEnforcementEnabled:
+            dto.enforceProviderLocks ??
+            true,
+
+          mixedProvidersDetected,
+
+          mixedProvidersAllowed:
+            dto.allowMixedProvidersWithinJob ??
+            false,
+
+          fallbackUsageCount:
+            requests.filter(
+              (request) =>
+                request.providerFallbackUsed,
+            ).length,
+        },
+
+        categories:
+          categories as ImageAssetCategory[],
+
+        status: 'processing',
+
+        requests,
+        assets: [],
+
+        progress: {
+          totalRequests:
+            requests.length,
+
+          completedRequests: 0,
+          failedRequests: 0,
+          blockedRequests: 0,
+          percentage: 0,
+        },
+
+        approvalGate: {
+          referencesMustBeApprovedBeforeStoryboard:
+            !dto.allowStoryboardBeforeReferenceApproval,
+
+          approvedReferenceAssets: 0,
+
+          requiredReferenceAssets:
+            referenceRequests.length *
+            (
+              dto.imageCountPerRequest ??
+              1
+            ),
+
+          storyboardGenerationUnlocked:
+            referencesApproved,
+        },
+
+        errors: [],
+        warnings: [],
+
+        createdAt:
+          new Date().toISOString(),
+
+        startedAt:
+          new Date().toISOString(),
+      };
+
+    for (const request of requests) {
+      const resolvedProviderId =
+        request.resolvedProviderId ??
+        request.providerId;
+
+      const provider =
+        this.registry.get(
+          resolvedProviderId,
+        );
+
+      try {
+        const result =
+          await provider.execute({
+            ...request,
+            providerId:
+              resolvedProviderId,
+          });
+
+        job.assets.push(
+          ...result.assets,
+        );
+
+        job.warnings.push(
+          ...result.warnings,
+        );
+
+        if (
+          request.providerFallbackUsed &&
+          request.providerFallbackReason
+        ) {
+          job.warnings.push(
+            request.providerFallbackReason,
+          );
+        }
+
+        if (result.success) {
+          job.progress
+            .completedRequests += 1;
+        } else {
+          job.progress
+            .failedRequests += 1;
+
+          job.errors.push(
+            ...result.errors,
+          );
+        }
+      } catch (error) {
+        job.progress
+          .failedRequests += 1;
+
+        job.errors.push(
+          error instanceof Error
+            ? error.message
+            : String(error),
+        );
+      }
+
+      job.progress.percentage =
+        job.progress.totalRequests ===
+        0
+          ? 100
+          : Math.round(
+              (
+                (
+                  job.progress
+                    .completedRequests +
+                  job.progress
+                    .failedRequests
+                ) /
+                job.progress
+                  .totalRequests
+              ) *
+                100,
+            );
+    }
+
+    job.status =
+      job.progress.failedRequests >
+      0
+        ? job.progress.completedRequests >
+          0
+          ? 'approval-required'
+          : 'failed'
+        : 'approval-required';
+
+    job.completedAt =
+      new Date().toISOString();
+
+    this.refreshApprovalGate(
+      job,
+    );
+
+    await this.memory
+      .saveImageGenerationJob(
+        dto.worldId,
+        job,
+      );
+
+    return {
+      success: true,
+
+      engine:
+        'CreatorOS Image Provider Adapter',
+
+      version: '1.1.0',
+
+      status:
+        'image-job-executed',
+
+      job,
+    };
+  }
+
+  async reviewAsset(
+    dto: ReviewGeneratedImageDto,
+  ) {
+    const jobs =
+      await this.memory
+        .loadImageGenerationJobs(
+          dto.worldId,
+        );
+
+    const job =
+      jobs.find(
+        (item) =>
+          item.jobId ===
+          dto.jobId,
+      );
+
+    if (!job) {
+      throw new NotFoundException(
+        `Image job not found: ${dto.jobId}.`,
+      );
+    }
+
+    const asset =
+      job.assets.find(
+        (item) =>
+          item.assetId ===
+          dto.assetId,
+      );
+
+    if (!asset) {
+      throw new NotFoundException(
+        `Generated image asset not found: ${dto.assetId}.`,
+      );
+    }
+
+    asset.approval.approved =
+      dto.approved;
+
+    asset.approval.notes =
+      dto.notes;
+
+    if (dto.approved) {
+      asset.status = 'approved';
+
+      asset.approval.approvedAt =
+        new Date().toISOString();
+
+      delete asset.approval
+        .rejectedAt;
+    } else {
+      asset.status = 'rejected';
+
+      asset.approval.rejectedAt =
+        new Date().toISOString();
+
+      delete asset.approval
+        .approvedAt;
+    }
+
+    this.refreshApprovalGate(
+      job,
+    );
+
+    job.status =
+      job.assets.every(
+        (item) =>
+          item.status ===
+          'approved',
+      )
+        ? 'approved'
+        : 'approval-required';
+
+    await this.memory
+      .saveImageGenerationJob(
+        dto.worldId,
+        job,
+      );
+
+    return {
+      success: true,
+      status:
+        asset.status,
+
+      jobId:
+        job.jobId,
+
+      asset,
+
+      approvalGate:
+        job.approvalGate,
+    };
+  }
+
+  async getJobs(
+    worldId: string,
+  ) {
+    return this.memory
+      .loadImageGenerationJobs(
+        worldId,
+      );
+  }
+
+  getProviders() {
+    return {
+      success: true,
+
+      providers:
+        this.registry.list(),
+    };
+  }
+
+  getStatus() {
+    return {
+      success: true,
+
+      engine:
+        'CreatorOS Image Provider Adapter',
+
+      version: '1.1.0',
+
+      phase:
+        'Provider Lock Enforcement and Safe Execution',
+
+      status: 'operational',
+
+      architecture: {
+        providerRegistry: true,
+        providerContract: true,
+        manualExportProvider: true,
+        mockProvider: true,
+        realExternalProvider:
+          false,
+
+        referenceFirstGeneration:
+          true,
+
+        humanApprovalGate: true,
+        storyboardLockGate: true,
+
+        persistentJobStorage:
+          true,
+
+        assetReviewWorkflow:
+          true,
+
+        providerLockEnforcement:
+          true,
+
+        unauthorizedProviderBlocking:
+          true,
+
+        fallbackProviderSupport:
+          true,
+
+        mixedProviderJobGuard:
+          true,
+      },
+    };
+  }
+
+  private async enforceProviderLocks(
+    dto: CreateImageGenerationJobDto,
+    requests: ImageGenerationRequest[],
+  ): Promise<void> {
+    const enforceLocks =
+      dto.enforceProviderLocks ??
+      true;
+
+    if (!enforceLocks) {
+      for (const request of requests) {
+        request.resolvedProviderId =
+          request.providerId;
+
+        request.providerLockApplied =
+          false;
+      }
+
+      return;
+    }
+
+    for (const request of requests) {
+      if (
+        request.sourceEntityType ===
+        'storyboard-frame'
+      ) {
+        request.resolvedProviderId =
+          request.providerId;
+
+        request.providerLockApplied =
+          false;
+
+        continue;
+      }
+
+      const workload =
+        this.workloadForCategory(
+          request.category,
+        );
+
+      try {
+        const resolution =
+          await this.compatibility.resolve({
+            workload,
+
+            requestedProviderId:
+              dto.providerId,
+
+            worldId:
+              dto.worldId,
+
+            entityType:
+              request.sourceEntityType,
+
+            entityId:
+              this.resolveLockEntityId(
+                request,
+              ),
+
+            entityName:
+              request.sourceEntityName,
+          });
+
+        request.resolvedProviderId =
+          resolution.decision
+            .resolvedProviderId as ImageProviderId;
+
+        request.providerLockApplied =
+          resolution.decision
+            .lockApplied;
+
+        request.providerLockId =
+          resolution.decision
+            .lockId;
+
+        request.providerFallbackUsed =
+          false;
+      } catch (error) {
+        if (!dto.allowFallbackProvider) {
+          throw error;
+        }
+
+        const fallbackResolution =
+          await this.compatibility.resolve({
+            workload,
+
+            worldId:
+              dto.worldId,
+
+            entityType:
+              request.sourceEntityType,
+
+            entityId:
+              this.resolveLockEntityId(
+                request,
+              ),
+
+            entityName:
+              request.sourceEntityName,
+          });
+
+        request.resolvedProviderId =
+          fallbackResolution.decision
+            .resolvedProviderId as ImageProviderId;
+
+        request.providerLockApplied =
+          fallbackResolution.decision
+            .lockApplied;
+
+        request.providerLockId =
+          fallbackResolution.decision
+            .lockId;
+
+        request.providerFallbackUsed =
+          true;
+
+        request.providerFallbackReason =
+          `Requested provider ${dto.providerId} was rejected or unavailable for ${request.sourceEntityName}. Fallback provider ${request.resolvedProviderId} was selected.`;
+      }
+    }
+  }
+
+  private resolveLockEntityId(
+    request: ImageGenerationRequest,
+  ): string {
+    const metadataCharacterId =
+      request.metadata.characterId;
+
+    if (
+      request.sourceEntityType ===
+        'character' &&
+      typeof metadataCharacterId ===
+        'string' &&
+      metadataCharacterId
+    ) {
+      return metadataCharacterId;
+    }
+
+    const metadataOwnerCharacterId =
+      request.metadata
+        .ownerCharacterId;
+
+    if (
+      request.sourceEntityType ===
+        'prop' &&
+      typeof metadataOwnerCharacterId ===
+        'string' &&
+      metadataOwnerCharacterId
+    ) {
+      return request.sourceEntityId;
+    }
+
+    return request.sourceEntityId;
+  }
+
+  private workloadForCategory(
+    category: ImageAssetCategory,
+  ) {
+    switch (category) {
+      case 'character-reference':
+        return 'character-reference' as const;
+
+      case 'character-expression':
+        return 'character-expression' as const;
+
+      case 'character-pose':
+        return 'character-pose' as const;
+
+      case 'environment-reference':
+        return 'environment-reference' as const;
+
+      case 'prop-reference':
+        return 'prop-reference' as const;
+
+      case 'storyboard-frame':
+        return 'storyboard-frame' as const;
+    }
+  }
+
+  private referencesApproved(
+    jobs: ImageGenerationJob[],
+    bibleId: string,
+  ): boolean {
+    const referenceAssets =
+      jobs
+        .filter(
+          (job) =>
+            job.bibleId ===
+            bibleId,
+        )
+        .flatMap(
+          (job) =>
+            job.assets,
+        )
+        .filter(
+          (asset) =>
+            asset.category !==
+            'storyboard-frame',
+        );
+
+    return (
+      referenceAssets.length > 0 &&
+      referenceAssets.every(
+        (asset) =>
+          asset.status ===
+          'approved',
+      )
+    );
+  }
+
+  private refreshApprovalGate(
+    job: ImageGenerationJob,
+  ): void {
+    const referenceAssets =
+      job.assets.filter(
+        (asset) =>
+          asset.category !==
+          'storyboard-frame',
+      );
+
+    const approved =
+      referenceAssets.filter(
+        (asset) =>
+          asset.status ===
+          'approved',
+      ).length;
+
+    job.approvalGate
+      .approvedReferenceAssets =
+        approved;
+
+    if (
+      job.approvalGate
+        .requiredReferenceAssets ===
+      0
+    ) {
+      job.approvalGate
+        .requiredReferenceAssets =
+          referenceAssets.length;
+    }
+
+    job.approvalGate
+      .storyboardGenerationUnlocked =
+        referenceAssets.length >
+          0 &&
+        approved ===
+          referenceAssets.length;
+  }
+}

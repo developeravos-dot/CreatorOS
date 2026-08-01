@@ -1,0 +1,289 @@
+{
+  "worldId": "676d0dae-c1a5-48f7-aba1-42ac5e8384d4",
+  "version": "1.0.0",
+  "createdAt": "2026-07-31T19:19:02.246Z",
+  "universeDna": {
+    "id": "0addea45-0a3d-4d3b-bd6e-f04e7ca8a3dc",
+    "name": "عالم البذرة التي لا تنتهي",
+    "audienceTier": "kids",
+    "genres": [
+      "adventure",
+      "fantasy",
+      "psychological",
+      "education"
+    ],
+    "premise": "عالم حي تنمو فيه المدن والشخصيات والصداقات والأسرار باستمرار، وتترك كل تجربة أثرا نفسيا طويل المدى يؤثر في قرارات الشخصيات وفي الحلقات القادمة.",
+    "visualStyle": "رسوم متحركة سينمائية ثلاثية الأبعاد بألوان دافئة وشخصيات أصلية",
+    "narrativeTone": "مغامرة وفضول وأمان عاطفي مع غموض تدريجي",
+    "technologyLevel": 45,
+    "fantasyLevel": 75,
+    "realismLevel": 55,
+    "endlessStoryEnabled": true,
+    "agingEnabled": true,
+    "deathPermanent": false,
+    "timeTravelEnabled": false,
+    "artificialIntelligenceEnabled": true,
+    "laws": [
+      {
+        "id": "0160dd12-d669-40f4-bdb2-de81c6d45c9e",
+        "name": "Psychological Continuity",
+        "description": "كل تجربة مؤثرة تترك أثرًا نفسيًا مستمرًا في الشخصيات ولا تختفي دون معالجة منطقية.",
+        "immutable": true,
+        "storyImpact": 100
+      },
+      {
+        "id": "5c417af3-6e7d-471f-bec3-0765e3d0b11f",
+        "name": "World Before Episode",
+        "description": "الحلقات تنتج من أحداث العالم الحي ولا يُعاد تشكيل العالم لخدمة حلقة منفردة.",
+        "immutable": true,
+        "storyImpact": 100
+      },
+      {
+        "id": "a9476e62-622a-46d7-99b4-d64a0cc41bc4",
+        "name": "No Forced Ending",
+        "description": "لا توجد نهاية إجبارية للعالم، وتبقى خيوط قابلة للنمو باستمرار.",
+        "immutable": true,
+        "storyImpact": 100
+      },
+      {
+        "id": "dbae1e42-cfca-407f-acb0-d893030354e5",
+        "name": "Consequences Persist",
+        "description": "القرارات المهمة تولد نتائج قصيرة وطويلة المدى.",
+        "immutable": true,
+        "storyImpact": 95
+      },
+      {
+        "id": "536e7908-4ca2-42c8-ada6-0c9f1f20c42b",
+        "name": "Audience Safety",
+        "description": "يتم ضبط المحتوى نفسيًا وسرديًا بما يناسب فئة kids.",
+        "immutable": true,
+        "storyImpact": 100
+      }
+    ],
+    "languages": [
+      {
+        "code": "ar",
+        "name": "العربية",
+        "primary": true,
+        "localizationMode": "native-reproduction"
+      },
+      {
+        "code": "en",
+        "name": "English",
+        "primary": false,
+        "localizationMode": "native-reproduction"
+      },
+      {
+        "code": "es",
+        "name": "Español",
+        "primary": false,
+        "localizationMode": "cultural-adaptation"
+      }
+    ]
+  },
+  "locations": [
+    {
+      "id": "4bda8fbc-f061-4e32-9d6c-043530ac82df",
+      "name": "مدينة البدايات",
+      "type": "city",
+      "description": "المركز الذي تتقاطع فيه الشخصيات والفرص والأسرار الأولى.",
+      "population": 12000,
+      "dangerLevel": 15,
+      "opportunityLevel": 90,
+      "emotionalTone": "فضول وأمل مع أسرار غير مكتملة"
+    },
+    {
+      "id": "7aad350b-0b9c-4564-807f-34bc817964c7",
+      "name": "المنطقة المتغيرة",
+      "type": "region",
+      "description": "منطقة تتبدل اجتماعيًا واقتصاديًا مع تطور العالم.",
+      "population": 75000,
+      "dangerLevel": 55,
+      "opportunityLevel": 75,
+      "emotionalTone": "توتر وتحول واكتشاف"
+    },
+    {
+      "id": "0c16a58b-4daf-4554-905b-cf02911f3471",
+      "name": "الأرشيف المخفي",
+      "type": "hidden-place",
+      "description": "مكان يحتفظ بأحداث وأسرار يمكن كشفها تدريجيًا عبر مئات الحلقات.",
+      "population": 12,
+      "dangerLevel": 70,
+      "opportunityLevel": 95,
+      "emotionalTone": "غموض وذاكرة وخوف من الحقيقة"
+    }
+  ],
+  "civilizations": [
+    {
+      "id": "f8eefd31-9def-4411-a512-45d34b5f7296",
+      "name": "مجتمع البنائين",
+      "values": [
+        "التعاون",
+        "الابتكار",
+        "المسؤولية"
+      ],
+      "customs": [
+        "مجالس الحلول",
+        "مشاركة المعرفة"
+      ],
+      "technologyLevel": 45,
+      "economicPower": 75,
+      "politicalPower": 55,
+      "relationships": [
+        "تنافس مع مجتمع الحراس"
+      ]
+    },
+    {
+      "id": "874080ca-fda4-48fa-b200-a4a0f2b91923",
+      "name": "مجتمع الحراس",
+      "values": [
+        "الاستقرار",
+        "الوفاء",
+        "حماية التاريخ"
+      ],
+      "customs": [
+        "حفظ السجلات",
+        "اختبارات الثقة"
+      ],
+      "technologyLevel": 30,
+      "economicPower": 55,
+      "politicalPower": 80,
+      "relationships": [
+        "تحالف متوتر مع مجتمع البنائين"
+      ]
+    }
+  ],
+  "economy": {
+    "currency": "وحدات الأثر",
+    "resources": [
+      "المعرفة",
+      "الطاقة",
+      "الوقت",
+      "الثقة"
+    ],
+    "scarceResources": [
+      "الذاكرة الأصلية",
+      "المعلومات الموثوقة"
+    ],
+    "industries": [
+      "الاختراع",
+      "التعليم",
+      "النقل",
+      "الترفيه"
+    ],
+    "inequalityLevel": 42,
+    "volatility": 36
+  },
+  "politics": {
+    "governanceModels": [
+      "مجالس المدن",
+      "مؤسسات مستقلة"
+    ],
+    "institutions": [
+      "مجلس الاستمرارية",
+      "هيئة الذاكرة",
+      "رابطة المخترعين"
+    ],
+    "factions": [
+      "البناؤون",
+      "الحراس",
+      "الباحثون عن الحقيقة"
+    ],
+    "conflictLevel": 48,
+    "stability": 64
+  },
+  "psychology": {
+    "primaryEmotions": [
+      "الفضول",
+      "الأمان",
+      "الصداقة",
+      "الثقة",
+      "التعاون",
+      "مواجهة الخوف",
+      "تقبل الاختلاف",
+      "التعلم من الخطأ"
+    ],
+    "recurringConflicts": [
+      "الخوف مقابل الفضول",
+      "المصلحة الفردية مقابل التعاون"
+    ],
+    "moralComplexity": 35,
+    "emotionalIntensity": 45,
+    "psychologicalContinuity": true,
+    "delayedPayoffEnabled": true,
+    "longTermTraumaEnabled": false,
+    "characterMemoryRequired": true
+  },
+  "timeline": [
+    {
+      "id": "67826535-c36f-4a32-b6da-c6cf4816992e",
+      "worldYear": 0,
+      "title": "تأسيس العالم المعروف",
+      "description": "بداية التاريخ المسجل لعالم عالم البذرة التي لا تنتهي.",
+      "eventType": "discovery",
+      "importance": 100,
+      "affectedEntities": [
+        "عالم البذرة التي لا تنتهي"
+      ],
+      "unresolvedConsequences": [
+        "من كان موجودًا قبل التاريخ المسجل؟"
+      ]
+    },
+    {
+      "id": "9d1a8d23-5923-44d7-bab6-60e3e04d0fed",
+      "worldYear": 8,
+      "title": "انقسام البنائين والحراس",
+      "description": "خلاف حول استخدام المعرفة تسبب في ظهور قوتين متنافستين.",
+      "eventType": "political",
+      "importance": 90,
+      "affectedEntities": [
+        "مجتمع البنائين",
+        "مجتمع الحراس"
+      ],
+      "unresolvedConsequences": [
+        "سر الخلاف الأصلي",
+        "إمكانية عودة الوحدة"
+      ]
+    },
+    {
+      "id": "86678b8b-2ee0-42eb-87c3-ccce24fed90e",
+      "worldYear": 14,
+      "title": "ظهور الأرشيف المخفي",
+      "description": "تم اكتشاف إشارات إلى أرشيف يحتوي على ذاكرة أقدم من العالم المسجل.",
+      "eventType": "mystery",
+      "importance": 95,
+      "affectedEntities": [
+        "هيئة الذاكرة",
+        "الباحثون عن الحقيقة"
+      ],
+      "unresolvedConsequences": [
+        "موقع الأرشيف الحقيقي",
+        "هوية من أنشأه",
+        "سبب إخفائه"
+      ]
+    }
+  ],
+  "endlessState": {
+    "currentWorldYear": 14,
+    "activeMysteries": [
+      "موقع الأرشيف الحقيقي",
+      "هوية من أنشأه",
+      "سبب إخفائه"
+    ],
+    "activeConflicts": [
+      "البناؤون مقابل الحراس",
+      "الخوف مقابل الفضول",
+      "المصلحة الفردية مقابل التعاون"
+    ],
+    "futureSeeds": [
+      "من كان موجودًا قبل التاريخ المسجل؟",
+      "سر الخلاف الأصلي",
+      "إمكانية عودة الوحدة",
+      "موقع الأرشيف الحقيقي",
+      "هوية من أنشأه",
+      "سبب إخفائه"
+    ],
+    "openStoryThreads": 6,
+    "continuityScore": 100
+  }
+}

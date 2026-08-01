@@ -1,0 +1,149 @@
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '../../persistence/prisma.service';
+import { AgentDecisionStatus, AgentMissionStatus } from '../../../generated/prisma/enums';
+import { AddAgentTeamMemberDto, AssignAgentMissionDto, CreateAgentDecisionDto, CreateAgentMissionDto, CreateAgentTeamDto, ReviewAgentDecisionDto, TransitionAgentMissionDto, UpdateAgentTeamDto } from './dto/ai-organization.dto';
+
+@Injectable()
+export class AiOrganizationService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  private async audit(action: string, resourceType: string, resourceId?: string, payload?: object) {
+    await this.prisma.auditLog.create({ data: { eventType: `ai-organization.${action}`, actorType: 'SYSTEM', resourceType, resourceId, action, payload: payload as any } });
+  }
+
+  private conflict(error: unknown): never {
+    if ((error as { code?: string }).code === 'P2002') throw new ConflictException('An AI organization record with this key already exists.');
+    throw error;
+  }
+
+  async dashboard() {
+    const [agents, teams, activeTeams, missions, queued, running, decisions, proposedDecisions] = await Promise.all([
+      this.prisma.agent.count({ where: { status: 'ACTIVE' } }),
+      this.prisma.agentTeam.count(),
+      this.prisma.agentTeam.count({ where: { status: 'ACTIVE' } }),
+      this.prisma.agentMission.count(),
+      this.prisma.agentMission.count({ where: { status: 'QUEUED' } }),
+      this.prisma.agentMission.count({ where: { status: 'RUNNING' } }),
+      this.prisma.agentDecision.count(),
+      this.prisma.agentDecision.count({ where: { status: 'PROPOSED' } }),
+    ]);
+    return { organization: { activeAgents: agents, teams, activeTeams }, missions: { total: missions, queued, running }, decisions: { total: decisions, proposed: proposedDecisions }, humanFinalAuthority: true };
+  }
+
+  listTeams() {
+    return this.prisma.agentTeam.findMany({ include: { organizationUnit: true, members: { include: { agent: true } }, _count: { select: { missions: true } } }, orderBy: { updatedAt: 'desc' } });
+  }
+
+  async createTeam(input: CreateAgentTeamDto) {
+    if (input.organizationUnitId) {
+      const unit = await this.prisma.organizationUnit.findUnique({ where: { id: input.organizationUnitId } });
+      if (!unit) throw new NotFoundException('Organization unit not found.');
+    }
+    try {
+      const row = await this.prisma.agentTeam.create({ data: { teamKey: input.teamKey, name: input.name, purpose: input.purpose, organizationUnitId: input.organizationUnitId, operatingModel: (input.operatingModel ?? {}) as any, metadata: (input.metadata ?? {}) as any } });
+      await this.audit('team.created', 'AgentTeam', row.id, { teamKey: row.teamKey });
+      return row;
+    } catch (error) { this.conflict(error); }
+  }
+
+  async updateTeam(id: string, input: UpdateAgentTeamDto) {
+    const found = await this.prisma.agentTeam.findUnique({ where: { id } });
+    if (!found) throw new NotFoundException('Agent team not found.');
+    if (input.organizationUnitId) {
+      const unit = await this.prisma.organizationUnit.findUnique({ where: { id: input.organizationUnitId } });
+      if (!unit) throw new NotFoundException('Organization unit not found.');
+    }
+    const row = await this.prisma.agentTeam.update({ where: { id }, data: { ...input, ...(input.operatingModel !== undefined ? { operatingModel: input.operatingModel as any } : {}), ...(input.metadata !== undefined ? { metadata: input.metadata as any } : {}) } });
+    await this.audit('team.updated', 'AgentTeam', id, { status: row.status });
+    return row;
+  }
+
+  async addMember(teamId: string, input: AddAgentTeamMemberDto) {
+    const [team, agent] = await Promise.all([this.prisma.agentTeam.findUnique({ where: { id: teamId } }), this.prisma.agent.findUnique({ where: { id: input.agentId } })]);
+    if (!team) throw new NotFoundException('Agent team not found.');
+    if (!agent) throw new NotFoundException('Agent not found.');
+    try {
+      const row = await this.prisma.agentTeamMember.create({ data: { teamId, agentId: input.agentId, role: input.role, priority: input.priority ?? 50, responsibilities: (input.responsibilities ?? {}) as any } });
+      await this.audit('team.member-added', 'AgentTeamMember', row.id, { teamId, agentId: input.agentId });
+      return row;
+    } catch (error) { this.conflict(error); }
+  }
+
+  async removeMember(teamId: string, agentId: string) {
+    const row = await this.prisma.agentTeamMember.findUnique({ where: { teamId_agentId: { teamId, agentId } } });
+    if (!row) throw new NotFoundException('Agent team member not found.');
+    await this.prisma.agentTeamMember.delete({ where: { teamId_agentId: { teamId, agentId } } });
+    await this.audit('team.member-removed', 'AgentTeamMember', row.id, { teamId, agentId });
+    return { removed: true };
+  }
+
+  listMissions(status?: AgentMissionStatus) {
+    return this.prisma.agentMission.findMany({ where: status ? { status } : undefined, include: { team: true, assignments: { include: { agent: true } }, decisions: true }, orderBy: { updatedAt: 'desc' } });
+  }
+
+  async createMission(input: CreateAgentMissionDto) {
+    if (input.teamId) {
+      const team = await this.prisma.agentTeam.findUnique({ where: { id: input.teamId } });
+      if (!team) throw new NotFoundException('Agent team not found.');
+    }
+    try {
+      const row = await this.prisma.agentMission.create({ data: { missionKey: input.missionKey, title: input.title, description: input.description, teamId: input.teamId, priority: input.priority, objective: (input.objective ?? {}) as any, requiredCapabilities: (input.requiredCapabilities ?? []) as any, constraints: (input.constraints ?? {}) as any, metadata: (input.metadata ?? {}) as any } });
+      await this.audit('mission.created', 'AgentMission', row.id, { missionKey: row.missionKey });
+      return row;
+    } catch (error) { this.conflict(error); }
+  }
+
+  async assignMission(missionId: string, input: AssignAgentMissionDto) {
+    const [mission, agent] = await Promise.all([this.prisma.agentMission.findUnique({ where: { id: missionId } }), this.prisma.agent.findUnique({ where: { id: input.agentId } })]);
+    if (!mission) throw new NotFoundException('Agent mission not found.');
+    if (!agent) throw new NotFoundException('Agent not found.');
+    try {
+      const row = await this.prisma.agentMissionAssignment.create({ data: { missionId, agentId: input.agentId, assignmentRole: input.assignmentRole ?? 'CONTRIBUTOR', instructions: (input.instructions ?? {}) as any } });
+      await this.audit('mission.agent-assigned', 'AgentMissionAssignment', row.id, { missionId, agentId: input.agentId });
+      return row;
+    } catch (error) { this.conflict(error); }
+  }
+
+  async transitionMission(id: string, input: TransitionAgentMissionDto) {
+    const found = await this.prisma.agentMission.findUnique({ where: { id } });
+    if (!found) throw new NotFoundException('Agent mission not found.');
+    const terminal = ['COMPLETED', 'FAILED', 'CANCELLED'].includes(found.status);
+    if (terminal) throw new ConflictException('A terminal mission cannot transition again.');
+    const now = new Date();
+    const row = await this.prisma.agentMission.update({ where: { id }, data: { status: input.status, statusNote: input.note, ...(input.result !== undefined ? { result: input.result as any } : {}), ...(input.status === AgentMissionStatus.RUNNING && !found.startedAt ? { startedAt: now } : {}), ...((input.status === AgentMissionStatus.COMPLETED || input.status === AgentMissionStatus.FAILED || input.status === AgentMissionStatus.CANCELLED) ? { completedAt: now } : {}) } });
+    await this.audit('mission.transitioned', 'AgentMission', id, { from: found.status, to: row.status });
+    return row;
+  }
+
+  listDecisions(status?: AgentDecisionStatus) {
+    return this.prisma.agentDecision.findMany({ where: status ? { status } : undefined, include: { mission: true, proposedByAgent: true }, orderBy: { updatedAt: 'desc' } });
+  }
+
+  async createDecision(input: CreateAgentDecisionDto) {
+    if (input.missionId) {
+      const mission = await this.prisma.agentMission.findUnique({ where: { id: input.missionId } });
+      if (!mission) throw new NotFoundException('Agent mission not found.');
+    }
+    if (input.proposedByAgentId) {
+      const agent = await this.prisma.agent.findUnique({ where: { id: input.proposedByAgentId } });
+      if (!agent) throw new NotFoundException('Proposing agent not found.');
+    }
+    try {
+      const row = await this.prisma.agentDecision.create({ data: { decisionKey: input.decisionKey, title: input.title, summary: input.summary, missionId: input.missionId, proposedByAgentId: input.proposedByAgentId, options: (input.options ?? {}) as any, recommendation: (input.recommendation ?? {}) as any, riskAssessment: (input.riskAssessment ?? {}) as any, metadata: (input.metadata ?? {}) as any, status: 'PROPOSED' } });
+      await this.audit('decision.proposed', 'AgentDecision', row.id, { decisionKey: row.decisionKey });
+      return row;
+    } catch (error) { this.conflict(error); }
+  }
+
+  async reviewDecision(id: string, input: ReviewAgentDecisionDto) {
+    const found = await this.prisma.agentDecision.findUnique({ where: { id } });
+    if (!found) throw new NotFoundException('Agent decision not found.');
+    if (found.status !== 'PROPOSED') throw new ConflictException('Only proposed decisions can be reviewed.');
+    if (input.status !== AgentDecisionStatus.APPROVED && input.status !== AgentDecisionStatus.REJECTED) {
+      throw new ConflictException('Human review must approve or reject the decision.');
+    }
+    const row = await this.prisma.agentDecision.update({ where: { id }, data: { status: input.status, reviewNote: input.reviewNote, reviewedAt: new Date() } });
+    await this.audit('decision.reviewed', 'AgentDecision', id, { status: row.status });
+    return row;
+  }
+}

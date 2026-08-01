@@ -1,0 +1,387 @@
+import {
+  BadRequestException,
+  Injectable,
+} from '@nestjs/common';
+import { randomUUID } from 'node:crypto';
+import { ProductionRouterService } from '../production-core/production-router.service';
+import { AssetManagerService } from './asset-manager.service';
+import { CostManagerService } from './cost-manager.service';
+import {
+  CreateProductionWorkflowRequest,
+  ProductionWorkflow,
+  WorkflowExecutionResult,
+  WorkflowStep,
+} from './production-execution.contracts';
+import { ExecutionMonitorService } from './execution-monitor.service';
+import { QualityGateService } from './quality-gate.service';
+import { WorkflowRepositoryService } from './workflow-repository.service';
+
+interface PlannedTool {
+  id?: string;
+  displayName?: string;
+  mode?: string;
+  costTier?: string;
+  qualityScore?: number;
+}
+
+interface PlannedSelection {
+  capability?: string;
+  selectedTool?: PlannedTool;
+}
+
+interface ProductionPlan {
+  success?: boolean;
+  ready?: boolean;
+  selections?: PlannedSelection[];
+}
+
+@Injectable()
+export class ProductionExecutionService {
+  constructor(
+    private readonly router: ProductionRouterService,
+    private readonly workflows: WorkflowRepositoryService,
+    private readonly assets: AssetManagerService,
+    private readonly costs: CostManagerService,
+    private readonly qualityGate: QualityGateService,
+    private readonly monitorService: ExecutionMonitorService,
+  ) {}
+
+  status() {
+    return {
+      success: true,
+      engine: 'CreatorOS Production Execution Engine',
+      architecture: 'Cost-First Workflow Orchestration',
+      capabilities: [
+        'workflow-orchestration',
+        'job-state-management',
+        'asset-management',
+        'execution-monitoring',
+        'cost-control',
+        'quality-gates',
+        'manual-assisted-steps',
+        'retry-foundation',
+        'cancellation',
+      ],
+      persistence: 'in-memory',
+      externalConnectorExecution: 'adapter-ready',
+    };
+  }
+
+  create(request: CreateProductionWorkflowRequest) {
+    if (!request.title?.trim()) {
+      throw new BadRequestException('Workflow title is required.');
+    }
+
+    const allowPaid = request.allowPaid ?? false;
+    const minimumQuality = request.minimumQuality ?? 50;
+
+    const rawPlan = this.router.plan({
+      allowPaid,
+      minimumQuality,
+      preferredTools: request.preferredTools,
+    } as never) as unknown;
+
+    if (rawPlan instanceof Promise) {
+      throw new BadRequestException(
+        'Asynchronous production planning is not supported by this installer version.',
+      );
+    }
+
+    const plan = rawPlan as ProductionPlan;
+    const selections = Array.isArray(plan.selections) ? plan.selections : [];
+
+    const steps: WorkflowStep[] = selections.map((selection, index) => {
+      const tool = selection.selectedTool;
+      const status =
+        tool?.mode === 'manual-assisted' || tool?.mode === 'desktop'
+          ? 'manual-required'
+          : 'ready';
+
+      return {
+        id: randomUUID(),
+        capability: selection.capability ?? `step-${index + 1}`,
+        toolId: tool?.id,
+        toolName: tool?.displayName,
+        toolMode: tool?.mode,
+        status,
+        order: index + 1,
+        estimatedCost: this.costs.estimateStep(tool?.costTier),
+        actualCost: 0,
+        qualityScore: tool?.qualityScore,
+        attempts: 0,
+        maxAttempts: 3,
+        outputAssetIds: [],
+      };
+    });
+
+    const now = new Date().toISOString();
+    const workflow: ProductionWorkflow = {
+      id: randomUUID(),
+      title: request.title.trim(),
+      brief: request.brief,
+      status: 'planned',
+      strategy: 'cost-first',
+      allowPaid,
+      minimumQuality,
+      budgetLimit: request.budgetLimit,
+      estimatedCost: steps.reduce((sum, step) => sum + step.estimatedCost, 0),
+      actualCost: 0,
+      steps,
+      assetIds: [],
+      metadata: request.metadata,
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    this.workflows.create(workflow);
+
+    return {
+      success: true,
+      workflow: this.workflows.get(workflow.id),
+      monitor: this.monitorService.snapshot(workflow),
+      planReady: plan.ready ?? steps.length > 0,
+    };
+  }
+
+  list() {
+    return {
+      success: true,
+      workflows: this.workflows.list(),
+    };
+  }
+
+  get(id: string) {
+    const workflow = this.workflows.get(id);
+    return {
+      success: true,
+      workflow,
+      assets: this.assets.listByWorkflow(id),
+      monitor: this.monitorService.snapshot(workflow),
+    };
+  }
+
+  run(id: string): WorkflowExecutionResult {
+    const workflow = this.workflows.getMutable(id);
+
+    if (['completed', 'cancelled'].includes(workflow.status)) {
+      throw new BadRequestException(
+        `Workflow cannot run from status: ${workflow.status}`,
+      );
+    }
+
+    workflow.status = 'running';
+    workflow.startedAt ??= new Date().toISOString();
+
+    for (const step of workflow.steps.sort((a, b) => a.order - b.order)) {
+      if (step.status === 'completed' || step.status === 'skipped') {
+        continue;
+      }
+
+      workflow.currentStepId = step.id;
+
+      if (
+        step.toolMode === 'manual-assisted' ||
+        step.toolMode === 'desktop'
+      ) {
+        step.status = 'manual-required';
+        workflow.status = 'waiting-manual';
+        this.workflows.save(workflow);
+
+        return {
+          success: true,
+          workflow: this.workflows.get(id),
+          message: `Manual action required for ${step.capability} using ${step.toolName}.`,
+        };
+      }
+
+      this.costs.assertBudget(workflow, step);
+      step.status = 'running';
+      step.startedAt = new Date().toISOString();
+      step.attempts += 1;
+
+      // Adapter execution hook:
+      // A real provider adapter will replace this readiness checkpoint.
+      const quality = this.qualityGate.evaluate(
+        step,
+        workflow.minimumQuality,
+      );
+
+      if (!quality.passed) {
+        step.status = 'failed';
+        step.error = quality.reason;
+        workflow.status = 'failed';
+        workflow.failureReason = quality.reason;
+        this.workflows.save(workflow);
+
+        return {
+          success: false,
+          workflow: this.workflows.get(id),
+          message: quality.reason,
+        };
+      }
+
+      const asset = this.assets.create({
+        workflowId: workflow.id,
+        stepId: step.id,
+        kind: this.mapCapabilityToAssetKind(step.capability),
+        name: `${step.capability}-${step.id}`,
+        metadata: {
+          toolId: step.toolId,
+          toolName: step.toolName,
+          executionState: 'adapter-ready-placeholder',
+        },
+      });
+
+      step.outputAssetIds.push(asset.id);
+      workflow.assetIds.push(asset.id);
+      step.status = 'completed';
+      step.completedAt = new Date().toISOString();
+      this.costs.recordStepCost(workflow, step, step.estimatedCost);
+    }
+
+    workflow.status = 'completed';
+    workflow.currentStepId = undefined;
+    workflow.completedAt = new Date().toISOString();
+    this.workflows.save(workflow);
+
+    return {
+      success: true,
+      workflow: this.workflows.get(id),
+      message: 'Workflow execution state completed.',
+    };
+  }
+
+  completeManualStep(
+    workflowId: string,
+    stepId: string,
+    input?: {
+      assetName?: string;
+      assetLocation?: string;
+      actualCost?: number;
+      qualityScore?: number;
+    },
+  ) {
+    const workflow = this.workflows.getMutable(workflowId);
+    const step = workflow.steps.find((item) => item.id === stepId);
+
+    if (!step) {
+      throw new BadRequestException(`Workflow step not found: ${stepId}`);
+    }
+
+    if (step.status !== 'manual-required') {
+      throw new BadRequestException(
+        `Step is not waiting for manual completion: ${step.status}`,
+      );
+    }
+
+    if (input?.qualityScore !== undefined) {
+      step.qualityScore = input.qualityScore;
+    }
+
+    const quality = this.qualityGate.evaluate(step, workflow.minimumQuality);
+    if (!quality.passed) {
+      step.status = 'failed';
+      step.error = quality.reason;
+      workflow.status = 'failed';
+      workflow.failureReason = quality.reason;
+      this.workflows.save(workflow);
+      return this.get(workflowId);
+    }
+
+    const asset = this.assets.create({
+      workflowId,
+      stepId,
+      kind: this.mapCapabilityToAssetKind(step.capability),
+      name: input?.assetName ?? `${step.capability}-${step.id}`,
+      location: input?.assetLocation,
+      metadata: {
+        toolId: step.toolId,
+        toolName: step.toolName,
+        completedManually: true,
+      },
+    });
+
+    step.outputAssetIds.push(asset.id);
+    workflow.assetIds.push(asset.id);
+    step.status = 'completed';
+    step.completedAt = new Date().toISOString();
+
+    const actualCost = Math.max(0, input?.actualCost ?? 0);
+    this.costs.recordStepCost(workflow, step, actualCost);
+
+    const remaining = workflow.steps.some(
+      (item) =>
+        item.status !== 'completed' &&
+        item.status !== 'skipped' &&
+        item.status !== 'cancelled',
+    );
+
+    workflow.status = remaining ? 'planned' : 'completed';
+    if (!remaining) {
+      workflow.completedAt = new Date().toISOString();
+      workflow.currentStepId = undefined;
+    }
+
+    this.workflows.save(workflow);
+    return this.get(workflowId);
+  }
+
+  cancel(id: string) {
+    const workflow = this.workflows.getMutable(id);
+
+    if (workflow.status === 'completed') {
+      throw new BadRequestException('Completed workflow cannot be cancelled.');
+    }
+
+    workflow.status = 'cancelled';
+    workflow.currentStepId = undefined;
+
+    for (const step of workflow.steps) {
+      if (!['completed', 'failed', 'skipped'].includes(step.status)) {
+        step.status = 'cancelled';
+      }
+    }
+
+    this.workflows.save(workflow);
+
+    return {
+      success: true,
+      workflow: this.workflows.get(id),
+    };
+  }
+
+  monitor(id: string) {
+    const workflow = this.workflows.get(id);
+    return {
+      success: true,
+      monitor: this.monitorService.snapshot(workflow),
+    };
+  }
+
+  private mapCapabilityToAssetKind(
+    capability: string,
+  ):
+    | 'idea'
+    | 'research'
+    | 'script'
+    | 'video'
+    | 'thumbnail'
+    | 'voice'
+    | 'music'
+    | 'project'
+    | 'publication'
+    | 'analytics'
+    | 'other' {
+    if (capability.includes('idea')) return 'idea';
+    if (capability.includes('research')) return 'research';
+    if (capability.includes('script')) return 'script';
+    if (capability.includes('video-generation')) return 'video';
+    if (capability.includes('thumbnail')) return 'thumbnail';
+    if (capability.includes('voice')) return 'voice';
+    if (capability.includes('music')) return 'music';
+    if (capability.includes('video-editing')) return 'project';
+    if (capability.includes('publishing')) return 'publication';
+    if (capability.includes('analytics')) return 'analytics';
+    return 'other';
+  }
+}

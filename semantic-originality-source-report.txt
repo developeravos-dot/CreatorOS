@@ -1,0 +1,1079 @@
+﻿
+============================================================
+FILE: C:\Users\User\Desktop\CreatorOS\apps\api\src\enterprise\ai-foundation\ai-semantic-originality-critic.service.ts
+============================================================
+
+import { Injectable } from '@nestjs/common';
+import { AiCriticResult } from './ai-semantic-critic.service';
+
+export interface SemanticOriginalityInput {
+  request: string;
+  content: string;
+  originalityEvaluation: {
+    passed: boolean;
+    originalityPassed: boolean;
+    originalityScore: number;
+    duplicationScore: number;
+    distinctItemCount: number;
+    detectedItemCount: number;
+    genericContentDetected: boolean;
+    duplicatedPairs?: Array<{
+      firstItem: number;
+      secondItem: number;
+      similarity: number;
+    }>;
+    genericItems?: number[];
+    warnings?: string[];
+    reasons?: string[];
+  };
+}
+
+interface ExtractedItem {
+  index: number;
+  title: string;
+  body: string;
+  normalized: string;
+  tokens: string[];
+  concepts: string[];
+}
+
+interface SemanticDuplicate {
+  firstItem: number;
+  secondItem: number;
+  similarity: number;
+  sharedConcepts: string[];
+  reason: string;
+}
+
+@Injectable()
+export class AiSemanticOriginalityCriticService {
+  review(
+    input: SemanticOriginalityInput,
+  ): AiCriticResult {
+    const items = this.extractItems(
+      input.content,
+    );
+
+    const duplicatedConcepts:
+      SemanticDuplicate[] = [];
+
+    for (
+      let firstIndex = 0;
+      firstIndex < items.length;
+      firstIndex += 1
+    ) {
+      for (
+        let secondIndex = firstIndex + 1;
+        secondIndex < items.length;
+        secondIndex += 1
+      ) {
+        const first = items[firstIndex];
+        const second = items[secondIndex];
+
+        if (!first || !second) {
+          continue;
+        }
+
+        const lexicalSimilarity =
+          this.jaccard(
+            first.tokens,
+            second.tokens,
+          );
+
+        const conceptSimilarity =
+          this.jaccard(
+            first.concepts,
+            second.concepts,
+          );
+
+        const titleSimilarity =
+          this.titleSimilarity(
+            first.title,
+            second.title,
+          );
+
+        const combinedSimilarity =
+          Math.round(
+            Math.min(
+              1,
+              lexicalSimilarity * 0.25 +
+                conceptSimilarity * 0.55 +
+                titleSimilarity * 0.2,
+            ) * 100,
+          );
+
+        const sharedConcepts =
+          first.concepts.filter(
+            (concept) =>
+              second.concepts.includes(concept),
+          );
+
+        if (
+          combinedSimilarity >= 42 ||
+          sharedConcepts.length >= 2
+        ) {
+          duplicatedConcepts.push({
+            firstItem: first.index,
+            secondItem: second.index,
+            similarity:
+              combinedSimilarity,
+            sharedConcepts,
+            reason:
+              this.buildDuplicateReason(
+                first,
+                second,
+                sharedConcepts,
+              ),
+          });
+        }
+      }
+    }
+
+    const genericItems =
+      items
+        .filter(
+          (item) =>
+            this.isGenericItem(item),
+        )
+        .map((item) => item.index);
+
+    const repeatedDomainCount =
+      this.countRepeatedDomains(items);
+
+    const conceptPenalty =
+      duplicatedConcepts.reduce(
+        (total, duplicate) =>
+          total +
+          Math.max(
+            6,
+            Math.round(
+              duplicate.similarity / 8,
+            ),
+          ),
+        0,
+      );
+
+    const genericPenalty =
+      genericItems.length * 7;
+
+    const repeatedDomainPenalty =
+      Math.max(
+        0,
+        repeatedDomainCount - 2,
+      ) * 4;
+
+    const legacyScore =
+      input.originalityEvaluation
+        .originalityScore;
+
+    const semanticScore =
+      Math.max(
+        0,
+        Math.min(
+          100,
+          legacyScore -
+            conceptPenalty -
+            genericPenalty -
+            repeatedDomainPenalty,
+        ),
+      );
+
+    const warnings: string[] = [];
+    const recommendations: string[] = [];
+    const reasons: string[] = [];
+
+    if (duplicatedConcepts.length > 0) {
+      warnings.push(
+        `تم اكتشاف ${duplicatedConcepts.length} أزواج متشابهة دلاليًا.`,
+      );
+
+      for (
+        const duplicate of
+        duplicatedConcepts.slice(0, 5)
+      ) {
+        recommendations.push(
+          `استبدل أو ميّز الفكرتين ${duplicate.firstItem} و${duplicate.secondItem}: ${duplicate.reason}`,
+        );
+      }
+    }
+
+    if (genericItems.length > 0) {
+      warnings.push(
+        `العناصر العامة أو غير المتخصصة: ${genericItems.join(', ')}.`,
+      );
+
+      recommendations.push(
+        `أضف جمهورًا محددًا وآلية إنتاج ونموذج قيمة واضحًا للعناصر: ${genericItems.join(', ')}.`,
+      );
+    }
+
+    if (repeatedDomainCount > 3) {
+      warnings.push(
+        'عدد كبير من الأفكار يدور حول المجال نفسه بصيغ مختلفة.',
+      );
+
+      recommendations.push(
+        'نوّع المجالات والجمهور وآلية المحتوى ونموذج الربح بين الأفكار.',
+      );
+    }
+
+    const passed =
+      semanticScore >= 72 &&
+      duplicatedConcepts.length <=
+        Math.max(
+          1,
+          Math.floor(items.length * 0.15),
+        ) &&
+      genericItems.length <=
+        Math.max(
+          1,
+          Math.floor(items.length * 0.2),
+        );
+
+    reasons.push(
+      passed
+        ? 'الأفكار متمايزة دلاليًا بدرجة مقبولة.'
+        : 'الأفكار تحتوي على تشابه مفاهيمي أو عمومية تقلل الأصالة الفعلية.',
+    );
+
+    return {
+      passed,
+      score: semanticScore,
+      confidence:
+        items.length >= 5
+          ? 90
+          : 72,
+      reasons,
+      warnings: [
+        ...(input.originalityEvaluation
+          .warnings ?? []),
+        ...warnings,
+      ],
+      recommendations:
+        this.unique(recommendations),
+      metadata: {
+        analyzedItemCount: items.length,
+        duplicatedConcepts,
+        genericItems,
+        repeatedDomainCount,
+        legacyOriginalityScore:
+          legacyScore,
+        semanticOriginalityScore:
+          semanticScore,
+      },
+    };
+  }
+
+  private extractItems(
+    content: string,
+  ): ExtractedItem[] {
+    const normalizedContent =
+      content.replace(/\r/g, '');
+
+    const numberedPattern =
+      /(?:^|\n)\s*(\d{1,3})[\.\-\)]\s+([\s\S]*?)(?=(?:\n\s*\d{1,3}[\.\-\)]\s+)|$)/g;
+
+    const items: ExtractedItem[] = [];
+
+    let match:
+      RegExpExecArray | null;
+
+    while (
+      (match =
+        numberedPattern.exec(
+          normalizedContent,
+        )) !== null
+    ) {
+      const index =
+        Number(match[1]);
+
+      const raw =
+        (match[2] ?? '').trim();
+
+      if (!raw) {
+        continue;
+      }
+
+      const title =
+        this.extractTitle(raw);
+
+      const body =
+        raw
+          .replace(
+            /^(\*\*|__)?[^:\n]{2,100}(\*\*|__)?\s*:\s*/,
+            '',
+          )
+          .trim();
+
+      const normalized =
+        this.normalizeText(
+          `${title} ${body}`,
+        );
+
+      const tokens =
+        this.tokenize(normalized);
+
+      const concepts =
+        this.extractConcepts(
+          normalized,
+        );
+
+      items.push({
+        index,
+        title,
+        body,
+        normalized,
+        tokens,
+        concepts,
+      });
+    }
+
+    if (items.length > 0) {
+      return items;
+    }
+
+    return normalizedContent
+      .split(/\n{2,}/)
+      .map((part) => part.trim())
+      .filter(
+        (part) => part.length >= 40,
+      )
+      .map(
+        (part, itemIndex) => {
+          const title =
+            this.extractTitle(part);
+
+          const normalized =
+            this.normalizeText(part);
+
+          return {
+            index: itemIndex + 1,
+            title,
+            body: part,
+            normalized,
+            tokens:
+              this.tokenize(normalized),
+            concepts:
+              this.extractConcepts(
+                normalized,
+              ),
+          };
+        },
+      );
+  }
+
+  private extractTitle(
+    raw: string,
+  ): string {
+    const boldTitle =
+      raw.match(
+        /(?:\*\*|__)(.*?)(?:\*\*|__)/,
+      );
+
+    if (boldTitle?.[1]) {
+      return boldTitle[1].trim();
+    }
+
+    const colonIndex =
+      raw.indexOf(':');
+
+    if (
+      colonIndex > 0 &&
+      colonIndex <= 100
+    ) {
+      return raw
+        .slice(0, colonIndex)
+        .trim();
+    }
+
+    return raw
+      .split('\n')[0]
+      ?.slice(0, 100)
+      .trim() ?? '';
+  }
+
+  private normalizeText(
+    value: string,
+  ): string {
+    return value
+      .toLowerCase()
+      .normalize('NFKD')
+      .replace(
+        /[\u064B-\u065F\u0670]/g,
+        '',
+      )
+      .replace(/[إأآ]/g, 'ا')
+      .replace(/ى/g, 'ي')
+      .replace(/ة/g, 'ه')
+      .replace(/ؤ/g, 'و')
+      .replace(/ئ/g, 'ي')
+      .replace(
+        /[^\p{L}\p{N}\s]/gu,
+        ' ',
+      )
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  private tokenize(
+    value: string,
+  ): string[] {
+    const stopWords =
+      new Set([
+        'هذه',
+        'هذا',
+        'ذلك',
+        'التي',
+        'الذي',
+        'على',
+        'الى',
+        'إلى',
+        'عن',
+        'من',
+        'في',
+        'مع',
+        'يمكن',
+        'يتم',
+        'تقوم',
+        'تقدم',
+        'استخدام',
+        'الذكاء',
+        'الاصطناعي',
+        'قناه',
+        'قناة',
+        'محتوى',
+        'حول',
+        'عبر',
+        'خلال',
+        'مثل',
+        'بشكل',
+        'جديد',
+        'ذكي',
+        'ذكيه',
+        'وتقديم',
+      ]);
+
+    return this.unique(
+      value
+        .split(/\s+/)
+        .filter(
+          (token) =>
+            token.length >= 3 &&
+            !stopWords.has(token),
+        ),
+    );
+  }
+
+  private extractConcepts(
+    value: string,
+  ): string[] {
+    const conceptGroups: Array<{
+      name: string;
+      patterns: RegExp[];
+    }> = [
+      {
+        name: 'education',
+        patterns: [
+          /تعليم/,
+          /تعلم/,
+          /دورات/,
+          /تدريب/,
+          /دروس/,
+        ],
+      },
+      {
+        name: 'health',
+        patterns: [
+          /صح/,
+          /طب/,
+          /رعايه/,
+          /تشخيص/,
+          /مرض/,
+        ],
+      },
+      {
+        name: 'business',
+        patterns: [
+          /اعمال/,
+          /شركات/,
+          /تجاري/,
+          /موسسات/,
+          /مشاريع/,
+        ],
+      },
+      {
+        name: 'marketing',
+        patterns: [
+          /تسويق/,
+          /اعلان/,
+          /مبيعات/,
+          /علامه/,
+          /جمهور/,
+        ],
+      },
+      {
+        name: 'technology',
+        patterns: [
+          /تقنيه/,
+          /تكنولوجيا/,
+          /برمج/,
+          /تطبيق/,
+          /ويب/,
+        ],
+      },
+      {
+        name: 'security',
+        patterns: [
+          /امن/,
+          /حمايه/,
+          /سيبران/,
+          /اختراق/,
+          /خصوصيه/,
+        ],
+      },
+      {
+        name: 'entertainment',
+        patterns: [
+          /ترفيه/,
+          /العاب/,
+          /قصص/,
+          /افلام/,
+          /كوميد/,
+        ],
+      },
+      {
+        name: 'tourism',
+        patterns: [
+          /سياح/,
+          /سفر/,
+          /رحلات/,
+          /وجهات/,
+        ],
+      },
+      {
+        name: 'automation',
+        patterns: [
+          /اتمت/,
+          /تلقائي/,
+          /روبوت/,
+          /وكلاء/,
+          /تشغيل ذاتي/,
+        ],
+      },
+      {
+        name: 'analytics',
+        patterns: [
+          /تحليل/,
+          /بيانات/,
+          /قياس/,
+          /توقع/,
+          /مؤشرات/,
+        ],
+      },
+      {
+        name: 'consulting',
+        patterns: [
+          /استشار/,
+          /حلول/,
+          /مشوره/,
+          /توجيه/,
+        ],
+      },
+      {
+        name: 'personalization',
+        patterns: [
+          /مخصص/,
+          /شخصي/,
+          /حسب المستخدم/,
+          /حسب الجمهور/,
+        ],
+      },
+      {
+        name: 'news',
+        patterns: [
+          /اخبار/,
+          /تحديثات/,
+          /احدث/,
+          /اتجاهات/,
+        ],
+      },
+      {
+        name: 'tutorial',
+        patterns: [
+          /كيفيه/,
+          /خطوات/,
+          /شرح/,
+          /تعليم/,
+          /تطبيق عملي/,
+        ],
+      },
+    ];
+
+    return conceptGroups
+      .filter(
+        (group) =>
+          group.patterns.some(
+            (pattern) =>
+              pattern.test(value),
+          ),
+      )
+      .map((group) => group.name);
+  }
+
+  private jaccard(
+    firstValues: string[],
+    secondValues: string[],
+  ): number {
+    const first =
+      new Set(firstValues);
+
+    const second =
+      new Set(secondValues);
+
+    if (
+      first.size === 0 &&
+      second.size === 0
+    ) {
+      return 0;
+    }
+
+    const intersection =
+      [...first].filter(
+        (value) =>
+          second.has(value),
+      ).length;
+
+    const union =
+      new Set([
+        ...first,
+        ...second,
+      ]).size;
+
+    return union === 0
+      ? 0
+      : intersection / union;
+  }
+
+  private titleSimilarity(
+    firstTitle: string,
+    secondTitle: string,
+  ): number {
+    const firstTokens =
+      this.tokenize(
+        this.normalizeText(firstTitle),
+      );
+
+    const secondTokens =
+      this.tokenize(
+        this.normalizeText(secondTitle),
+      );
+
+    return this.jaccard(
+      firstTokens,
+      secondTokens,
+    );
+  }
+
+  private buildDuplicateReason(
+    first: ExtractedItem,
+    second: ExtractedItem,
+    sharedConcepts: string[],
+  ): string {
+    if (sharedConcepts.length > 0) {
+      return `كلاهما يعتمد على المفاهيم نفسها: ${sharedConcepts.join(', ')}.`;
+    }
+
+    return `يوجد تقارب واضح بين "${first.title}" و"${second.title}" في الموضوع وآلية القيمة.`;
+  }
+
+  private isGenericItem(
+    item: ExtractedItem,
+  ): boolean {
+    const genericPatterns =
+      [
+        /تقديم معلومات/,
+        /توفير معلومات/,
+        /احدث التطورات/,
+        /محتوى مفيد/,
+        /طرق جديده/,
+        /تحسين العمليات/,
+        /حلول ذكيه/,
+        /تجربه ذكيه/,
+        /استراتيجيات مختلفه/,
+      ];
+
+    const hasGenericLanguage =
+      genericPatterns.some(
+        (pattern) =>
+          pattern.test(item.normalized),
+      );
+
+    const lacksMechanism =
+      !/(خطوات|اليه|نظام|محرك|تجربه|اختبار|مقارنه|تحدي|محاكاه|قصه|سيناريو|نموذج ربح|اشتراك|ترخيص|بيع|عموله)/.test(
+        item.normalized,
+      );
+
+    return (
+      hasGenericLanguage &&
+      lacksMechanism
+    );
+  }
+
+  private countRepeatedDomains(
+    items: ExtractedItem[],
+  ): number {
+    const counts =
+      new Map<string, number>();
+
+    for (const item of items) {
+      for (
+        const concept of
+        item.concepts
+      ) {
+        counts.set(
+          concept,
+          (counts.get(concept) ?? 0) + 1,
+        );
+      }
+    }
+
+    return Math.max(
+      0,
+      ...counts.values(),
+    );
+  }
+
+  private unique<T>(
+    values: T[],
+  ): T[] {
+    return [...new Set(values)];
+  }
+}
+
+
+============================================================
+FILE: C:\Users\User\Desktop\CreatorOS\apps\api\src\enterprise\ai-foundation\ai-foundation.module.ts
+============================================================
+
+import { Module } from '@nestjs/common';
+import { IntelligenceModule } from '../intelligence/intelligence.module';
+import { AiFoundationController } from './ai-foundation.controller';
+import { AiGatewayService } from './ai-gateway.service';
+import { AiQualityGateService } from './ai-quality-gate.service';
+import { AiSemanticValidatorService } from './ai-semantic-validator.service';
+import { ModelRegistryService } from './model-registry.service';
+import { PromptEngineService } from './prompt-engine.service';
+import { TaskRouterService } from './task-router.service';
+import { AiOriginalitySafetyEvaluatorService } from './ai-originality-safety-evaluator.service';
+import { AiSemanticCriticService } from './ai-semantic-critic.service';
+import { AiOriginalityCriticService } from './ai-originality-critic.service';
+import { AiDomainExpertService } from './ai-domain-expert.service';
+import { AiSafetyCriticService } from './ai-safety-critic.service';
+import { AiJudgeService } from './ai-judge.service';
+import { AiReviewCouncilService } from './ai-review-council.service';
+
+import { AiSemanticOriginalityCriticService } from './ai-semantic-originality-critic.service';
+@Module({
+  imports: [IntelligenceModule],
+  controllers: [
+    AiFoundationController,
+  ],
+  providers: [
+    AiSemanticOriginalityCriticService,
+    AiReviewCouncilService,
+    AiJudgeService,
+    AiSafetyCriticService,
+    AiDomainExpertService,
+    AiOriginalityCriticService,
+    AiSemanticCriticService,
+    AiOriginalitySafetyEvaluatorService,
+    AiGatewayService,
+    AiQualityGateService,
+    AiSemanticValidatorService,
+    ModelRegistryService,
+    PromptEngineService,
+    TaskRouterService,
+  ],
+  exports: [
+    AiGatewayService,
+    AiQualityGateService,
+    AiSemanticValidatorService,
+    ModelRegistryService,
+    PromptEngineService,
+    TaskRouterService,
+  ],
+})
+export class AiFoundationModule {}
+
+
+
+
+
+============================================================
+FILE: C:\Users\User\Desktop\CreatorOS\apps\api\src\enterprise\ai-foundation\ai-judge.service.ts
+============================================================
+
+import { Injectable } from '@nestjs/common';
+import { AiCriticResult } from './ai-semantic-critic.service';
+
+export type AiJudgeDecision =
+  | 'ACCEPT'
+  | 'REGENERATE'
+  | 'HUMAN_REVIEW';
+
+export interface AiJudgeInput {
+  semantic: AiCriticResult;
+  originality: AiCriticResult;
+  domain: AiCriticResult;
+  safety: AiCriticResult;
+  generationAttempt: number;
+  maximumGenerationAttempts: number;
+}
+
+export interface AiJudgeResult {
+  decision: AiJudgeDecision;
+  passed: boolean;
+  score: number;
+  confidence: number;
+  reasons: string[];
+  failedCritics: string[];
+  regenerationRequired: boolean;
+  regenerationInstructions: string[];
+  humanReviewRequired: boolean;
+}
+
+@Injectable()
+export class AiJudgeService {
+  decide(input: AiJudgeInput): AiJudgeResult {
+    const critics = {
+      semantic: input.semantic,
+      semanticOriginality:
+        input.originality,
+      domain: input.domain,
+      safety: input.safety,
+    };
+
+    const failedCritics =
+      Object.entries(critics)
+        .filter(
+          ([, result]) => !result.passed,
+        )
+        .map(([name]) => name);
+
+    const score = Math.round(
+      input.semantic.score * 0.28 +
+        input.originality.score * 0.3 +
+        input.domain.score * 0.17 +
+        input.safety.score * 0.25,
+    );
+
+    const confidence = Math.round(
+      input.semantic.confidence * 0.28 +
+        input.originality.confidence * 0.3 +
+        input.domain.confidence * 0.17 +
+        input.safety.confidence * 0.25,
+    );
+
+    const regenerationInstructions =
+      this.collectInstructions(
+        critics,
+      );
+
+    let decision: AiJudgeDecision;
+
+    if (
+      input.safety.passed &&
+      input.semantic.passed &&
+      input.originality.passed &&
+      input.domain.passed &&
+      score >= 78
+    ) {
+      decision = 'ACCEPT';
+    } else if (
+      !input.safety.passed ||
+      input.generationAttempt >=
+        input.maximumGenerationAttempts
+    ) {
+      decision = 'HUMAN_REVIEW';
+    } else {
+      decision = 'REGENERATE';
+    }
+
+    const reasons: string[] = [];
+
+    if (decision === 'ACCEPT') {
+      reasons.push(
+        'وافق مجلس المراجعة على المحتوى بعد اجتياز جميع النقاد.',
+      );
+    }
+
+    if (decision === 'REGENERATE') {
+      reasons.push(
+        `يلزم إعادة التوليد بسبب فشل: ${failedCritics.join(', ')}.`,
+      );
+    }
+
+    if (decision === 'HUMAN_REVIEW') {
+      reasons.push(
+        !input.safety.passed
+          ? 'تم تحويل المهمة للمراجعة البشرية بسبب فشل السلامة.'
+          : 'تم استنفاد محاولات التوليد دون اجتياز المجلس.',
+      );
+    }
+
+    return {
+      decision,
+      passed: decision === 'ACCEPT',
+      score,
+      confidence,
+      reasons,
+      failedCritics,
+      regenerationRequired:
+        decision === 'REGENERATE',
+      regenerationInstructions,
+      humanReviewRequired:
+        decision === 'HUMAN_REVIEW',
+    };
+  }
+
+  private collectInstructions(
+    critics: Record<
+      string,
+      AiCriticResult
+    >,
+  ): string[] {
+    const instructions =
+      Object.values(critics)
+        .filter(
+          (critic) => !critic.passed,
+        )
+        .flatMap(
+          (critic) =>
+            critic.recommendations,
+        )
+        .map(
+          (instruction) =>
+            instruction.trim(),
+        )
+        .filter(Boolean);
+
+    return [
+      ...new Set(instructions),
+    ];
+  }
+}
+
+
+============================================================
+FILE: C:\Users\User\Desktop\CreatorOS\apps\api\src\enterprise\ai-foundation\ai-review-council.service.ts
+============================================================
+
+import { Injectable } from '@nestjs/common';
+import { AiSemanticCriticService } from './ai-semantic-critic.service';
+import { AiSemanticOriginalityCriticService } from './ai-semantic-originality-critic.service';
+import { AiDomainExpertService } from './ai-domain-expert.service';
+import { AiSafetyCriticService } from './ai-safety-critic.service';
+import { AiJudgeService } from './ai-judge.service';
+
+export interface AiReviewCouncilInput {
+  taskType: string;
+  request: string;
+  content: string;
+  semanticValidation: {
+    passed: boolean;
+    confidence?: number;
+    everyItemSatisfiesCoreRequirement?: boolean;
+    structureValid?: boolean;
+    languageValid?: boolean;
+    missingRequirements?: string[];
+    reasons?: string[];
+  };
+  originalityEvaluation: {
+    passed: boolean;
+    originalityPassed: boolean;
+    safetyPassed: boolean;
+    originalityScore: number;
+    duplicationScore: number;
+    distinctItemCount: number;
+    detectedItemCount: number;
+    genericContentDetected: boolean;
+    duplicatedPairs?: Array<{
+      firstItem: number;
+      secondItem: number;
+      similarity: number;
+    }>;
+    genericItems?: number[];
+    riskFlags?: string[];
+    warnings?: string[];
+    reasons?: string[];
+  };
+  generationAttempt: number;
+  maximumGenerationAttempts: number;
+}
+
+@Injectable()
+export class AiReviewCouncilService {
+  constructor(
+    private readonly semanticCritic:
+      AiSemanticCriticService,
+    private readonly semanticOriginalityCritic:
+      AiSemanticOriginalityCriticService,
+    private readonly domainExpert:
+      AiDomainExpertService,
+    private readonly safetyCritic:
+      AiSafetyCriticService,
+    private readonly judge:
+      AiJudgeService,
+  ) {}
+
+  review(input: AiReviewCouncilInput) {
+    const semantic =
+      this.semanticCritic.review({
+        semanticValidation:
+          input.semanticValidation,
+      });
+
+    const semanticOriginality =
+      this.semanticOriginalityCritic.review({
+        request: input.request,
+        content: input.content,
+        originalityEvaluation:
+          input.originalityEvaluation,
+      });
+
+    const domain =
+      this.domainExpert.review({
+        taskType: input.taskType,
+        request: input.request,
+        content: input.content,
+      });
+
+    const safety =
+      this.safetyCritic.review({
+        originalityEvaluation:
+          input.originalityEvaluation,
+      });
+
+    const judge =
+      this.judge.decide({
+        semantic,
+        originality:
+          semanticOriginality,
+        domain,
+        safety,
+        generationAttempt:
+          input.generationAttempt,
+        maximumGenerationAttempts:
+          input.maximumGenerationAttempts,
+      });
+
+    return {
+      semantic,
+      semanticOriginality,
+      domain,
+      safety,
+      judge,
+    };
+  }
+}
+

@@ -1,0 +1,36 @@
+﻿import { Module } from '@nestjs/common';
+import { IntelligenceModule } from '../intelligence/intelligence.module';
+import { AiFoundationController } from './ai-foundation.controller';
+import { AiGatewayService } from './ai-gateway.service';
+import { AiQualityGateService } from './ai-quality-gate.service';
+import { AiSemanticValidatorService } from './ai-semantic-validator.service';
+import { ModelRegistryService } from './model-registry.service';
+import { PromptEngineService } from './prompt-engine.service';
+import { TaskRouterService } from './task-router.service';
+import { AiOriginalitySafetyEvaluatorService } from './ai-originality-safety-evaluator.service';
+
+@Module({
+  imports: [IntelligenceModule],
+  controllers: [
+    AiFoundationController,
+  ],
+  providers: [
+    AiOriginalitySafetyEvaluatorService,
+    AiGatewayService,
+    AiQualityGateService,
+    AiSemanticValidatorService,
+    ModelRegistryService,
+    PromptEngineService,
+    TaskRouterService,
+  ],
+  exports: [
+    AiGatewayService,
+    AiQualityGateService,
+    AiSemanticValidatorService,
+    ModelRegistryService,
+    PromptEngineService,
+    TaskRouterService,
+  ],
+})
+export class AiFoundationModule {}
+

@@ -1,0 +1,55 @@
+name: CreatorOS V1 Completion
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: creatoros
+          POSTGRES_PASSWORD: creatoros_dev_password
+          POSTGRES_DB: creatoros
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd="pg_isready -U creatoros -d creatoros"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://creatoros:creatoros_dev_password@localhost:55432/creatoros?schema=public
+      REDIS_URL: redis://localhost:6379
+      JWT_SECRET: test-secret-with-at-least-32-characters
+      CREATOROS_ADMIN_USERNAME: admin
+      CREATOROS_ADMIN_PASSWORD: test-password-123456
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @creatoros/api exec prisma generate
+      - run: pnpm --filter @creatoros/api exec prisma migrate deploy
+      - run: pnpm --filter @creatoros/api typecheck
+      - run: pnpm --filter @creatoros/api test -- --runInBand
+      - run: pnpm --filter @creatoros/api build

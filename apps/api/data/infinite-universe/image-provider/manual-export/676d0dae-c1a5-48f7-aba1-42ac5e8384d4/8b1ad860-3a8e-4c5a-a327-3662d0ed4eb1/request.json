@@ -1,0 +1,24 @@
+{
+  "requestId": "8b1ad860-3a8e-4c5a-a327-3662d0ed4eb1",
+  "worldId": "676d0dae-c1a5-48f7-aba1-42ac5e8384d4",
+  "bibleId": "e35d3e67-c449-494d-a0fa-c3986cd06da6",
+  "storyboardId": "e8cebfa9-ceec-40f0-a1cd-836d7028ba3e",
+  "providerId": "manual-export",
+  "category": "prop-reference",
+  "sourceEntityId": "a78411f9-7067-4e0d-869e-8949ec69ece0",
+  "sourceEntityName": "الحقيبة النباتية",
+  "prompt": "رسوم متحركة سينمائية ثلاثية الأبعاد بألوان دافئة وشخصيات أصلية. visual accessory reference sheet for الحقيبة النباتية. مالك العنصر نُور. المادة قماش متين مع أجزاء معدنية خفيفة.. المقياس بعرض يقارب ثلث عرض جسم الشخصية.. الألوان لون أساسي #F2C14E، لون ثانوي #6FAE63. front view. side view. three-quarter view. white studio background. same exact design in all views. no text",
+  "negativePrompt": "تغير الشكل، اختلاف اللون، اختلاف الحجم، أجزاء إضافية، تشوه، تحويل السلوك إلى جسم مادي، كتابة، شعار، علامة مائية, تغير هوية الشخصية, اختلاف الوجه, تغير العمر, تغير الملابس, اختلاف الألوان, تغير تصفيفة الشعر, اختلاف طول الشخصية, أطراف إضافية, أصابع مشوهة, ازدواج الشخصية, تغير مقياس البيئة, اختلاف العمارة, تغير تصميم الأدوات, كتابة, شعار, علامة مائية, عنف دموي, رعب قاس, أسلوب بصري مختلف",
+  "width": 1024,
+  "height": 1024,
+  "imageCount": 1,
+  "continuityKeys": [
+    "prop-الحقيبة النباتية",
+    "classification-visual-accessory",
+    "owner-a98c1034-11e5-4098-9cc5-b8606b5c517e"
+  ],
+  "metadata": {
+    "ownerCharacterId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+    "ownerCharacterName": "نُور"
+  }
+}

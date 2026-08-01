@@ -1,0 +1,20 @@
+import { StrategicValueAssessmentStageService } from './strategic-value-assessment-stage.service';
+
+describe('StrategicValueAssessmentStageService', () => {
+  it('exports the current service class', () => {
+    expect(StrategicValueAssessmentStageService).toBeDefined();
+    expect(typeof StrategicValueAssessmentStageService).toBe('function');
+  });
+
+  it('exposes a valid service prototype', () => {
+    const prototype = StrategicValueAssessmentStageService.prototype;
+    expect(prototype).toBeDefined();
+    expect(prototype.constructor).toBe(StrategicValueAssessmentStageService);
+
+    const methods = Object.getOwnPropertyNames(prototype)
+      .filter((name) => name !== 'constructor')
+      .filter((name) => typeof Object.getOwnPropertyDescriptor(prototype, name)?.value === 'function');
+
+    expect(Array.isArray(methods)).toBe(true);
+  });
+});

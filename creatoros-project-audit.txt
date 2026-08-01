@@ -1,0 +1,758 @@
+CREATOROS PROJECT AUDIT
+Generated: 2026-07-28 08:57:13
+Root: C:\Users\User\Desktop\CreatorOS
+
+==================== ROOT FILES ====================
+
+Mode   Length LastWriteTime         Name                             
+----   ------ -------------         ----                             
+d-----        7/28/2026 2:03:40 AM  .creatoros-backups               
+d-----        7/28/2026 1:57:11 AM  .github                          
+d-----        7/27/2026 11:20:59 PM apps                             
+d-----        7/27/2026 11:11:39 PM architecture                     
+d-----        7/28/2026 2:30:09 AM  backups                          
+d-----        7/27/2026 11:08:08 PM catalogs                         
+d-----        7/27/2026 11:09:07 PM constitution                     
+d-----        7/28/2026 1:08:36 AM  docs                             
+d-----        7/27/2026 11:08:08 PM governance                       
+d-----        7/27/2026 11:20:59 PM infrastructure                   
+d-----        7/28/2026 2:22:56 AM  node_modules                     
+d-----        7/28/2026 1:08:26 AM  packages                         
+d-----        7/27/2026 11:08:08 PM registry                         
+d-----        7/27/2026 11:08:08 PM roadmap                          
+d-----        7/27/2026 11:08:08 PM scripts                          
+d-----        7/27/2026 11:08:08 PM standards                        
+d-----        7/27/2026 11:20:59 PM tests                            
+d-----        7/27/2026 11:06:20 PM tools                            
+-a---- 327    7/28/2026 2:03:51 AM  .env.creatoros-production.example
+-a---- 412    7/28/2026 1:57:10 AM  .env.creatoros-v1.example        
+-a---- 115    7/27/2026 11:21:30 PM .gitignore                       
+-a---- 166    7/27/2026 11:22:04 PM .npmrc                           
+-a---- 11191  7/28/2026 2:30:07 AM  creatoros-nest-di-root-fix.ps1   
+-a---- 152    7/28/2026 8:57:13 AM  creatoros-project-audit.txt      
+-a---- 520    7/28/2026 1:57:11 AM  docker-compose.creatoros-v1.yml  
+-a---- 543    7/28/2026 1:33:27 AM  docker-compose.persistence.yml   
+-a---- 572    7/28/2026 1:22:23 AM  docker-compose.yml               
+-a---- 703    7/28/2026 12:01:24 AM package.json                     
+-a---- 253888 7/28/2026 2:22:55 AM  pnpm-lock.yaml                   
+-a---- 44     7/27/2026 11:21:30 PM pnpm-workspace.yaml              
+-a---- 1107   7/27/2026 11:22:04 PM tsconfig.base.json               
+
+
+
+==================== DIRECTORY TREE ====================
+
+FullName                                                                                                                        
+--------                                                                                                                        
+C:\Users\User\Desktop\CreatorOS\.creatoros-backups                                                                              
+C:\Users\User\Desktop\CreatorOS\.github                                                                                         
+C:\Users\User\Desktop\CreatorOS\apps                                                                                            
+C:\Users\User\Desktop\CreatorOS\architecture                                                                                    
+C:\Users\User\Desktop\CreatorOS\backups                                                                                         
+C:\Users\User\Desktop\CreatorOS\catalogs                                                                                        
+C:\Users\User\Desktop\CreatorOS\constitution                                                                                    
+C:\Users\User\Desktop\CreatorOS\docs                                                                                            
+C:\Users\User\Desktop\CreatorOS\governance                                                                                      
+C:\Users\User\Desktop\CreatorOS\infrastructure                                                                                  
+C:\Users\User\Desktop\CreatorOS\packages                                                                                        
+C:\Users\User\Desktop\CreatorOS\registry                                                                                        
+C:\Users\User\Desktop\CreatorOS\roadmap                                                                                         
+C:\Users\User\Desktop\CreatorOS\scripts                                                                                         
+C:\Users\User\Desktop\CreatorOS\standards                                                                                       
+C:\Users\User\Desktop\CreatorOS\tests                                                                                           
+C:\Users\User\Desktop\CreatorOS\tools                                                                                           
+C:\Users\User\Desktop\CreatorOS\.creatoros-backups\core-v1-mega-pack-20260728-015656                                            
+C:\Users\User\Desktop\CreatorOS\.creatoros-backups\v1-completion-20260728-020339                                                
+C:\Users\User\Desktop\CreatorOS\.github\workflows                                                                               
+C:\Users\User\Desktop\CreatorOS\apps\api                                                                                        
+C:\Users\User\Desktop\CreatorOS\apps\api\prisma                                                                                 
+C:\Users\User\Desktop\CreatorOS\apps\api\src                                                                                    
+C:\Users\User\Desktop\CreatorOS\apps\api\test                                                                                   
+C:\Users\User\Desktop\CreatorOS\apps\api\prisma\migrations                                                                      
+C:\Users\User\Desktop\CreatorOS\apps\api\prisma\migrations\20260727213629_persistence_foundation                                
+C:\Users\User\Desktop\CreatorOS\apps\api\prisma\migrations\20260727220359_creatoros_v1_completion                               
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated                                                                          
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules                                                                            
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma                                                                   
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\internal                                                          
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models                                                            
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\api-layer                                                                  
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\application                                                                
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\blueprint                                                                  
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\capabilities                                                               
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\config                                                                     
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core                                                                       
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1                                                                    
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion                                                         
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\dependencies                                                               
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\domains                                                                    
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\event-bus                                                                  
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\knowledge                                                                  
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\logging                                                                    
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\messaging                                                                  
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence                                                                
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\platform-status                                                            
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\registry                                                                   
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\runtime                                                                    
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\workflow                                                                   
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\api-layer\controllers                                                      
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\application\services                                                       
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\auth                                                               
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\configuration                                                      
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\errors                                                             
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\integrations                                                       
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\messaging                                                          
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\observability                                                      
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\runtime                                                            
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\idempotency                                             
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\identity                                                
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\metrics                                                 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\outbox                                                  
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\queue                                                   
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\security                                                
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\tokens                                                  
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\identity\dto                                            
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\repositories                                                   
+C:\Users\User\Desktop\CreatorOS\architecture\blueprints                                                                         
+C:\Users\User\Desktop\CreatorOS\architecture\decisions                                                                          
+C:\Users\User\Desktop\CreatorOS\backups\config-fix-20260728-022148                                                              
+C:\Users\User\Desktop\CreatorOS\backups\config-fix-20260728-022252                                                              
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009                                                 
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps                                            
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api                                        
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src                                    
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules                            
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\core-v1                    
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\core-v1-completion         
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\persistence                
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\core-v1\auth               
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\core-v1-completion\identity
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\core-v1-completion\security
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\persistence\repositories   
+C:\Users\User\Desktop\CreatorOS\catalogs\capabilities                                                                           
+C:\Users\User\Desktop\CreatorOS\catalogs\dependencies                                                                           
+C:\Users\User\Desktop\CreatorOS\catalogs\domains                                                                                
+C:\Users\User\Desktop\CreatorOS\docs\00-foundation                                                                              
+C:\Users\User\Desktop\CreatorOS\docs\01-core-platform                                                                           
+C:\Users\User\Desktop\CreatorOS\docs\03-blueprint-engine                                                                        
+C:\Users\User\Desktop\CreatorOS\governance\engineering                                                                          
+C:\Users\User\Desktop\CreatorOS\governance\releases                                                                             
+C:\Users\User\Desktop\CreatorOS\packages\blueprint                                                                              
+C:\Users\User\Desktop\CreatorOS\packages\config                                                                                 
+C:\Users\User\Desktop\CreatorOS\packages\contracts                                                                              
+C:\Users\User\Desktop\CreatorOS\packages\core                                                                                   
+C:\Users\User\Desktop\CreatorOS\packages\events                                                                                 
+C:\Users\User\Desktop\CreatorOS\packages\knowledge                                                                              
+C:\Users\User\Desktop\CreatorOS\packages\logging                                                                                
+C:\Users\User\Desktop\CreatorOS\packages\messaging                                                                              
+C:\Users\User\Desktop\CreatorOS\packages\runtime                                                                                
+C:\Users\User\Desktop\CreatorOS\packages\shared                                                                                 
+C:\Users\User\Desktop\CreatorOS\packages\storage                                                                                
+C:\Users\User\Desktop\CreatorOS\packages\workflow                                                                               
+C:\Users\User\Desktop\CreatorOS\packages\blueprint\src                                                                          
+C:\Users\User\Desktop\CreatorOS\packages\config\src                                                                             
+C:\Users\User\Desktop\CreatorOS\packages\contracts\src                                                                          
+C:\Users\User\Desktop\CreatorOS\packages\core\src                                                                               
+C:\Users\User\Desktop\CreatorOS\packages\events\src                                                                             
+C:\Users\User\Desktop\CreatorOS\packages\knowledge\src                                                                          
+C:\Users\User\Desktop\CreatorOS\packages\logging\src                                                                            
+C:\Users\User\Desktop\CreatorOS\packages\messaging\src                                                                          
+C:\Users\User\Desktop\CreatorOS\packages\runtime\src                                                                            
+C:\Users\User\Desktop\CreatorOS\packages\shared\src                                                                             
+C:\Users\User\Desktop\CreatorOS\packages\storage\src                                                                            
+C:\Users\User\Desktop\CreatorOS\packages\workflow\src                                                                           
+C:\Users\User\Desktop\CreatorOS\registry\components                                                                             
+C:\Users\User\Desktop\CreatorOS\registry\versions                                                                               
+C:\Users\User\Desktop\CreatorOS\roadmap\phases                                                                                  
+C:\Users\User\Desktop\CreatorOS\scripts\validation                                                                              
+C:\Users\User\Desktop\CreatorOS\standards\naming                                                                                
+C:\Users\User\Desktop\CreatorOS\tools\foundation                                                                                
+
+
+
+==================== SOURCE FILES ====================
+
+FullName                                                                                                                                                      Length LastWriteTime        
+--------                                                                                                                                                      ------ -------------        
+C:\Users\User\Desktop\CreatorOS\.creatoros-backups\core-v1-mega-pack-20260728-015656\app.module.ts                                                              1658 7/28/2026 1:47:40 AM 
+C:\Users\User\Desktop\CreatorOS\.creatoros-backups\core-v1-mega-pack-20260728-015656\main.ts                                                                     554 7/27/2026 11:28:41 PM
+C:\Users\User\Desktop\CreatorOS\.creatoros-backups\core-v1-mega-pack-20260728-015656\package.json                                                               1408 7/28/2026 1:28:16 AM 
+C:\Users\User\Desktop\CreatorOS\.creatoros-backups\v1-completion-20260728-020339\app.module.ts                                                                  1761 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\.creatoros-backups\v1-completion-20260728-020339\schema.prisma                                                                  5631 7/28/2026 1:28:20 AM 
+C:\Users\User\Desktop\CreatorOS\.env.creatoros-production.example                                                                                                327 7/28/2026 2:03:51 AM 
+C:\Users\User\Desktop\CreatorOS\.env.creatoros-v1.example                                                                                                        412 7/28/2026 1:57:10 AM 
+C:\Users\User\Desktop\CreatorOS\.github\workflows\creatoros-core-v1.yml                                                                                         1358 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\.github\workflows\creatoros-v1-completion.yml                                                                                   1495 7/28/2026 2:03:51 AM 
+C:\Users\User\Desktop\CreatorOS\.gitignore                                                                                                                       115 7/27/2026 11:21:30 PM
+C:\Users\User\Desktop\CreatorOS\.npmrc                                                                                                                           166 7/27/2026 11:22:04 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\.env                                                                                                                    354 7/28/2026 2:22:57 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\.env.example                                                                                                            104 7/28/2026 1:22:23 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\Dockerfile                                                                                                              724 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\jest.config.cjs                                                                                                         296 7/28/2026 12:21:04 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\package.json                                                                                                           2457 7/28/2026 2:03:49 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\prisma.config.ts                                                                                                        246 7/28/2026 1:28:17 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\prisma\migrations\20260727213629_persistence_foundation\migration.sql                                                  9682 7/28/2026 1:36:29 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\prisma\migrations\20260727220359_creatoros_v1_completion\migration.sql                                                 5026 7/28/2026 2:03:59 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\prisma\migrations\migration_lock.toml                                                                                   128 7/28/2026 2:03:59 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\prisma\schema.prisma                                                                                                   8534 7/28/2026 2:03:55 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\prisma\seed-core-v1.ts                                                                                                 1771 7/28/2026 2:03:51 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\app.controller.ts                                                                                                   572 7/27/2026 11:28:21 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\app.module.ts                                                                                                      1906 7/28/2026 2:03:51 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\browser.ts                                                                                        2586 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\client.ts                                                                                         3449 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\commonInputTypes.ts                                                                              37500 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\enums.ts                                                                                          1116 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\internal\class.ts                                                                                99973 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\internal\prismaNamespace.ts                                                                      96698 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\internal\prismaNamespaceBrowser.ts                                                               11806 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models.ts                                                                                         1249 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\Agent.ts                                                                                  59360 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\ApprovalGate.ts                                                                           58788 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\AuditLog.ts                                                                               44056 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\Blueprint.ts                                                                              66261 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\BlueprintVersion.ts                                                                       57481 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\Capability.ts                                                                             47030 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\CreatorIdempotencyKey.ts                                                                  51260 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\CreatorJobRun.ts                                                                          43169 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\CreatorOutboxEvent.ts                                                                     50632 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\CreatorPermission.ts                                                                      50395 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\CreatorRefreshToken.ts                                                                    57228 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\CreatorRole.ts                                                                            55398 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\CreatorRolePermission.ts                                                                  61005 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\CreatorUser.ts                                                                            57203 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\CreatorUserRole.ts                                                                        57989 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\ExecutionPlan.ts                                                                          60702 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\Integration.ts                                                                            45261 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\KnowledgeEdge.ts                                                                          63800 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\KnowledgeNode.ts                                                                          60758 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\OrganizationUnit.ts                                                                       55882 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\generated\prisma\models\RuntimePlugin.ts                                                                          46344 7/28/2026 8:47:07 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\main.ts                                                                                                            2403 7/28/2026 2:30:09 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\api-layer\api-layer.module.ts                                                                               767 7/28/2026 1:47:39 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\api-layer\controllers\agent.controller.ts                                                                   917 7/28/2026 1:47:38 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\api-layer\controllers\approval.controller.ts                                                                940 7/28/2026 1:47:38 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\api-layer\controllers\audit.controller.ts                                                                   709 7/28/2026 1:47:38 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\api-layer\controllers\blueprint.controller.ts                                                              1308 7/28/2026 1:47:38 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\api-layer\controllers\capability.controller.spec.ts                                                        1996 7/28/2026 1:47:39 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\api-layer\controllers\capability.controller.ts                                                             1016 7/28/2026 1:47:38 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\api-layer\controllers\execution-plan.controller.ts                                                          966 7/28/2026 1:47:38 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\api-layer\controllers\index.ts                                                                              406 7/28/2026 1:47:39 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\api-layer\controllers\integration.controller.ts                                                             953 7/28/2026 1:47:38 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\api-layer\controllers\knowledge.controller.ts                                                              1712 7/28/2026 1:47:39 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\api-layer\controllers\organization.controller.ts                                                           1084 7/28/2026 1:47:39 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\api-layer\controllers\runtime-plugin.controller.ts                                                          966 7/28/2026 1:47:39 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\application\application-services.module.ts                                                                 1033 7/28/2026 1:42:39 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\application\services\agent-application.service.ts                                                           873 7/28/2026 1:42:38 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\application\services\approval-application.service.ts                                                        939 7/28/2026 1:42:38 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\application\services\audit-application.service.ts                                                           757 7/28/2026 1:42:38 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\application\services\blueprint-application.service.ts                                                      1169 7/28/2026 1:42:38 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\application\services\capability-application.service.spec.ts                                                1918 7/28/2026 1:42:39 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\application\services\capability-application.service.ts                                                     1082 7/28/2026 1:42:38 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\application\services\execution-plan-application.service.ts                                                  922 7/28/2026 1:42:39 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\application\services\index.ts                                                                               496 7/28/2026 1:42:39 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\application\services\integration-application.service.ts                                                     957 7/28/2026 1:42:39 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\application\services\knowledge-application.service.spec.ts                                                 1215 7/28/2026 1:44:01 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\application\services\knowledge-application.service.ts                                                      1458 7/28/2026 1:42:38 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\application\services\organization-application.service.ts                                                    961 7/28/2026 1:42:38 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\application\services\runtime-plugin-application.service.ts                                                  936 7/28/2026 1:42:39 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\blueprint\blueprint.controller.ts                                                                          5388 7/28/2026 1:08:34 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\blueprint\blueprint.module.ts                                                                               338 7/28/2026 1:08:34 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\blueprint\blueprint.service.spec.ts                                                                        4412 7/28/2026 1:08:36 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\blueprint\blueprint.service.ts                                                                             2634 7/28/2026 1:08:34 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\capabilities\capability.controller.ts                                                                       621 7/27/2026 11:39:59 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\capabilities\capability.module.ts                                                                           319 7/27/2026 11:40:10 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\capabilities\capability.service.ts                                                                         2253 7/28/2026 1:08:35 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\config\config.controller.ts                                                                                 306 7/27/2026 11:32:57 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\config\config.module.ts                                                                                     287 7/27/2026 11:32:58 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\config\config.service.ts                                                                                    451 7/27/2026 11:32:57 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core\core.controller.ts                                                                                     292 7/27/2026 11:37:55 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core\core.module.ts                                                                                         441 7/27/2026 11:38:07 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core\core.service.ts                                                                                        959 7/27/2026 11:37:45 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\auth\auth.controller.ts                                                                             637 7/28/2026 2:30:09 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\auth\auth.module.ts                                                                                1077 7/28/2026 1:59:02 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\auth\auth.service.spec.ts                                                                          1026 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\auth\auth.service.ts                                                                               1200 7/28/2026 2:30:09 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\auth\auth-user.ts                                                                                   117 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\auth\jwt-auth.guard.ts                                                                             1324 7/28/2026 2:30:09 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\auth\login.dto.ts                                                                                   184 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\auth\public.decorator.ts                                                                            157 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\auth\roles.decorator.ts                                                                             204 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\auth\roles.guard.ts                                                                                 966 7/28/2026 2:30:09 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\auth\roles.ts                                                                                        85 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\configuration\configuration.module.ts                                                               365 7/28/2026 1:57:10 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\configuration\environment.ts                                                                        885 7/28/2026 1:57:10 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\core-v1.module.ts                                                                                   963 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\errors\api-error.filter.ts                                                                         1002 7/28/2026 1:57:10 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\errors\request-id.interceptor.ts                                                                    928 7/28/2026 1:57:10 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\integrations\integration-layer.module.ts                                                            412 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\integrations\integration-registry.controller.ts                                                     696 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\integrations\integration-registry.service.ts                                                        598 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\messaging\domain-event.publisher.ts                                                                 600 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\messaging\messaging.module.ts                                                                       330 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\observability\health.controller.ts                                                                  523 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\observability\observability.module.ts                                                               528 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\runtime\heartbeat.job.ts                                                                            329 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1\runtime\runtime.module.ts                                                                           474 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\core-v1-completion.module.ts                                                            1187 7/28/2026 2:03:51 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\idempotency\idempotency.service.spec.ts                                                  299 7/28/2026 2:03:51 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\idempotency\idempotency.service.ts                                                      1178 7/28/2026 2:07:51 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\identity\dto\assign-role.dto.ts                                                          136 7/28/2026 2:03:50 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\identity\dto\create-user.dto.ts                                                          300 7/28/2026 2:03:50 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\identity\dto\refresh-token.dto.ts                                                        144 7/28/2026 2:03:50 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\identity\identity.controller.ts                                                         1089 7/28/2026 2:03:50 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\identity\identity.service.spec.ts                                                        806 7/28/2026 2:03:51 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\identity\identity.service.ts                                                            2196 7/28/2026 2:30:09 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\metrics\metrics.controller.ts                                                            424 7/28/2026 2:03:51 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\metrics\metrics.service.ts                                                               838 7/28/2026 2:03:51 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\outbox\outbox.service.ts                                                                 875 7/28/2026 2:07:51 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\outbox\outbox-publisher.job.ts                                                           964 7/28/2026 2:03:50 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\queue\queue.constants.ts                                                                  48 7/28/2026 2:03:51 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\queue\queue.service.ts                                                                   904 7/28/2026 2:03:51 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\security\completion-security.module.ts                                                   588 7/28/2026 2:03:51 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\security\permissions.decorator.ts                                                        265 7/28/2026 2:03:50 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\security\permissions.guard.ts                                                           1029 7/28/2026 2:30:09 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\security\permissions.ts                                                                  259 7/28/2026 2:03:50 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\security\security-headers.middleware.ts                                                  436 7/28/2026 2:03:50 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\core-v1-completion\tokens\refresh-token.service.ts                                                         1819 7/28/2026 2:07:51 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\dependencies\dependency.controller.ts                                                                       621 7/27/2026 11:48:34 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\dependencies\dependency.module.ts                                                                           319 7/27/2026 11:48:42 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\dependencies\dependency.service.ts                                                                         4312 7/28/2026 1:08:35 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\domains\domain.controller.ts                                                                                572 7/27/2026 11:42:59 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\domains\domain.module.ts                                                                                    287 7/27/2026 11:43:08 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\domains\domain.service.ts                                                                                  1679 7/28/2026 12:47:17 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\event-bus\event-bus.controller.spec.ts                                                                      970 7/28/2026 12:21:59 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\event-bus\event-bus.controller.ts                                                                           919 7/28/2026 12:17:57 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\event-bus\event-bus.module.ts                                                                               305 7/28/2026 12:04:13 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\event-bus\event-bus.service.spec.ts                                                                        1028 7/28/2026 12:18:57 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\event-bus\event-bus.service.ts                                                                             1725 7/28/2026 12:15:52 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\knowledge\knowledge.controller.ts                                                                          2908 7/28/2026 12:29:20 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\knowledge\knowledge.module.ts                                                                               311 7/28/2026 12:29:20 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\knowledge\knowledge.service.spec.ts                                                                        2648 7/28/2026 12:29:21 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\knowledge\knowledge.service.ts                                                                             1694 7/28/2026 12:29:19 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\logging\logging.controller.ts                                                                               421 7/27/2026 11:35:41 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\logging\logging.module.ts                                                                                   313 7/27/2026 11:35:51 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\logging\logging.service.ts                                                                                  752 7/27/2026 11:35:30 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\messaging\messaging.controller.ts                                                                          4374 7/28/2026 12:47:17 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\messaging\messaging.module.ts                                                                               311 7/28/2026 12:47:17 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\messaging\messaging.service.spec.ts                                                                        3303 7/28/2026 12:47:18 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\messaging\messaging.service.ts                                                                             2314 7/28/2026 12:47:17 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\index.ts                                                                                        115 7/28/2026 1:22:23 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\persistence.controller.ts                                                                       361 7/28/2026 1:22:23 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\persistence.module.ts                                                                           460 7/28/2026 1:22:23 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\persistence.service.spec.ts                                                                    1021 7/28/2026 1:22:23 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\persistence.service.ts                                                                          702 7/28/2026 2:26:18 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\persistence-repositories.module.ts                                                              943 7/28/2026 1:39:13 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\prisma.service.ts                                                                               914 7/28/2026 1:29:56 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\repositories\agent.repository.ts                                                               1155 7/28/2026 2:30:09 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\repositories\approval-gate.repository.ts                                                       1246 7/28/2026 2:30:09 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\repositories\audit-log.repository.ts                                                           1194 7/28/2026 2:30:09 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\repositories\blueprint.repository.ts                                                           1207 7/28/2026 2:30:09 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\repositories\blueprint-version.repository.ts                                                   1298 7/28/2026 2:30:09 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\repositories\capability.repository.spec.ts                                                     2165 7/28/2026 1:39:13 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\repositories\capability.repository.ts                                                          1220 7/28/2026 2:30:09 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\repositories\execution-plan.repository.ts                                                      1259 7/28/2026 2:30:09 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\repositories\index.ts                                                                           518 7/28/2026 1:39:12 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\repositories\integration.repository.ts                                                         1233 7/28/2026 2:30:09 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\repositories\knowledge-edge.repository.ts                                                      1259 7/28/2026 2:30:09 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\repositories\knowledge-node.repository.ts                                                      1259 7/28/2026 2:30:09 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\repositories\organization-unit.repository.ts                                                   1298 7/28/2026 2:30:09 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\persistence\repositories\runtime-plugin.repository.ts                                                      1259 7/28/2026 2:30:09 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\platform-status\platform-status.controller.ts                                                               366 7/27/2026 11:52:34 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\platform-status\platform-status.module.ts                                                                   986 7/28/2026 1:08:35 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\platform-status\platform-status.service.ts                                                                 1860 7/28/2026 1:08:35 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\registry\registry.controller.ts                                                                             332 7/27/2026 11:45:31 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\registry\registry.module.ts                                                                                 580 7/27/2026 11:50:32 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\registry\registry.service.ts                                                                               1194 7/27/2026 11:50:24 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\runtime\runtime.controller.ts                                                                              5325 7/28/2026 12:58:56 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\runtime\runtime.module.ts                                                                                   322 7/28/2026 12:58:57 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\runtime\runtime.service.spec.ts                                                                            3109 7/28/2026 1:14:04 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\runtime\runtime.service.ts                                                                                 8959 7/28/2026 1:12:29 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\workflow\workflow.controller.ts                                                                            4509 7/28/2026 12:38:55 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\workflow\workflow.module.ts                                                                                 303 7/28/2026 12:38:55 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\workflow\workflow.service.spec.ts                                                                          3790 7/28/2026 12:38:56 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\src\modules\workflow\workflow.service.ts                                                                               1917 7/28/2026 12:38:55 AM
+C:\Users\User\Desktop\CreatorOS\apps\api\test\core-v1.e2e-spec.ts                                                                                               1046 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\apps\api\tsconfig.json                                                                                                           308 7/27/2026 11:27:19 PM
+C:\Users\User\Desktop\CreatorOS\apps\api\tsconfig.tsbuildinfo                                                                                                 369930 7/28/2026 2:30:19 AM 
+C:\Users\User\Desktop\CreatorOS\architecture\MASTER-BLUEPRINT.md                                                                                                4889 7/27/2026 11:11:39 PM
+C:\Users\User\Desktop\CreatorOS\backups\config-fix-20260728-022148\.env                                                                                          101 7/28/2026 1:33:27 AM 
+C:\Users\User\Desktop\CreatorOS\backups\config-fix-20260728-022148\main.ts                                                                                      1743 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\backups\config-fix-20260728-022252\.env                                                                                          354 7/28/2026 2:21:53 AM 
+C:\Users\User\Desktop\CreatorOS\backups\config-fix-20260728-022252\main.ts                                                                                      2383 7/28/2026 2:21:54 AM 
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\main.ts                                                            2384 7/28/2026 2:22:57 AM 
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\core-v1\auth\auth.controller.ts                             642 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\core-v1\auth\auth.service.ts                               1205 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\core-v1\auth\jwt-auth.guard.ts                             1329 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\core-v1\auth\roles.guard.ts                                 976 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\core-v1-completion\identity\identity.service.ts            2201 7/28/2026 2:07:51 AM 
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\core-v1-completion\security\permissions.guard.ts           1034 7/28/2026 2:03:50 AM 
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\persistence\repositories\agent.repository.ts               1160 7/28/2026 1:39:12 AM 
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\persistence\repositories\approval-gate.repository.ts       1251 7/28/2026 1:39:12 AM 
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\persistence\repositories\audit-log.repository.ts           1199 7/28/2026 1:39:12 AM 
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\persistence\repositories\blueprint.repository.ts           1212 7/28/2026 1:39:12 AM 
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\persistence\repositories\blueprint-version.repository.ts   1303 7/28/2026 1:39:12 AM 
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\persistence\repositories\capability.repository.ts          1225 7/28/2026 1:39:12 AM 
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\persistence\repositories\execution-plan.repository.ts      1264 7/28/2026 1:39:12 AM 
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\persistence\repositories\integration.repository.ts         1238 7/28/2026 1:39:12 AM 
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\persistence\repositories\knowledge-edge.repository.ts      1264 7/28/2026 1:39:12 AM 
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\persistence\repositories\knowledge-node.repository.ts      1264 7/28/2026 1:39:12 AM 
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\persistence\repositories\organization-unit.repository.ts   1303 7/28/2026 1:39:12 AM 
+C:\Users\User\Desktop\CreatorOS\backups\persistence-di-root-fix-20260728-023009\apps\api\src\modules\persistence\repositories\runtime-plugin.repository.ts      1264 7/28/2026 1:39:12 AM 
+C:\Users\User\Desktop\CreatorOS\catalogs\capabilities\CAPABILITY-CATALOG.md                                                                                     3553 7/27/2026 11:15:43 PM
+C:\Users\User\Desktop\CreatorOS\catalogs\dependencies\DEPENDENCY-CATALOG.md                                                                                     4232 7/27/2026 11:16:37 PM
+C:\Users\User\Desktop\CreatorOS\catalogs\domains\DOMAIN-CATALOG.md                                                                                              3906 7/27/2026 11:14:13 PM
+C:\Users\User\Desktop\CreatorOS\constitution\AVOS-CONSTITUTION.md                                                                                               2330 7/27/2026 11:09:07 PM
+C:\Users\User\Desktop\CreatorOS\creatoros-nest-di-root-fix.ps1                                                                                                 11191 7/28/2026 2:30:07 AM 
+C:\Users\User\Desktop\CreatorOS\creatoros-project-audit.txt                                                                                                    18875 7/28/2026 8:57:14 AM 
+C:\Users\User\Desktop\CreatorOS\docker-compose.creatoros-v1.yml                                                                                                  520 7/28/2026 1:57:11 AM 
+C:\Users\User\Desktop\CreatorOS\docker-compose.persistence.yml                                                                                                   543 7/28/2026 1:33:27 AM 
+C:\Users\User\Desktop\CreatorOS\docker-compose.yml                                                                                                               572 7/28/2026 1:22:23 AM 
+C:\Users\User\Desktop\CreatorOS\docs\00-foundation\PHASE-0-STATUS.md                                                                                            1368 7/27/2026 11:19:49 PM
+C:\Users\User\Desktop\CreatorOS\docs\00-foundation\VISION.md                                                                                                    1907 7/27/2026 11:10:30 PM
+C:\Users\User\Desktop\CreatorOS\docs\01-core-platform\PHASE-1-STATUS.md                                                                                         2260 7/28/2026 12:58:58 AM
+C:\Users\User\Desktop\CreatorOS\docs\03-blueprint-engine\PHASE-3-STATUS.md                                                                                      1560 7/28/2026 1:08:36 AM 
+C:\Users\User\Desktop\CreatorOS\governance\engineering\ENGINEERING-GOVERNANCE.md                                                                                2525 7/27/2026 11:12:28 PM
+C:\Users\User\Desktop\CreatorOS\package.json                                                                                                                     703 7/28/2026 12:01:24 AM
+C:\Users\User\Desktop\CreatorOS\packages\blueprint\package.json                                                                                                  353 7/28/2026 1:08:27 AM 
+C:\Users\User\Desktop\CreatorOS\packages\blueprint\src\index.ts                                                                                                28674 7/28/2026 1:08:28 AM 
+C:\Users\User\Desktop\CreatorOS\packages\blueprint\tsconfig.json                                                                                                 291 7/28/2026 1:08:27 AM 
+C:\Users\User\Desktop\CreatorOS\packages\blueprint\tsconfig.tsbuildinfo                                                                                        37183 7/28/2026 1:08:34 AM 
+C:\Users\User\Desktop\CreatorOS\packages\config\package.json                                                                                                     300 7/27/2026 11:25:34 PM
+C:\Users\User\Desktop\CreatorOS\packages\config\src\index.ts                                                                                                     179 7/27/2026 11:22:53 PM
+C:\Users\User\Desktop\CreatorOS\packages\config\tsconfig.json                                                                                                    256 7/27/2026 11:22:53 PM
+C:\Users\User\Desktop\CreatorOS\packages\config\tsconfig.tsbuildinfo                                                                                           37161 7/28/2026 12:23:41 AM
+C:\Users\User\Desktop\CreatorOS\packages\contracts\package.json                                                                                                  303 7/27/2026 11:25:34 PM
+C:\Users\User\Desktop\CreatorOS\packages\contracts\src\index.ts                                                                                                 1173 7/27/2026 11:56:37 PM
+C:\Users\User\Desktop\CreatorOS\packages\contracts\tsconfig.json                                                                                                 233 7/28/2026 12:01:04 AM
+C:\Users\User\Desktop\CreatorOS\packages\contracts\tsconfig.tsbuildinfo                                                                                        37161 7/28/2026 12:01:31 AM
+C:\Users\User\Desktop\CreatorOS\packages\core\package.json                                                                                                       298 7/27/2026 11:25:34 PM
+C:\Users\User\Desktop\CreatorOS\packages\core\src\index.ts                                                                                                       173 7/27/2026 11:22:53 PM
+C:\Users\User\Desktop\CreatorOS\packages\core\tsconfig.json                                                                                                      256 7/27/2026 11:22:53 PM
+C:\Users\User\Desktop\CreatorOS\packages\core\tsconfig.tsbuildinfo                                                                                             37161 7/28/2026 12:23:41 AM
+C:\Users\User\Desktop\CreatorOS\packages\events\package.json                                                                                                     363 7/27/2026 11:57:33 PM
+C:\Users\User\Desktop\CreatorOS\packages\events\src\index.ts                                                                                                    1316 7/28/2026 12:00:46 AM
+C:\Users\User\Desktop\CreatorOS\packages\events\tsconfig.json                                                                                                    332 7/28/2026 12:01:15 AM
+C:\Users\User\Desktop\CreatorOS\packages\events\tsconfig.tsbuildinfo                                                                                           37295 7/28/2026 12:02:50 AM
+C:\Users\User\Desktop\CreatorOS\packages\knowledge\package.json                                                                                                  353 7/28/2026 12:29:14 AM
+C:\Users\User\Desktop\CreatorOS\packages\knowledge\src\index.ts                                                                                                 7312 7/28/2026 12:29:15 AM
+C:\Users\User\Desktop\CreatorOS\packages\knowledge\tsconfig.json                                                                                                 291 7/28/2026 12:29:15 AM
+C:\Users\User\Desktop\CreatorOS\packages\knowledge\tsconfig.tsbuildinfo                                                                                        37183 7/28/2026 12:29:19 AM
+C:\Users\User\Desktop\CreatorOS\packages\logging\package.json                                                                                                    301 7/27/2026 11:25:34 PM
+C:\Users\User\Desktop\CreatorOS\packages\logging\src\index.ts                                                                                                    182 7/27/2026 11:22:53 PM
+C:\Users\User\Desktop\CreatorOS\packages\logging\tsconfig.json                                                                                                   256 7/27/2026 11:22:53 PM
+C:\Users\User\Desktop\CreatorOS\packages\logging\tsconfig.tsbuildinfo                                                                                          37161 7/28/2026 12:23:41 AM
+C:\Users\User\Desktop\CreatorOS\packages\messaging\package.json                                                                                                  353 7/28/2026 12:47:10 AM
+C:\Users\User\Desktop\CreatorOS\packages\messaging\src\index.ts                                                                                                13659 7/28/2026 12:47:11 AM
+C:\Users\User\Desktop\CreatorOS\packages\messaging\tsconfig.json                                                                                                 291 7/28/2026 12:47:10 AM
+C:\Users\User\Desktop\CreatorOS\packages\messaging\tsconfig.tsbuildinfo                                                                                        37183 7/28/2026 12:47:16 AM
+C:\Users\User\Desktop\CreatorOS\packages\runtime\package.json                                                                                                    351 7/28/2026 12:58:49 AM
+C:\Users\User\Desktop\CreatorOS\packages\runtime\src\index.ts                                                                                                  26855 7/28/2026 12:58:50 AM
+C:\Users\User\Desktop\CreatorOS\packages\runtime\tsconfig.json                                                                                                   291 7/28/2026 12:58:49 AM
+C:\Users\User\Desktop\CreatorOS\packages\runtime\tsconfig.tsbuildinfo                                                                                          37183 7/28/2026 12:58:56 AM
+C:\Users\User\Desktop\CreatorOS\packages\shared\package.json                                                                                                     300 7/27/2026 11:25:34 PM
+C:\Users\User\Desktop\CreatorOS\packages\shared\src\index.ts                                                                                                     179 7/27/2026 11:22:53 PM
+C:\Users\User\Desktop\CreatorOS\packages\shared\tsconfig.json                                                                                                    256 7/27/2026 11:22:53 PM
+C:\Users\User\Desktop\CreatorOS\packages\shared\tsconfig.tsbuildinfo                                                                                           37161 7/28/2026 12:23:42 AM
+C:\Users\User\Desktop\CreatorOS\packages\storage\package.json                                                                                                    301 7/27/2026 11:25:34 PM
+C:\Users\User\Desktop\CreatorOS\packages\storage\src\index.ts                                                                                                    182 7/27/2026 11:22:53 PM
+C:\Users\User\Desktop\CreatorOS\packages\storage\tsconfig.json                                                                                                   256 7/27/2026 11:22:53 PM
+C:\Users\User\Desktop\CreatorOS\packages\storage\tsconfig.tsbuildinfo                                                                                          37161 7/28/2026 12:23:42 AM
+C:\Users\User\Desktop\CreatorOS\packages\workflow\package.json                                                                                                   352 7/28/2026 12:38:48 AM
+C:\Users\User\Desktop\CreatorOS\packages\workflow\src\index.ts                                                                                                 11474 7/28/2026 12:38:49 AM
+C:\Users\User\Desktop\CreatorOS\packages\workflow\tsconfig.json                                                                                                  291 7/28/2026 12:38:49 AM
+C:\Users\User\Desktop\CreatorOS\packages\workflow\tsconfig.tsbuildinfo                                                                                         37183 7/28/2026 12:38:55 AM
+C:\Users\User\Desktop\CreatorOS\pnpm-lock.yaml                                                                                                                253888 7/28/2026 2:22:55 AM 
+C:\Users\User\Desktop\CreatorOS\pnpm-workspace.yaml                                                                                                               44 7/27/2026 11:21:30 PM
+C:\Users\User\Desktop\CreatorOS\registry\components\COMPONENT-REGISTRY.md                                                                                       3426 7/27/2026 11:17:20 PM
+C:\Users\User\Desktop\CreatorOS\registry\versions\VERSION-REGISTRY.md                                                                                           3257 7/27/2026 11:18:02 PM
+C:\Users\User\Desktop\CreatorOS\roadmap\phases\IMPLEMENTATION-ROADMAP.md                                                                                        3524 7/27/2026 11:18:48 PM
+C:\Users\User\Desktop\CreatorOS\scripts\validation\validate-foundation.ps1                                                                                      1507 7/27/2026 11:19:17 PM
+C:\Users\User\Desktop\CreatorOS\standards\naming\NAMING-STANDARD.md                                                                                             2561 7/27/2026 11:13:19 PM
+C:\Users\User\Desktop\CreatorOS\tsconfig.base.json                                                                                                              1107 7/27/2026 11:22:04 PM
+
+
+
+==================== POSSIBLE TEMPORARY FILES ====================
+
+FullName                                                                                                                                                        Length LastWriteTime        
+--------                                                                                                                                                        ------ -------------        
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@babel+types@7.29.7\node_modules\@babel\types\lib\modifications\flow\removeTypeDuplicates.js                   1869 7/28/2026 12:19:47 AM
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@babel+types@7.29.7\node_modules\@babel\types\lib\modifications\flow\removeTypeDuplicates.js.map               5013 7/28/2026 12:19:47 AM
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@babel+types@7.29.7\node_modules\@babel\types\lib\modifications\typescript\removeTypeDuplicates.js             2006 7/28/2026 12:19:47 AM
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@babel+types@7.29.7\node_modules\@babel\types\lib\modifications\typescript\removeTypeDuplicates.js.map         5472 7/28/2026 12:19:47 AM
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@nestjs+cli@11.0.24_@types+node@22.20.1\node_modules\@nestjs\cli\lib\compiler\helpers\copy-path-resolve.d.ts    311 7/27/2026 11:25:55 PM
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@nestjs+cli@11.0.24_@types+node@22.20.1\node_modules\@nestjs\cli\lib\compiler\helpers\copy-path-resolve.js      827 7/27/2026 11:25:55 PM
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@sinonjs+commons@3.0.1\node_modules\@sinonjs\commons\lib\prototypes\copy-prototype-methods.js                  1010 7/28/2026 12:19:48 AM
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@sinonjs+commons@3.0.1\node_modules\@sinonjs\commons\lib\prototypes\copy-prototype-methods.test.js              341 7/28/2026 12:19:48 AM
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@sinonjs+commons@3.0.1\node_modules\@sinonjs\commons\types\prototypes\copy-prototype-methods.d.ts                67 7/28/2026 12:19:48 AM
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\bullmq@5.81.2\node_modules\bullmq\dist\cjs\commands\includes\deduplicateJob.lua                                3272 7/28/2026 2:03:44 AM 
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\bullmq@5.81.2\node_modules\bullmq\dist\cjs\commands\includes\deduplicateJobWithoutReplace.lua                  3231 7/28/2026 2:03:44 AM 
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\bullmq@5.81.2\node_modules\bullmq\dist\cjs\commands\includes\handleDuplicatedJob.lua                            879 7/28/2026 2:03:44 AM 
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\bullmq@5.81.2\node_modules\bullmq\dist\cjs\commands\includes\requeueDeduplicatedJob.lua                        2588 7/28/2026 2:03:44 AM 
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\bullmq@5.81.2\node_modules\bullmq\dist\cjs\commands\includes\storeDeduplicatedNextJob.lua                      2500 7/28/2026 2:03:44 AM 
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\bullmq@5.81.2\node_modules\bullmq\dist\esm\commands\includes\deduplicateJob.lua                                3272 7/28/2026 2:03:44 AM 
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\bullmq@5.81.2\node_modules\bullmq\dist\esm\commands\includes\deduplicateJobWithoutReplace.lua                  3231 7/28/2026 2:03:44 AM 
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\bullmq@5.81.2\node_modules\bullmq\dist\esm\commands\includes\handleDuplicatedJob.lua                            879 7/28/2026 2:03:44 AM 
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\bullmq@5.81.2\node_modules\bullmq\dist\esm\commands\includes\requeueDeduplicatedJob.lua                        2588 7/28/2026 2:03:44 AM 
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\bullmq@5.81.2\node_modules\bullmq\dist\esm\commands\includes\storeDeduplicatedNextJob.lua                      2500 7/28/2026 2:03:44 AM 
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\fs-extra@10.1.0\node_modules\fs-extra\lib\copy\copy-sync.js                                                    5776 7/27/2026 11:25:57 PM
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\fs-extra@10.1.0\node_modules\fs-extra\lib\copy\copy.js                                                         7756 7/27/2026 11:25:57 PM
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\lodash@4.18.1\node_modules\lodash\_copyArray.js                                                                 454 7/27/2026 11:25:56 PM
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\lodash@4.18.1\node_modules\lodash\_copyObject.js                                                               1044 7/27/2026 11:25:56 PM
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\lodash@4.18.1\node_modules\lodash\_copySymbols.js                                                               446 7/27/2026 11:25:56 PM
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\lodash@4.18.1\node_modules\lodash\_copySymbolsIn.js                                                             470 7/27/2026 11:25:56 PM
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\reflect-metadata@0.2.2\node_modules\reflect-metadata\CopyrightNotice.txt                                        834 7/27/2026 11:25:54 PM
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\tslib@2.8.1\node_modules\tslib\CopyrightNotice.txt                                                              822 7/27/2026 11:25:55 PM
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\webpack@5.106.2\node_modules\webpack\lib\optimize\MergeDuplicateChunksPlugin.js                                4532 7/27/2026 11:25:56 PM
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\webpack@5.106.2\node_modules\webpack\schemas\plugins\optimize\MergeDuplicateChunksPlugin.check.d.ts             281 7/27/2026 11:25:56 PM
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\webpack@5.106.2\node_modules\webpack\schemas\plugins\optimize\MergeDuplicateChunksPlugin.check.js               559 7/27/2026 11:25:56 PM
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\webpack@5.106.2\node_modules\webpack\schemas\plugins\optimize\MergeDuplicateChunksPlugin.json                   245 7/27/2026 11:25:56 PM
+
+
+
+==================== GENERATED DIRECTORIES ====================
+
+FullName                                                                                                                                                                
+--------                                                                                                                                                                
+C:\Users\User\Desktop\CreatorOS\apps\api\dist                                                                                                                           
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@bcoe+v8-coverage@0.2.3\node_modules\@bcoe\v8-coverage\dist                                                          
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@cacheable+utils@2.5.0\node_modules\@cacheable\utils\dist                                                            
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@electric-sql+pglite-socket@0.1.3_@electric-sql+pglite@0.4.3\node_modules\@electric-sql\pglite-socket\dist           
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@electric-sql+pglite-tools@0.3.3_@electric-sql+pglite@0.4.3\node_modules\@electric-sql\pglite-tools\dist             
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@electric-sql+pglite@0.4.3\node_modules\@electric-sql\pglite\dist                                                    
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@inquirer+ansi@1.0.2\node_modules\@inquirer\ansi\dist                                                                
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@inquirer+checkbox@4.3.2_@types+node@22.20.1\node_modules\@inquirer\checkbox\dist                                    
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@inquirer+confirm@5.1.21_@types+node@22.20.1\node_modules\@inquirer\confirm\dist                                     
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@inquirer+core@10.3.2_@types+node@22.20.1\node_modules\@inquirer\core\dist                                           
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@inquirer+editor@4.2.23_@types+node@22.20.1\node_modules\@inquirer\editor\dist                                       
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@inquirer+expand@4.0.23_@types+node@22.20.1\node_modules\@inquirer\expand\dist                                       
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@inquirer+external-editor@1.0.3_@types+node@22.20.1\node_modules\@inquirer\external-editor\dist                      
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@inquirer+figures@1.0.15\node_modules\@inquirer\figures\dist                                                         
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@inquirer+input@4.3.1_@types+node@22.20.1\node_modules\@inquirer\input\dist                                          
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@inquirer+number@3.0.23_@types+node@22.20.1\node_modules\@inquirer\number\dist                                       
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@inquirer+password@4.0.23_@types+node@22.20.1\node_modules\@inquirer\password\dist                                   
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@inquirer+prompts@7.10.1_@types+node@22.20.1\node_modules\@inquirer\prompts\dist                                     
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@inquirer+prompts@7.3.2_@types+node@22.20.1\node_modules\@inquirer\prompts\dist                                      
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@inquirer+rawlist@4.1.11_@types+node@22.20.1\node_modules\@inquirer\rawlist\dist                                     
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@inquirer+search@3.2.2_@types+node@22.20.1\node_modules\@inquirer\search\dist                                        
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@inquirer+select@4.4.2_@types+node@22.20.1\node_modules\@inquirer\select\dist                                        
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@inquirer+type@3.0.10_@types+node@22.20.1\node_modules\@inquirer\type\dist                                           
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@jridgewell+gen-mapping@0.3.13\node_modules\@jridgewell\gen-mapping\dist                                             
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@jridgewell+remapping@2.3.5\node_modules\@jridgewell\remapping\dist                                                  
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@jridgewell+resolve-uri@3.1.2\node_modules\@jridgewell\resolve-uri\dist                                              
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@jridgewell+source-map@0.3.11\node_modules\@jridgewell\source-map\dist                                               
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@jridgewell+sourcemap-codec@1.5.5\node_modules\@jridgewell\sourcemap-codec\dist                                      
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@jridgewell+trace-mapping@0.3.31\node_modules\@jridgewell\trace-mapping\dist                                         
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@keyv+serialize@1.1.1\node_modules\@keyv\serialize\dist                                                              
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@nestjs+cache-manager@3.1.3_98b4d44126fcd252d293cb834a2a9d6e\node_modules\@nestjs\cache-manager\dist                 
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@nestjs+config@4.0.4_@nestj_52d564b896890bcbeb5d17f451974c6e\node_modules\@nestjs\config\dist                        
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@nestjs+cqrs@11.0.3_@nestjs_6f00acc7018d8a7f6bf76bb319a90569\node_modules\@nestjs\cqrs\dist                          
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@nestjs+jwt@11.0.2_@nestjs+_de34c47c1aef6bafecc6e07ab53eb522\node_modules\@nestjs\jwt\dist                           
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@nestjs+mapped-types@2.1.1__d510ce485d4eaa8f1abf2d0c6ce5a5b8\node_modules\@nestjs\mapped-types\dist                  
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@nestjs+passport@11.0.5_@ne_ded52ca4ed96ef3b7e23d73cad93b77c\node_modules\@nestjs\passport\dist                      
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@nestjs+schedule@6.1.3_@nes_c3ac275df07c48854544c4647c37264c\node_modules\@nestjs\schedule\dist                      
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@nestjs+schematics@11.1.0_chokidar@4.0.3_typescript@5.9.3\node_modules\@nestjs\schematics\dist                       
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@nestjs+swagger@11.4.6_@nes_5e528f7f188193ba057e27cbcba636a4\node_modules\@nestjs\swagger\dist                       
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@nestjs+throttler@6.5.0_@ne_fb8e907e9540b6fa49a3addd65425503\node_modules\@nestjs\throttler\dist                     
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@prisma+adapter-pg@7.9.1\node_modules\@prisma\adapter-pg\dist                                                        
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@prisma+client-runtime-utils@7.9.1\node_modules\@prisma\client-runtime-utils\dist                                    
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@prisma+config@7.9.1\node_modules\@prisma\config\dist                                                                
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@prisma+debug@7.2.0\node_modules\@prisma\debug\dist                                                                  
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@prisma+debug@7.9.1\node_modules\@prisma\debug\dist                                                                  
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@prisma+dev@0.24.17_typescript@5.9.3\node_modules\@prisma\dev\dist                                                   
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@prisma+driver-adapter-utils@7.9.1\node_modules\@prisma\driver-adapter-utils\dist                                    
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@prisma+engines@7.9.1\node_modules\@prisma\engines\dist                                                              
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@prisma+fetch-engine@7.9.1\node_modules\@prisma\fetch-engine\dist                                                    
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@prisma+get-platform@7.2.0\node_modules\@prisma\get-platform\dist                                                    
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@prisma+get-platform@7.9.1\node_modules\@prisma\get-platform\dist                                                    
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@prisma+query-plan-executor@7.2.0\node_modules\@prisma\query-plan-executor\dist                                      
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@prisma+streams-local@0.1.11\node_modules\@prisma\streams-local\dist                                                 
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@prisma+studio-core@0.33.0__0c3b9189b13da8707dea4d6f1f7a772b\node_modules\@prisma\studio-core\dist                   
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@radix-ui+primitive@1.1.3\node_modules\@radix-ui\primitive\dist                                                      
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@radix-ui+react-compose-ref_4d83b379cdda70bcc5a261297386ed16\node_modules\@radix-ui\react-compose-refs\dist          
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@radix-ui+react-primitive@2_820ae502d0b9ccfca8ffbbca60055c87\node_modules\@radix-ui\react-primitive\dist             
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@radix-ui+react-slot@1.2.3_@types+react@19.2.17_react@19.2.8\node_modules\@radix-ui\react-slot\dist                  
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@radix-ui+react-toggle@1.1._1ce622caa48ec3ea1b7f37a9f4299e6d\node_modules\@radix-ui\react-toggle\dist                
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@radix-ui+react-use-control_2ade6e2d064f6219cf4316fc990bcccd\node_modules\@radix-ui\react-use-controllable-state\dist
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@radix-ui+react-use-effect-_7c500463aea15db23b86c16fb9cf62c7\node_modules\@radix-ui\react-use-effect-event\dist      
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@radix-ui+react-use-layout-_e437a5009f0f2f45b9a2c227c5d8228a\node_modules\@radix-ui\react-use-layout-effect\dist     
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@standard-schema+spec@1.1.0\node_modules\@standard-schema\spec\dist                                                  
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@xtuc+ieee754@1.2.0\node_modules\@xtuc\ieee754\dist                                                                  
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\@xtuc+long@4.2.2\node_modules\@xtuc\long\dist                                                                        
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\acorn@8.17.0\node_modules\acorn\dist                                                                                 
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\ajv-formats@2.1.1_ajv@8.20.0\node_modules\ajv-formats\dist                                                           
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\ajv-formats@3.0.1_ajv@8.18.0\node_modules\ajv-formats\dist                                                           
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\ajv-keywords@5.1.0_ajv@8.20.0\node_modules\ajv-keywords\dist                                                         
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\ajv@6.15.0\node_modules\ajv\dist                                                                                     
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\ajv@8.18.0\node_modules\ajv\dist                                                                                     
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\ajv@8.20.0\node_modules\ajv\dist                                                                                     
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\balanced-match@4.0.4\node_modules\balanced-match\dist                                                                
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\baseline-browser-mapping@2.11.5\node_modules\baseline-browser-mapping\dist                                           
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\better-result@2.10.0\node_modules\better-result\dist                                                                 
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\bintrees@1.0.2\node_modules\bintrees\dist                                                                            
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\brace-expansion@1.1.16\node_modules\brace-expansion\dist                                                             
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\brace-expansion@1.1.16\node_modules\brace-expansion\.tap\coverage                                                    
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\brace-expansion@2.1.2\node_modules\brace-expansion\dist                                                              
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\brace-expansion@2.1.2\node_modules\brace-expansion\.tap\coverage                                                     
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\brace-expansion@5.0.8\node_modules\brace-expansion\dist                                                              
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\bs-logger@0.2.6\node_modules\bs-logger\dist                                                                          
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\bullmq@5.81.2\node_modules\bullmq\dist                                                                               
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\c12@3.3.4\node_modules\c12\dist                                                                                      
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\cache-manager@7.2.9\node_modules\cache-manager\dist                                                                  
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\caniuse-lite@1.0.30001806\node_modules\caniuse-lite\dist                                                             
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\chrome-trace-event@1.0.4\node_modules\chrome-trace-event\dist                                                        
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\cjs-module-lexer@2.2.0\node_modules\cjs-module-lexer\dist                                                            
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\confbox@0.2.4\node_modules\confbox\dist                                                                              
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\content-type@2.0.0\node_modules\content-type\dist                                                                    
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\cosmiconfig@8.3.6_typescript@5.9.3\node_modules\cosmiconfig\dist                                                     
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\cron@4.4.0\node_modules\cron\dist                                                                                    
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\d3-array@3.2.1\node_modules\d3-array\dist                                                                            
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\d3-array@3.2.4\node_modules\d3-array\dist                                                                            
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\d3-color@3.1.0\node_modules\d3-color\dist                                                                            
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\d3-delaunay@6.0.2\node_modules\d3-delaunay\dist                                                                      
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\d3-format@3.1.0\node_modules\d3-format\dist                                                                          
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\d3-geo@3.1.0\node_modules\d3-geo\dist                                                                                
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\d3-interpolate@3.0.1\node_modules\d3-interpolate\dist                                                                
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\d3-path@3.1.0\node_modules\d3-path\dist                                                                              
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\d3-scale@4.0.2\node_modules\d3-scale\dist                                                                            
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\d3-shape@3.2.0\node_modules\d3-shape\dist                                                                            
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\d3-time-format@4.1.0\node_modules\d3-time-format\dist                                                                
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\d3-time@3.1.0\node_modules\d3-time\dist                                                                              
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\dedent@1.7.2\node_modules\dedent\dist                                                                                
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\deepmerge-ts@7.1.5\node_modules\deepmerge-ts\dist                                                                    
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\deepmerge@4.3.1\node_modules\deepmerge\dist                                                                          
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\defu@6.1.7\node_modules\defu\dist                                                                                    
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\destr@2.0.5\node_modules\destr\dist                                                                                  
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\effect@3.20.0\node_modules\effect\dist                                                                               
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\es-module-lexer@2.3.1\node_modules\es-module-lexer\dist                                                              
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\escalade@3.2.0\node_modules\escalade\dist                                                                            
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\esprima@4.0.1\node_modules\esprima\dist                                                                              
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\exsolve@1.1.1\node_modules\exsolve\dist                                                                              
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\fast-copy@4.0.4\node_modules\fast-copy\dist                                                                          
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\foreground-child@3.3.1\node_modules\foreground-child\dist                                                            
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\formidable@3.5.4\node_modules\formidable\dist                                                                        
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\get-port-please@3.2.0\node_modules\get-port-please\dist                                                              
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\giget@3.3.1\node_modules\giget\dist                                                                                  
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\glob@10.5.0\node_modules\glob\dist                                                                                   
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\glob@13.0.6\node_modules\glob\dist                                                                                   
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\grammex@3.1.13\node_modules\grammex\dist                                                                             
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\graphmatch@1.1.1\node_modules\graphmatch\dist                                                                        
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\handlebars@4.7.9\node_modules\handlebars\dist                                                                        
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\hashery@1.5.1\node_modules\hashery\dist                                                                              
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\hookified@1.15.1\node_modules\hookified\dist                                                                         
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\internmap@2.0.3\node_modules\internmap\dist                                                                          
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\jackspeak@3.4.3\node_modules\jackspeak\dist                                                                          
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\jiti@2.7.0\node_modules\jiti\dist                                                                                    
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\js-yaml@3.15.0\node_modules\js-yaml\dist                                                                             
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\js-yaml@4.3.0\node_modules\js-yaml\dist                                                                              
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\js-yaml@5.2.1\node_modules\js-yaml\dist                                                                              
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\json5@2.2.3\node_modules\json5\dist                                                                                  
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\keyv@5.6.0\node_modules\keyv\dist                                                                                    
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\lru-cache@10.4.3\node_modules\lru-cache\dist                                                                         
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\lru-cache@11.5.2\node_modules\lru-cache\dist                                                                         
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\magic-string@0.30.17\node_modules\magic-string\dist                                                                  
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\make-error@1.3.6\node_modules\make-error\dist                                                                        
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\minimatch@10.2.6\node_modules\minimatch\dist                                                                         
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\minimatch@9.0.9\node_modules\minimatch\dist                                                                          
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\minipass@7.1.3\node_modules\minipass\dist                                                                            
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\msgpackr@2.0.4\node_modules\msgpackr\dist                                                                            
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\ohash@2.0.11\node_modules\ohash\dist                                                                                 
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\package-json-from-dist@1.0.1\node_modules\package-json-from-dist\dist                                                
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\path-scurry@1.11.1\node_modules\path-scurry\dist                                                                     
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\path-scurry@2.0.2\node_modules\path-scurry\dist                                                                      
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\path-to-regexp@8.4.2\node_modules\path-to-regexp\dist                                                                
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\pathe@2.0.3\node_modules\pathe\dist                                                                                  
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\perfect-debounce@2.1.0\node_modules\perfect-debounce\dist                                                            
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\pg-cloudflare@1.4.0\node_modules\pg-cloudflare\dist                                                                  
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\pg-protocol@1.15.0\node_modules\pg-protocol\dist                                                                     
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\pkg-types@2.3.1\node_modules\pkg-types\dist                                                                          
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\prisma@7.9.1_@types+react@1_8b313c24c2e94f995f2fe50e20aabd3c\node_modules\prisma\dist                                
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\qs@6.15.3\node_modules\qs\dist                                                                                       
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\rc9@3.0.1\node_modules\rc9\dist                                                                                      
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\remeda@2.33.4\node_modules\remeda\dist                                                                               
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\ret@0.5.0\node_modules\ret\dist                                                                                      
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\rxjs@7.8.1\node_modules\rxjs\dist                                                                                    
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\rxjs@7.8.2\node_modules\rxjs\dist                                                                                    
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\schema-utils@3.3.0\node_modules\schema-utils\dist                                                                    
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\schema-utils@4.3.3\node_modules\schema-utils\dist                                                                    
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\signal-exit@4.1.0\node_modules\signal-exit\dist                                                                      
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\source-map@0.6.1\node_modules\source-map\dist                                                                        
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\source-map@0.7.4\node_modules\source-map\dist                                                                        
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\sprintf-js@1.0.3\node_modules\sprintf-js\dist                                                                        
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\std-env@3.10.0\node_modules\std-env\dist                                                                             
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\superagent@10.3.0\node_modules\superagent\dist                                                                       
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\tdigest@0.1.2\node_modules\tdigest\dist                                                                              
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\terser-webpack-plugin@5.6.1_webpack@5.106.2\node_modules\terser-webpack-plugin\dist                                  
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\terser@5.49.0\node_modules\terser\dist                                                                               
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\ts-jest@29.4.12_@babel+core_09f890f6258698c5787c135971c3d9ba\node_modules\ts-jest\dist                               
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\tsconfig-paths-webpack-plugin@4.2.0\node_modules\tsconfig-paths-webpack-plugin\coverage                              
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\tsconfig-paths-webpack-plugin@4.2.0\node_modules\tsconfig-paths-webpack-plugin\temp                                  
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\uid@2.0.2\node_modules\uid\dist                                                                                      
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\uri-js@4.4.1\node_modules\uri-js\dist                                                                                
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\valibot@1.4.2_typescript@5.9.3\node_modules\valibot\dist                                                             
+C:\Users\User\Desktop\CreatorOS\node_modules\.pnpm\zeptomatch@2.1.0\node_modules\zeptomatch\dist                                                                        
+C:\Users\User\Desktop\CreatorOS\packages\blueprint\dist                                                                                                                 
+C:\Users\User\Desktop\CreatorOS\packages\config\dist                                                                                                                    
+C:\Users\User\Desktop\CreatorOS\packages\contracts\dist                                                                                                                 
+C:\Users\User\Desktop\CreatorOS\packages\core\dist                                                                                                                      
+C:\Users\User\Desktop\CreatorOS\packages\events\dist                                                                                                                    
+C:\Users\User\Desktop\CreatorOS\packages\knowledge\dist                                                                                                                 
+C:\Users\User\Desktop\CreatorOS\packages\logging\dist                                                                                                                   
+C:\Users\User\Desktop\CreatorOS\packages\messaging\dist                                                                                                                 
+C:\Users\User\Desktop\CreatorOS\packages\runtime\dist                                                                                                                   
+C:\Users\User\Desktop\CreatorOS\packages\shared\dist                                                                                                                    
+C:\Users\User\Desktop\CreatorOS\packages\storage\dist                                                                                                                   
+C:\Users\User\Desktop\CreatorOS\packages\workflow\dist                                                                                                                  
+
+
+
+==================== DUPLICATE FILE HASHES ====================
+DUPLICATE GROUP:
+
+Size Path                                                                   
+---- ----                                                                   
+ 354 C:\Users\User\Desktop\CreatorOS\apps\api\.env                          
+ 354 C:\Users\User\Desktop\CreatorOS\backups\config-fix-20260728-022252\.env
+
+
+
+DUPLICATE GROUP:
+
+Size Path                                                            
+---- ----                                                            
+ 291 C:\Users\User\Desktop\CreatorOS\packages\blueprint\tsconfig.json
+ 291 C:\Users\User\Desktop\CreatorOS\packages\knowledge\tsconfig.json
+ 291 C:\Users\User\Desktop\CreatorOS\packages\messaging\tsconfig.json
+ 291 C:\Users\User\Desktop\CreatorOS\packages\runtime\tsconfig.json  
+ 291 C:\Users\User\Desktop\CreatorOS\packages\workflow\tsconfig.json 
+
+
+
+DUPLICATE GROUP:
+
+Size Path                                                          
+---- ----                                                          
+ 256 C:\Users\User\Desktop\CreatorOS\packages\config\tsconfig.json 
+ 256 C:\Users\User\Desktop\CreatorOS\packages\core\tsconfig.json   
+ 256 C:\Users\User\Desktop\CreatorOS\packages\logging\tsconfig.json
+ 256 C:\Users\User\Desktop\CreatorOS\packages\shared\tsconfig.json 
+ 256 C:\Users\User\Desktop\CreatorOS\packages\storage\tsconfig.json
+
+
+
+==================== TYPESCRIPT IMPORT TYPE RISKS ====================
+
+==================== FOUNDATION RESIDUE ====================
+
+==================== PACKAGE CHECK ====================
+
+> @creatoros/api@0.1.0 typecheck C:\Users\User\Desktop\CreatorOS\apps\api
+> tsc -p tsconfig.json --noEmit
+
+
+==================== BUILD CHECK ====================
+
+> @creatoros/api@0.1.0 build C:\Users\User\Desktop\CreatorOS\apps\api
+> nest build
+
+

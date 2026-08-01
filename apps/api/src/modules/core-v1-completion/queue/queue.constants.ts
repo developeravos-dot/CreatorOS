@@ -1,0 +1,1 @@
+export const CREATOROS_QUEUE = 'creatoros-main';

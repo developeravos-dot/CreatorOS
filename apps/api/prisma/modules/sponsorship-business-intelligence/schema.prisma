@@ -1,0 +1,145 @@
+﻿generator sponsorshipClient {
+  provider = "prisma-client"
+  output   = "../../src/generated/prisma-sponsorship"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum SponsorStatus {
+  DISCOVERED
+  QUALIFIED
+  CONTACTED
+  RESPONDED
+  NEGOTIATING
+  WON
+  LOST
+  ACTIVE
+  COMPLETED
+}
+
+enum SponsorshipType {
+  SPONSORSHIP
+  PRODUCT_PLACEMENT
+  REVIEW
+  AFFILIATE
+  LONG_TERM
+}
+
+model Sponsor {
+
+  id          String   @id @default(cuid())
+  name        String
+  companyKey  String   @unique
+
+  industry    String?
+  country     String?
+  website     String?
+
+  status      SponsorStatus @default(DISCOVERED)
+
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  brands          Brand[]
+  opportunities   SponsorshipOpportunity[]
+  proposals        SponsorshipProposal[]
+  campaigns        SponsorshipCampaign[]
+  interactions     SponsorInteraction[]
+
+  @@index([status])
+  @@index([industry])
+}
+
+model Brand {
+
+  id          String @id @default(cuid())
+
+  sponsorId   String
+
+  name        String
+  category    String?
+
+  sponsor Sponsor @relation(fields:[sponsorId], references:[id], onDelete:Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sponsorId])
+}
+
+model SponsorshipOpportunity {
+
+  id          String @id @default(cuid())
+
+  sponsorId   String
+
+  title       String
+
+  score       Float @default(0)
+
+  metadata    Json?
+
+  sponsor Sponsor @relation(fields:[sponsorId], references:[id], onDelete:Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([score])
+}
+
+model SponsorshipProposal {
+
+  id            String @id @default(cuid())
+
+  sponsorId     String
+
+  title         String
+
+  proposalType  SponsorshipType
+
+  estimatedValue Decimal? @db.Decimal(12,2)
+
+  sponsor Sponsor @relation(fields:[sponsorId], references:[id], onDelete:Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model SponsorshipCampaign {
+
+  id             String @id @default(cuid())
+
+  sponsorId      String
+
+  title          String
+
+  campaignType   SponsorshipType
+
+  budget         Decimal? @db.Decimal(12,2)
+
+  sponsor Sponsor @relation(fields:[sponsorId], references:[id], onDelete:Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model SponsorInteraction {
+
+  id          String @id @default(cuid())
+
+  sponsorId   String
+
+  interactionType String
+
+  notes       String?
+
+  sponsor Sponsor @relation(fields:[sponsorId], references:[id], onDelete:Cascade)
+
+  createdAt DateTime @default(now())
+
+}

@@ -1,0 +1,460 @@
+﻿import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  aiContentApi,
+  type AiContentAction,
+  type AiContentStatus,
+} from "./ai-content-api";
+
+type ToolDefinition = {
+  id: AiContentAction;
+  title: string;
+  description: string;
+  button: string;
+};
+
+const tools: ToolDefinition[] = [
+  {
+    id: "ideas",
+    title: "ØªÙˆÙ„ÙŠØ¯ Ø§Ù„Ø£ÙÙƒØ§Ø±",
+    description: "Ø§Ø¨ØªÙƒØ§Ø± Ø£ÙÙƒØ§Ø± Ø£ØµÙ„ÙŠØ© Ù…ØªÙˆØ§ÙÙ‚Ø© Ù…Ø¹ Ø§Ù„Ø¬Ù…Ù‡ÙˆØ± ÙˆØ§Ù„Ù…Ù†ØµØ©.",
+    button: "ØªÙˆÙ„ÙŠØ¯ Ø§Ù„Ø£ÙÙƒØ§Ø±",
+  },
+  {
+    id: "scripts",
+    title: "ÙƒØªØ§Ø¨Ø© Ø§Ù„Ø³ÙƒØ±Ø¨Øª",
+    description: "ØªØ­ÙˆÙŠÙ„ Ø§Ù„ÙÙƒØ±Ø© Ø¥Ù„Ù‰ Ø³ÙƒØ±Ø¨Øª Ù…Ù†Ø¸Ù… ÙˆÙ‚Ø§Ø¨Ù„ Ù„Ù„Ø¥Ù†ØªØ§Ø¬.",
+    button: "Ø¥Ù†Ø´Ø§Ø¡ Ø§Ù„Ø³ÙƒØ±Ø¨Øª",
+  },
+  {
+    id: "optimize",
+    title: "ØªØ­Ø³ÙŠÙ† Ø§Ù„Ù…Ø­ØªÙˆÙ‰",
+    description: "ØªÙƒÙŠÙŠÙ Ø§Ù„Ù…Ø­ØªÙˆÙ‰ Ù…Ø¹ YouTube Ø£Ùˆ TikTok.",
+    button: "ØªØ­Ø³ÙŠÙ† Ø§Ù„Ù…Ø­ØªÙˆÙ‰",
+  },
+  {
+    id: "review",
+    title: "Ù…Ø±Ø§Ø¬Ø¹Ø© Ø§Ù„Ø¬ÙˆØ¯Ø©",
+    description: "ØªØ­Ù„ÙŠÙ„ Ø§Ù„Ø¬ÙˆØ¯Ø© ÙˆØ§Ù„ÙˆØ¶ÙˆØ­ ÙˆØ§Ù„Ø¬Ø§Ø°Ø¨ÙŠØ© Ù‚Ø¨Ù„ Ø§Ù„Ø¥Ù†ØªØ§Ø¬.",
+    button: "Ù…Ø±Ø§Ø¬Ø¹Ø© Ø§Ù„Ù…Ø­ØªÙˆÙ‰",
+  },
+  {
+    id: "production-package",
+    title: "Ø­Ø²Ù…Ø© Ø§Ù„Ø¥Ù†ØªØ§Ø¬",
+    description: "Ø¥Ù†Ø´Ø§Ø¡ Ø­Ø²Ù…Ø© Ù…ØªÙƒØ§Ù…Ù„Ø© ØªØ³Ø§Ø¹Ø¯ Ø¹Ù„Ù‰ ØªÙ†ÙÙŠØ° Ø§Ù„Ù…Ø­ØªÙˆÙ‰.",
+    button: "Ø¥Ù†Ø´Ø§Ø¡ Ø­Ø²Ù…Ø© Ø§Ù„Ø¥Ù†ØªØ§Ø¬",
+  },
+];
+
+export function AiContentStudio() {
+  const [status, setStatus] = useState<AiContentStatus | null>(null);
+  const [topic, setTopic] = useState("");
+  const [platform, setPlatform] = useState("YouTube");
+  const [audience, setAudience] = useState("Ø§Ù„Ø¬Ù…Ù‡ÙˆØ± Ø§Ù„Ø¹Ø§Ù…");
+  const [content, setContent] = useState("");
+  const [activeAction, setActiveAction] =
+    useState<AiContentAction | null>(null);
+  const [result, setResult] = useState<unknown>(null);
+  const [error, setError] = useState("");
+
+  const loadStatus = useCallback(async () => {
+    try {
+      setError("");
+      setStatus(await aiContentApi.status());
+    } catch (requestError) {
+      setStatus(null);
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "ØªØ¹Ø°Ø± Ø§Ù„Ø§ØªØµØ§Ù„ Ø¨Ù…Ø­Ø±Ùƒ Ø§Ù„Ù…Ø­ØªÙˆÙ‰ Ø§Ù„Ø°ÙƒÙŠ.",
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadStatus();
+  }, [loadStatus]);
+
+  const connected = status?.status === "operational";
+
+  const output = useMemo(() => {
+    if (result === null) {
+      return "";
+    }
+
+    return typeof result === "string"
+      ? result
+      : JSON.stringify(result, null, 2);
+  }, [result]);
+
+  const execute = async (action: AiContentAction) => {
+    const source = content.trim() || topic.trim();
+
+    if (!source) {
+      setError("Ø£Ø¯Ø®Ù„ Ù…ÙˆØ¶ÙˆØ¹Ù‹Ø§ Ø£Ùˆ Ù…Ø­ØªÙˆÙ‰ Ø£ÙˆÙ„Ù‹Ø§.");
+      return;
+    }
+
+    try {
+      setError("");
+      setResult(null);
+      setActiveAction(action);
+
+      let payload: any;
+
+      switch (action) {
+        case "ideas":
+          payload = {
+            topic: topic.trim(),
+            audience,
+            platform,
+            count: 5,
+            tone: "professional",
+          };
+          break;
+
+        case "scripts":
+        case "production-package":
+          payload = {
+            topic: topic.trim(),
+            audience,
+            platform,
+            tone: "professional",
+            durationSeconds: 60,
+          };
+          break;
+
+        case "optimize":
+        case "review":
+          payload = {
+            title: topic.trim(),
+            content: source,
+            platform,
+          };
+          break;
+      }
+
+      const response = await aiContentApi.run(action, payload);
+
+      setResult(response);
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "ÙØ´Ù„Øª Ø¹Ù…Ù„ÙŠØ© Ø§Ù„Ø°ÙƒØ§Ø¡ Ø§Ù„Ø§ØµØ·Ù†Ø§Ø¹ÙŠ.",
+      );
+    } finally {
+      setActiveAction(null);
+    }
+  };
+
+  return (
+    <section style={studioStyles.wrapper}>
+      <div style={studioStyles.hero}>
+        <div>
+          <div style={studioStyles.eyebrow}>AI CONTENT STUDIO</div>
+          <h2 style={studioStyles.title}>Ø§Ø³ØªÙˆØ¯ÙŠÙˆ Ø§Ù„Ù…Ø­ØªÙˆÙ‰ Ø§Ù„Ø°ÙƒÙŠ</h2>
+          <p style={studioStyles.description}>
+            Ù…Ø±ÙƒØ² Ù…ÙˆØ­Ø¯ Ù„ØªÙˆÙ„ÙŠØ¯ Ø§Ù„Ø£ÙÙƒØ§Ø± ÙˆØ§Ù„Ø³ÙƒØ±Ø¨ØªØ§Øª ÙˆØªØ­Ø³ÙŠÙ† Ø§Ù„Ù…Ø­ØªÙˆÙ‰
+            ÙˆÙ…Ø±Ø§Ø¬Ø¹ØªÙ‡ ÙˆØªØ¬Ù‡ÙŠØ²Ù‡ Ù„Ù„Ø¥Ù†ØªØ§Ø¬.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          style={studioStyles.statusButton}
+          onClick={() => void loadStatus()}
+        >
+          <span
+            style={{
+              ...studioStyles.statusDot,
+              background: connected ? "#42e8a1" : "#ff5f74",
+            }}
+          />
+          {connected ? "Ø§Ù„Ù…Ø­Ø±Ùƒ Ù…ØªØµÙ„" : "Ø¥Ø¹Ø§Ø¯Ø© Ø§Ù„Ø§ØªØµØ§Ù„"}
+        </button>
+      </div>
+
+      {status && (
+        <div style={studioStyles.systemBar}>
+          <strong>{status.module}</strong>
+          <span>Ø§Ù„Ø¥ØµØ¯Ø§Ø±: {status.version}</span>
+          <span>
+            Ø§Ù„Ù‚Ø¯Ø±Ø§Øª: {status.capabilities?.length ?? 0}
+          </span>
+        </div>
+      )}
+
+      {error && <div style={studioStyles.error}>{error}</div>}
+
+      <div style={studioStyles.formGrid}>
+        <label style={studioStyles.field}>
+          <span style={studioStyles.label}>Ø§Ù„Ù…ÙˆØ¶ÙˆØ¹ Ø£Ùˆ Ø§Ù„ÙÙƒØ±Ø©</span>
+          <input
+            value={topic}
+            onChange={(event) => setTopic(event.target.value)}
+            placeholder="Ù…Ø«Ø§Ù„: Ù…Ø³ØªÙ‚Ø¨Ù„ Ø§Ù„Ø³ÙŠØ§Ø±Ø§Øª Ø°Ø§ØªÙŠØ© Ø§Ù„Ù‚ÙŠØ§Ø¯Ø©"
+            style={studioStyles.input}
+          />
+        </label>
+
+        <label style={studioStyles.field}>
+          <span style={studioStyles.label}>Ø§Ù„Ù…Ù†ØµØ©</span>
+          <select
+            value={platform}
+            onChange={(event) => setPlatform(event.target.value)}
+            style={studioStyles.input}
+          >
+            <option value="YouTube">YouTube</option>
+            <option value="TikTok">TikTok</option>
+            <option value="Instagram">Instagram</option>
+            <option value="Both">YouTube + TikTok</option>
+          </select>
+        </label>
+
+        <label style={studioStyles.field}>
+          <span style={studioStyles.label}>Ø§Ù„Ø¬Ù…Ù‡ÙˆØ±</span>
+          <input
+            value={audience}
+            onChange={(event) => setAudience(event.target.value)}
+            style={studioStyles.input}
+          />
+        </label>
+      </div>
+
+      <label style={studioStyles.field}>
+        <span style={studioStyles.label}>
+          Ø§Ù„Ù†Øµ Ø£Ùˆ Ø§Ù„Ù…Ø­ØªÙˆÙ‰ Ø§Ù„Ù…Ø±Ø§Ø¯ ØªØ·ÙˆÙŠØ±Ù‡
+        </span>
+        <textarea
+          value={content}
+          onChange={(event) => setContent(event.target.value)}
+          placeholder="ÙŠÙ…ÙƒÙ†Ùƒ Ø¥Ø¯Ø®Ø§Ù„ ÙÙƒØ±Ø© Ù…Ø®ØªØµØ±Ø© Ø£Ùˆ Ù†Øµ ÙƒØ§Ù…Ù„..."
+          style={studioStyles.textarea}
+        />
+      </label>
+
+      <div style={studioStyles.toolsGrid}>
+        {tools.map((tool) => (
+          <article key={tool.id} style={studioStyles.toolCard}>
+            <div style={studioStyles.toolIcon}>âœ¦</div>
+            <h3 style={studioStyles.toolTitle}>{tool.title}</h3>
+            <p style={studioStyles.toolDescription}>
+              {tool.description}
+            </p>
+            <button
+              type="button"
+              disabled={!connected || activeAction !== null}
+              onClick={() => void execute(tool.id)}
+              style={{
+                ...studioStyles.actionButton,
+                opacity:
+                  !connected || activeAction !== null ? 0.55 : 1,
+              }}
+            >
+              {activeAction === tool.id
+                ? "Ø¬Ø§Ø±Ù Ø§Ù„ØªÙ†ÙÙŠØ°..."
+                : tool.button}
+            </button>
+          </article>
+        ))}
+      </div>
+
+      <div style={studioStyles.outputPanel}>
+        <div style={studioStyles.outputHeader}>
+          <div>
+            <div style={studioStyles.eyebrow}>AI OUTPUT</div>
+            <h3 style={studioStyles.outputTitle}>Ù†ØªÙŠØ¬Ø© Ø§Ù„Ù…Ø­Ø±Ùƒ</h3>
+          </div>
+
+          {output && (
+            <button
+              type="button"
+              style={studioStyles.copyButton}
+              onClick={() => void navigator.clipboard.writeText(output)}
+            >
+              Ù†Ø³Ø® Ø§Ù„Ù†ØªÙŠØ¬Ø©
+            </button>
+          )}
+        </div>
+
+        {output ? (
+          <pre style={studioStyles.output}>{output}</pre>
+        ) : (
+          <div style={studioStyles.emptyOutput}>
+            Ø³ØªØ¸Ù‡Ø± Ù†ØªÙŠØ¬Ø© Ø§Ù„Ø¹Ù…Ù„ÙŠØ© Ù‡Ù†Ø§.
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+const studioStyles: Record<string, React.CSSProperties> = {
+  wrapper: {
+    display: "grid",
+    gap: 20,
+  },
+  hero: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 20,
+    padding: 24,
+    borderRadius: 20,
+    background:
+      "linear-gradient(135deg, rgba(114,92,255,.22), rgba(44,207,255,.08))",
+    border: "1px solid rgba(255,255,255,.1)",
+  },
+  eyebrow: {
+    fontSize: 12,
+    letterSpacing: 2,
+    opacity: 0.65,
+  },
+  title: {
+    margin: "8px 0",
+    fontSize: 28,
+  },
+  description: {
+    margin: 0,
+    opacity: 0.72,
+    lineHeight: 1.8,
+  },
+  statusButton: {
+    minWidth: 150,
+    border: "1px solid rgba(255,255,255,.12)",
+    borderRadius: 999,
+    padding: "11px 15px",
+    background: "rgba(0,0,0,.2)",
+    color: "inherit",
+    cursor: "pointer",
+  },
+  statusDot: {
+    width: 9,
+    height: 9,
+    borderRadius: "50%",
+    display: "inline-block",
+    marginLeft: 9,
+  },
+  systemBar: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 18,
+    padding: "14px 18px",
+    borderRadius: 14,
+    background: "rgba(255,255,255,.045)",
+    border: "1px solid rgba(255,255,255,.08)",
+    fontSize: 13,
+  },
+  error: {
+    padding: 14,
+    borderRadius: 12,
+    background: "rgba(255,95,116,.12)",
+    border: "1px solid rgba(255,95,116,.3)",
+  },
+  formGrid: {
+    display: "grid",
+    gridTemplateColumns: "2fr 1fr 1fr",
+    gap: 14,
+  },
+  field: {
+    display: "grid",
+    gap: 8,
+  },
+  label: {
+    fontSize: 13,
+    fontWeight: 700,
+  },
+  input: {
+    width: "100%",
+    boxSizing: "border-box",
+    borderRadius: 12,
+    border: "1px solid rgba(255,255,255,.1)",
+    background: "rgba(255,255,255,.05)",
+    color: "inherit",
+    padding: "13px 14px",
+  },
+  textarea: {
+    width: "100%",
+    minHeight: 150,
+    resize: "vertical",
+    boxSizing: "border-box",
+    borderRadius: 14,
+    border: "1px solid rgba(255,255,255,.1)",
+    background: "rgba(255,255,255,.05)",
+    color: "inherit",
+    padding: 15,
+    lineHeight: 1.7,
+  },
+  toolsGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))",
+    gap: 14,
+  },
+  toolCard: {
+    padding: 18,
+    borderRadius: 16,
+    background: "rgba(255,255,255,.045)",
+    border: "1px solid rgba(255,255,255,.08)",
+  },
+  toolIcon: {
+    fontSize: 24,
+  },
+  toolTitle: {
+    margin: "12px 0 8px",
+  },
+  toolDescription: {
+    minHeight: 52,
+    margin: "0 0 16px",
+    opacity: 0.7,
+    lineHeight: 1.6,
+  },
+  actionButton: {
+    width: "100%",
+    border: 0,
+    borderRadius: 11,
+    padding: "11px 13px",
+    background: "linear-gradient(135deg, #765cff, #42cfee)",
+    color: "#fff",
+    fontWeight: 800,
+    cursor: "pointer",
+  },
+  outputPanel: {
+    padding: 20,
+    borderRadius: 18,
+    background: "rgba(0,0,0,.18)",
+    border: "1px solid rgba(255,255,255,.08)",
+  },
+  outputHeader: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+    marginBottom: 14,
+  },
+  outputTitle: {
+    margin: "5px 0 0",
+  },
+  copyButton: {
+    border: "1px solid rgba(255,255,255,.12)",
+    borderRadius: 10,
+    padding: "9px 12px",
+    background: "rgba(255,255,255,.06)",
+    color: "inherit",
+    cursor: "pointer",
+  },
+  output: {
+    margin: 0,
+    whiteSpace: "pre-wrap",
+    wordBreak: "break-word",
+    direction: "rtl",
+    textAlign: "right",
+    lineHeight: 1.8,
+    fontFamily: "inherit",
+  },
+  emptyOutput: {
+    padding: 28,
+    textAlign: "center",
+    opacity: 0.55,
+  },
+};
+

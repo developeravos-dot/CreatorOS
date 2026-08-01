@@ -1,0 +1,30 @@
+{
+  "worldId": "676d0dae-c1a5-48f7-aba1-42ac5e8384d4",
+  "version": 1,
+  "updatedAt": "2026-07-31T20:53:56.589Z",
+  "validations": [
+    {
+      "validationId": "dc311655-3d4b-4bce-b015-3487c83febb3",
+      "worldId": "676d0dae-c1a5-48f7-aba1-42ac5e8384d4",
+      "bibleId": "e35d3e67-c449-494d-a0fa-c3986cd06da6",
+      "entityType": "character",
+      "entityId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+      "entityName": "نُور",
+      "fingerprintId": "f2eec363-ac96-4d96-8b57-2140e32d4f1b",
+      "snapshotId": "ceb1f8a9-4ae5-4263-84fe-3c6979e8f7db",
+      "status": "passed",
+      "scores": {
+        "identityScore": 100,
+        "colorScore": 100,
+        "proportionScore": 100,
+        "signatureElementScore": 100,
+        "continuityKeyScore": 100,
+        "totalScore": 100
+      },
+      "deviations": [],
+      "repairRequired": false,
+      "humanApprovalRequired": false,
+      "createdAt": "2026-07-31T20:53:56.586Z"
+    }
+  ]
+}

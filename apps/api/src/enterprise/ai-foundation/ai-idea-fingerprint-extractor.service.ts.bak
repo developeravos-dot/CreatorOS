@@ -1,0 +1,878 @@
+﻿import { Injectable, Logger } from '@nestjs/common';
+
+export interface IdeaFingerprint {
+  itemIndex: number;
+  title: string;
+  domain: string;
+  audience: string;
+  contentMechanism: string;
+  aiRole: string;
+  valueProposition: string;
+  monetization: string;
+  productionStyle: string;
+  contentFormat: string;
+  goal: string;
+}
+
+export interface IdeaFingerprintExtractionResult {
+  success: boolean;
+  fingerprints: IdeaFingerprint[];
+  method:
+    | 'local-llm-structured-json'
+    | 'local-llm-json-repair'
+    | 'failed';
+  model: string;
+  attempts: number;
+  errors: string[];
+}
+
+interface OllamaGenerateResponse {
+  response?: string;
+  done?: boolean;
+  model?: string;
+}
+
+interface UnknownFingerprintContainer {
+  fingerprints?: unknown;
+  ideas?: unknown;
+  items?: unknown;
+  results?: unknown;
+}
+
+@Injectable()
+export class AiIdeaFingerprintExtractorService {
+  private readonly logger =
+    new Logger(
+      AiIdeaFingerprintExtractorService.name,
+    );
+
+  private readonly ollamaUrl =
+    (
+      process.env.OLLAMA_BASE_URL ??
+      'http://localhost:11434'
+    ).replace(/\/+$/, '');
+
+  private readonly model =
+    process.env
+      .CREATOROS_FINGERPRINT_MODEL ??
+    'qwen2.5:7b';
+
+  private readonly timeoutMilliseconds =
+    this.readPositiveInteger(
+      process.env
+        .CREATOROS_FINGERPRINT_TIMEOUT_MS,
+      180000,
+    );
+
+  async extract(
+    content: string,
+    request = '',
+  ): Promise<IdeaFingerprintExtractionResult> {
+    const source = content.trim();
+
+    if (!source) {
+      return {
+        success: false,
+        fingerprints: [],
+        method: 'failed',
+        model: this.model,
+        attempts: 0,
+        errors: [
+          'Fingerprint source content is empty.',
+        ],
+      };
+    }
+
+    const errors: string[] = [];
+    let lastRawResponse = '';
+
+    for (
+      let attempt = 1;
+      attempt <= 3;
+      attempt += 1
+    ) {
+      try {
+        const prompt =
+          attempt === 1
+            ? this.createExtractionPrompt(
+                source,
+                request,
+              )
+            : this.createRepairPrompt(
+                source,
+                request,
+                lastRawResponse,
+                errors,
+              );
+
+        const rawResponse =
+          await this.requestOllama(prompt);
+
+        lastRawResponse = rawResponse;
+
+        const parsed =
+          this.parseJson(rawResponse);
+
+        const fingerprints =
+          this.extractFingerprintArray(
+            parsed,
+          );
+
+        const normalized =
+          this.normalizeFingerprints(
+            fingerprints,
+          );
+
+        const validationErrors =
+          this.validateFingerprints(
+            normalized,
+          );
+
+        if (
+          validationErrors.length === 0
+        ) {
+          return {
+            success: true,
+            fingerprints: normalized,
+            method:
+              attempt === 1
+                ? 'local-llm-structured-json'
+                : 'local-llm-json-repair',
+            model: this.model,
+            attempts: attempt,
+            errors,
+          };
+        }
+
+        errors.push(
+          `Attempt ${attempt}: ${validationErrors.join(' | ')}`,
+        );
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : String(error);
+
+        errors.push(
+          `Attempt ${attempt}: ${message}`,
+        );
+      }
+    }
+
+    this.logger.error(
+      [
+        'Semantic fingerprint extraction failed.',
+        `Model: ${this.model}`,
+        ...errors,
+      ].join(' '),
+    );
+
+    return {
+      success: false,
+      fingerprints: [],
+      method: 'failed',
+      model: this.model,
+      attempts: 3,
+      errors,
+    };
+  }
+
+  private async requestOllama(
+    prompt: string,
+  ): Promise<string> {
+    const controller =
+      new AbortController();
+
+    const timeout = setTimeout(
+      () => controller.abort(),
+      this.timeoutMilliseconds,
+    );
+
+    try {
+      const response = await fetch(
+        `${this.ollamaUrl}/api/generate`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type':
+              'application/json',
+          },
+          body: JSON.stringify({
+            model: this.model,
+            prompt,
+            stream: false,
+            format: 'json',
+            keep_alive: '30m',
+            options: {
+              temperature: 0,
+              top_p: 0.8,
+              num_ctx: 32768,
+              num_predict: 6000,
+              repeat_penalty: 1.05,
+            },
+          }),
+          signal: controller.signal,
+        },
+      );
+
+      if (!response.ok) {
+        const responseText =
+          await response.text();
+
+        throw new Error(
+          `Ollama HTTP ${response.status}: ${responseText.slice(0, 500)}`,
+        );
+      }
+
+      const payload =
+        (await response.json()) as
+          OllamaGenerateResponse;
+
+      const generated =
+        payload.response?.trim() ?? '';
+
+      if (!generated) {
+        throw new Error(
+          'Ollama returned an empty response.',
+        );
+      }
+
+      return generated;
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  private createExtractionPrompt(
+    content: string,
+    request: string,
+  ): string {
+    return `
+أنت محرك CreatorOS المتخصص في تحويل قائمة أفكار مكتوبة إلى بصمات دلالية منظمة.
+
+مهمتك:
+استخرج جميع الأفكار الموجودة في النص الكامل أدناه مباشرة.
+لا تعتمد على أرقام أو تنسيق Markdown.
+لا تقسّم النص باستعمال الكلمات المتكررة.
+افهم بداية ونهاية كل فكرة دلاليًا.
+
+أعد كائن JSON صالحًا فقط.
+لا تستخدم Markdown.
+لا تكتب شرحًا قبل JSON أو بعده.
+
+المخطط الإلزامي:
+
+{
+  "fingerprints": [
+    {
+      "itemIndex": 1,
+      "title": "الاسم الحقيقي والمميز للفكرة",
+      "domain": "المجال المحدد للفكرة",
+      "audience": "الجمهور المستهدف المحدد",
+      "contentMechanism": "الآلية الفعلية التي يعمل بها المحتوى",
+      "aiRole": "الدور المحدد للذكاء الاصطناعي",
+      "valueProposition": "القيمة الفريدة التي يحصل عليها المستخدم",
+      "monetization": "نموذج الربح أو غير محدد",
+      "productionStyle": "أسلوب الإنتاج أو غير محدد",
+      "contentFormat": "صيغة المحتوى أو غير محدد",
+      "goal": "الهدف الأساسي"
+    }
+  ]
+}
+
+قواعد إلزامية:
+
+1. استخرج كل فكرة موجودة في النص دون حذف.
+2. لا تعتبر عناوين الحقول مثل "اسم القناة" أو "المجال" اسمًا للفكرة.
+3. title يجب أن يحتوي الاسم الفعلي المكتوب بعد عنوان الحقل.
+4. لا تنقل أكثر من حقل إلى القيمة نفسها.
+5. لا تُبقِ علامات Markdown مثل ** داخل القيم.
+6. لا تقطع الكلمات أو الجمل.
+7. لا تخترع معلومات غير موجودة.
+8. استخدم "غير محدد" فقط عندما يكون الحقل غائبًا فعلًا.
+9. itemIndex يبدأ من 1 ويتتابع دون فجوات.
+10. اجعل كل قيمة نصًا مستقلًا ومفهومًا.
+11. يجب ألا تكون جميع العناوين متطابقة.
+12. يجب ألا تكون القيمة "اسم القناة" أو "اسم الفكرة".
+13. أعد JSON فقط.
+
+طلب المستخدم الأصلي:
+${request || 'غير متاح'}
+
+النص الكامل المراد تحليله:
+<<<CREATOROS_SOURCE_BEGIN>>>
+${content}
+<<<CREATOROS_SOURCE_END>>>
+`.trim();
+  }
+
+  private createRepairPrompt(
+    content: string,
+    request: string,
+    previousResponse: string,
+    errors: string[],
+  ): string {
+    return `
+أنت طبقة إصلاح JSON في CreatorOS.
+
+الاستجابة السابقة فشلت في التحقق البنيوي أو الدلالي.
+أعد استخراج الأفكار من النص الأصلي، ولا تكتفِ بتعديل JSON السابق شكليًا.
+
+أعد JSON صالحًا فقط بهذا الشكل:
+
+{
+  "fingerprints": [
+    {
+      "itemIndex": 1,
+      "title": "الاسم الحقيقي للفكرة",
+      "domain": "المجال",
+      "audience": "الجمهور",
+      "contentMechanism": "آلية المحتوى",
+      "aiRole": "دور الذكاء الاصطناعي",
+      "valueProposition": "القيمة المقدمة",
+      "monetization": "نموذج الربح أو غير محدد",
+      "productionStyle": "أسلوب الإنتاج أو غير محدد",
+      "contentFormat": "صيغة المحتوى أو غير محدد",
+      "goal": "الهدف"
+    }
+  ]
+}
+
+الشروط الإلزامية:
+
+- لا تستخدم "اسم القناة" عنوانًا لأي فكرة.
+- لا تستخدم عنوان الحقل بدل قيمته.
+- استخرج جميع الأفكار الموجودة.
+- كل فكرة يجب أن تكون كائنًا مستقلًا.
+- لا تضع Markdown داخل القيم.
+- لا تقطع الجمل.
+- لا تضف شرحًا.
+- لا تستخدم code fences.
+- أعد JSON فقط.
+
+أخطاء المحاولة السابقة:
+${errors.join('\n')}
+
+طلب المستخدم:
+${request || 'غير متاح'}
+
+النص الأصلي:
+<<<CREATOROS_SOURCE_BEGIN>>>
+${content}
+<<<CREATOROS_SOURCE_END>>>
+
+الاستجابة السابقة غير الصالحة:
+<<<PREVIOUS_RESPONSE_BEGIN>>>
+${previousResponse.slice(0, 12000)}
+<<<PREVIOUS_RESPONSE_END>>>
+`.trim();
+  }
+
+  private parseJson(
+    rawResponse: string,
+  ): unknown {
+    let value =
+      rawResponse.trim();
+
+    if (value.startsWith('```json')) {
+      value = value
+        .slice('```json'.length)
+        .trim();
+    } else if (
+      value.startsWith('```')
+    ) {
+      value = value
+        .slice(3)
+        .trim();
+    }
+
+    if (value.endsWith('```')) {
+      value = value
+        .slice(0, -3)
+        .trim();
+    }
+
+    try {
+      return JSON.parse(value);
+    } catch {
+      const objectStart =
+        value.indexOf('{');
+
+      const objectEnd =
+        value.lastIndexOf('}');
+
+      if (
+        objectStart >= 0 &&
+        objectEnd > objectStart
+      ) {
+        const objectCandidate =
+          value.slice(
+            objectStart,
+            objectEnd + 1,
+          );
+
+        try {
+          return JSON.parse(
+            objectCandidate,
+          );
+        } catch {
+          // Continue to array candidate.
+        }
+      }
+
+      const arrayStart =
+        value.indexOf('[');
+
+      const arrayEnd =
+        value.lastIndexOf(']');
+
+      if (
+        arrayStart >= 0 &&
+        arrayEnd > arrayStart
+      ) {
+        return JSON.parse(
+          value.slice(
+            arrayStart,
+            arrayEnd + 1,
+          ),
+        );
+      }
+
+      throw new Error(
+        'The model response is not valid JSON.',
+      );
+    }
+  }
+
+  private extractFingerprintArray(
+    parsed: unknown,
+  ): unknown[] {
+    if (Array.isArray(parsed)) {
+      return parsed;
+    }
+
+    if (
+      !parsed ||
+      typeof parsed !== 'object'
+    ) {
+      throw new Error(
+        'JSON root must be an object or array.',
+      );
+    }
+
+    const container =
+      parsed as UnknownFingerprintContainer;
+
+    const candidates = [
+      container.fingerprints,
+      container.ideas,
+      container.items,
+      container.results,
+    ];
+
+    for (
+      const candidate of candidates
+    ) {
+      if (Array.isArray(candidate)) {
+        return candidate;
+      }
+    }
+
+    throw new Error(
+      'JSON does not contain a fingerprints array.',
+    );
+  }
+
+  private normalizeFingerprints(
+    rawItems: unknown[],
+  ): IdeaFingerprint[] {
+    return rawItems
+      .map((item, index) =>
+        this.normalizeFingerprint(
+          item,
+          index + 1,
+        ),
+      )
+      .filter(
+        (
+          item,
+        ): item is IdeaFingerprint =>
+          item !== null,
+      )
+      .map((item, index) => ({
+        ...item,
+        itemIndex: index + 1,
+      }));
+  }
+
+  private normalizeFingerprint(
+    value: unknown,
+    fallbackIndex: number,
+  ): IdeaFingerprint | null {
+    if (
+      !value ||
+      typeof value !== 'object' ||
+      Array.isArray(value)
+    ) {
+      return null;
+    }
+
+    const record =
+      value as Record<
+        string,
+        unknown
+      >;
+
+    return {
+      itemIndex:
+        this.toPositiveInteger(
+          record.itemIndex,
+        ) ?? fallbackIndex,
+
+      title: this.cleanText(
+        this.firstDefined(record, [
+          'title',
+          'name',
+          'ideaTitle',
+          'channelName',
+          'اسم القناة',
+          'اسم الفكرة',
+        ]),
+      ),
+
+      domain: this.cleanText(
+        this.firstDefined(record, [
+          'domain',
+          'field',
+          'category',
+          'المجال',
+        ]),
+      ),
+
+      audience: this.cleanText(
+        this.firstDefined(record, [
+          'audience',
+          'targetAudience',
+          'الجمهور',
+        ]),
+      ),
+
+      contentMechanism:
+        this.cleanText(
+          this.firstDefined(record, [
+            'contentMechanism',
+            'mechanism',
+            'howItWorks',
+            'آلية المحتوى',
+          ]),
+        ),
+
+      aiRole: this.cleanText(
+        this.firstDefined(record, [
+          'aiRole',
+          'roleOfAi',
+          'artificialIntelligenceRole',
+          'دور الذكاء الاصطناعي',
+        ]),
+      ),
+
+      valueProposition:
+        this.cleanText(
+          this.firstDefined(record, [
+            'valueProposition',
+            'value',
+            'userValue',
+            'القيمة المقدمة',
+          ]),
+        ),
+
+      monetization:
+        this.cleanText(
+          this.firstDefined(record, [
+            'monetization',
+            'revenueModel',
+            'businessModel',
+            'نموذج الربح',
+          ]),
+        ),
+
+      productionStyle:
+        this.cleanText(
+          this.firstDefined(record, [
+            'productionStyle',
+            'style',
+            'أسلوب الإنتاج',
+          ]),
+        ),
+
+      contentFormat:
+        this.cleanText(
+          this.firstDefined(record, [
+            'contentFormat',
+            'format',
+            'صيغة المحتوى',
+          ]),
+        ),
+
+      goal: this.cleanText(
+        this.firstDefined(record, [
+          'goal',
+          'objective',
+          'purpose',
+          'الهدف',
+        ]),
+      ),
+    };
+  }
+
+  private validateFingerprints(
+    fingerprints: IdeaFingerprint[],
+  ): string[] {
+    const errors: string[] = [];
+
+    if (fingerprints.length === 0) {
+      errors.push(
+        'No fingerprints were extracted.',
+      );
+
+      return errors;
+    }
+
+    const normalizedTitles =
+      fingerprints.map(
+        (fingerprint) =>
+          this.normalizeForComparison(
+            fingerprint.title,
+          ),
+      );
+
+    const invalidTitleValues =
+      new Set([
+        '',
+        'غير محدد',
+        'اسم القناه',
+        'اسم القناة',
+        'اسم الفكره',
+        'اسم الفكرة',
+        'title',
+        'channel name',
+        'idea name',
+      ]);
+
+    fingerprints.forEach(
+      (fingerprint, index) => {
+        const title =
+          normalizedTitles[index] ?? '';
+
+        if (
+          invalidTitleValues.has(title)
+        ) {
+          errors.push(
+            `Item ${index + 1} has an invalid title.`,
+          );
+        }
+
+        const coreValues = [
+          fingerprint.domain,
+          fingerprint.audience,
+          fingerprint.contentMechanism,
+          fingerprint.aiRole,
+          fingerprint.valueProposition,
+        ];
+
+        const definedCoreValues =
+          coreValues.filter(
+            (value) =>
+              !this.isUndefined(value),
+          ).length;
+
+        if (definedCoreValues < 3) {
+          errors.push(
+            `Item ${index + 1} has only ${definedCoreValues} defined core dimensions.`,
+          );
+        }
+
+        const values = [
+          fingerprint.title,
+          fingerprint.domain,
+          fingerprint.audience,
+          fingerprint.contentMechanism,
+          fingerprint.aiRole,
+          fingerprint.valueProposition,
+          fingerprint.monetization,
+          fingerprint.productionStyle,
+          fingerprint.contentFormat,
+          fingerprint.goal,
+        ];
+
+        if (
+          values.some(
+            (value) =>
+              value.includes('**') ||
+              value.includes(
+                '<<<CREATOROS',
+              ),
+          )
+        ) {
+          errors.push(
+            `Item ${index + 1} contains leaked formatting markers.`,
+          );
+        }
+      },
+    );
+
+    const uniqueTitles =
+      new Set(
+        normalizedTitles.filter(
+          (title) => title.length > 0,
+        ),
+      );
+
+    if (
+      fingerprints.length > 1 &&
+      uniqueTitles.size <
+        Math.ceil(
+          fingerprints.length * 0.8,
+        )
+    ) {
+      errors.push(
+        'Too many duplicated or generic titles.',
+      );
+    }
+
+    return errors;
+  }
+
+  private firstDefined(
+    record: Record<string, unknown>,
+    keys: string[],
+  ): unknown {
+    for (const key of keys) {
+      const value = record[key];
+
+      if (
+        value !== undefined &&
+        value !== null
+      ) {
+        return value;
+      }
+    }
+
+    return undefined;
+  }
+
+  private cleanText(
+    value: unknown,
+  ): string {
+    if (typeof value !== 'string') {
+      return 'غير محدد';
+    }
+
+    let cleaned =
+      value.trim();
+
+    while (
+      cleaned.startsWith('*')
+    ) {
+      cleaned = cleaned
+        .slice(1)
+        .trimStart();
+    }
+
+    while (
+      cleaned.endsWith('*')
+    ) {
+      cleaned = cleaned
+        .slice(0, -1)
+        .trimEnd();
+    }
+
+    cleaned = cleaned
+      .split('\r')
+      .join(' ')
+      .split('\n')
+      .join(' ')
+      .split('\t')
+      .join(' ');
+
+    while (
+      cleaned.includes('  ')
+    ) {
+      cleaned = cleaned
+        .split('  ')
+        .join(' ');
+    }
+
+    if (!cleaned) {
+      return 'غير محدد';
+    }
+
+    return cleaned.slice(0, 500);
+  }
+
+  private isUndefined(
+    value: string,
+  ): boolean {
+    const normalized =
+      this.normalizeForComparison(
+        value,
+      );
+
+    return (
+      !normalized ||
+      normalized === 'غير محدد' ||
+      normalized === 'unknown' ||
+      normalized ===
+        'not specified'
+    );
+  }
+
+  private normalizeForComparison(
+    value: string,
+  ): string {
+    return value
+      .trim()
+      .toLowerCase()
+      .split('أ')
+      .join('ا')
+      .split('إ')
+      .join('ا')
+      .split('آ')
+      .join('ا')
+      .split('ى')
+      .join('ي')
+      .split('ة')
+      .join('ه');
+  }
+
+  private toPositiveInteger(
+    value: unknown,
+  ): number | null {
+    const parsed = Number(value);
+
+    if (
+      !Number.isInteger(parsed) ||
+      parsed <= 0
+    ) {
+      return null;
+    }
+
+    return parsed;
+  }
+
+  private readPositiveInteger(
+    value: string | undefined,
+    fallback: number,
+  ): number {
+    const parsed = Number(value);
+
+    if (
+      !Number.isInteger(parsed) ||
+      parsed <= 0
+    ) {
+      return fallback;
+    }
+
+    return parsed;
+  }
+}

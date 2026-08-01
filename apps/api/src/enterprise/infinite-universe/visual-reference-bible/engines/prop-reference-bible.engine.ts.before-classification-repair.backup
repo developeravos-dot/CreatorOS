@@ -1,0 +1,236 @@
+﻿import { Injectable } from '@nestjs/common';
+import { randomUUID } from 'node:crypto';
+
+import type {
+  LivingCharacter,
+} from '../../character-os/models/character-os.models';
+
+import type {
+  CanonicalColor,
+  PropReferenceSheet,
+} from '../models/visual-reference-bible.models';
+
+@Injectable()
+export class PropReferenceBibleEngine {
+  createForCharacters(
+    characters: LivingCharacter[],
+    visualStyle: string,
+  ): PropReferenceSheet[] {
+    const props:
+      PropReferenceSheet[] = [];
+
+    for (const character of characters) {
+      for (
+        const element of
+        character.identity.signatureElements
+      ) {
+        props.push(
+          this.create(
+            character,
+            element,
+            visualStyle,
+          ),
+        );
+      }
+    }
+
+    return props;
+  }
+
+  private create(
+    character: LivingCharacter,
+    propName: string,
+    visualStyle: string,
+  ): PropReferenceSheet {
+    const colors =
+      this.colors(character);
+
+    return {
+      referenceId: randomUUID(),
+
+      propName,
+
+      ownerCharacterId:
+        character.identity.characterId,
+
+      ownerCharacterName:
+        character.identity.canonicalName,
+
+      description:
+        `عنصر بصري مميز مرتبط بشخصية ${character.identity.canonicalName}: ${propName}. يجب أن يبقى ثابت الشكل والحجم واللون.`,
+
+      material:
+        this.material(propName),
+
+      scaleDescription:
+        this.scale(propName),
+
+      colors,
+
+      functionalBehavior:
+        this.behavior(propName),
+
+      storyImportance:
+        'عنصر هوية واستمرارية بصرية، وقد يستخدم كأداة سردية داخل الحلقات.',
+
+      canonicalPrompt: [
+        visualStyle,
+        `prop reference sheet for ${propName}`,
+        `مالك العنصر ${character.identity.canonicalName}`,
+        `المادة ${this.material(propName)}`,
+        `المقياس ${this.scale(propName)}`,
+        `الألوان ${colors.map(
+          (color) =>
+            `${color.name} ${color.hex}`,
+        ).join('، ')}`,
+        'front view',
+        'side view',
+        'three-quarter view',
+        'white studio background',
+        'same exact design in all views',
+        'no text',
+      ].join('. '),
+
+      negativePrompt:
+        'تغير الشكل، اختلاف اللون، اختلاف الحجم، أجزاء إضافية، تشوه، كتابة، شعار، علامة مائية',
+
+      continuityKeys: [
+        `prop-${propName}`,
+        `owner-${character.identity.characterId}`,
+      ],
+
+      status: 'draft',
+    };
+  }
+
+  private colors(
+    character: LivingCharacter,
+  ): CanonicalColor[] {
+    return [
+      {
+        name: 'لون أساسي',
+        hex:
+          character.identity.canonicalName.includes(
+            'نُور',
+          )
+            ? '#F2C14E'
+            : character.identity.canonicalName.includes(
+                  'رَام',
+                )
+              ? '#AAB4BE'
+              : '#A6AFBD',
+
+        usage:
+          'السطح الرئيسي للعنصر',
+
+        locked: true,
+      },
+
+      {
+        name: 'لون ثانوي',
+        hex:
+          character.identity.canonicalName.includes(
+            'نُور',
+          )
+            ? '#6FAE63'
+            : character.identity.canonicalName.includes(
+                  'رَام',
+                )
+              ? '#E88C3A'
+              : '#243A66',
+
+        usage:
+          'التفاصيل والحواف',
+
+        locked: true,
+      },
+    ];
+  }
+
+  private material(
+    propName: string,
+  ): string {
+    if (
+      propName.includes('عدسة') ||
+      propName.includes('نظارات')
+    ) {
+      return 'زجاج مضيء ومعدن مطفي.';
+    }
+
+    if (
+      propName.includes('دفتر') ||
+      propName.includes('شارة')
+    ) {
+      return 'معدن قديم مصقول مع نقوش هندسية.';
+    }
+
+    if (
+      propName.includes('حقيبة') ||
+      propName.includes('حزام')
+    ) {
+      return 'قماش متين مع أجزاء معدنية خفيفة.';
+    }
+
+    return 'مادة أصلية متينة مناسبة لعالم الرسوم المتحركة.';
+  }
+
+  private scale(
+    propName: string,
+  ): string {
+    if (
+      propName.includes('حقيبة')
+    ) {
+      return 'بعرض يقارب ثلث عرض جسم الشخصية.';
+    }
+
+    if (
+      propName.includes('دفتر')
+    ) {
+      return 'بحجم يسمح بحمله بيد واحدة.';
+    }
+
+    if (
+      propName.includes('نظارات')
+    ) {
+      return 'متوافقة بدقة مع حجم وجه الشخصية.';
+    }
+
+    return 'حجم ثابت متناسب مع يد وجسم الشخصية.';
+  }
+
+  private behavior(
+    propName: string,
+  ): string[] {
+    if (
+      propName.includes('عدسة')
+    ) {
+      return [
+        'تضيء عند وجود دليل قريب.',
+        'يتغير وهجها دون تغيير الشكل.',
+      ];
+    }
+
+    if (
+      propName.includes('نظارات')
+    ) {
+      return [
+        'تتحرك العدسات أو تتغير المعلومات المعروضة.',
+        'لا يتغير الإطار الأساسي.',
+      ];
+    }
+
+    if (
+      propName.includes('دفتر')
+    ) {
+      return [
+        'يفتح بألواح معدنية متتابعة.',
+        'يحفظ السجلات والرموز.',
+      ];
+    }
+
+    return [
+      'وظيفة ثابتة وفق سياق القصة.',
+      'عدم تغيير التصميم أثناء الاستخدام.',
+    ];
+  }
+}

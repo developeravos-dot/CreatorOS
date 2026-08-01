@@ -1,0 +1,21 @@
+{
+  "worldId": "676d0dae-c1a5-48f7-aba1-42ac5e8384d4",
+  "version": 1,
+  "updatedAt": "2026-07-31T21:10:07.147Z",
+  "locks": [
+    {
+      "lockId": "e765e659-00b6-472e-bff2-c43f5db868b1",
+      "worldId": "676d0dae-c1a5-48f7-aba1-42ac5e8384d4",
+      "entityType": "character",
+      "entityId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+      "entityName": "نُور",
+      "workload": "character-reference",
+      "providerId": "mock-image",
+      "migrationTestId": "1eb117ec-f84b-4b8b-8341-53f388f03f54",
+      "locked": true,
+      "fallbackProviderId": "manual-export",
+      "createdAt": "2026-07-31T21:10:07.146Z",
+      "updatedAt": "2026-07-31T21:10:07.146Z"
+    }
+  ]
+}

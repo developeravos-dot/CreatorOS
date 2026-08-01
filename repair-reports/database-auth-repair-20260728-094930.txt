@@ -1,0 +1,29 @@
+﻿============================================
+CreatorOS Database + Authentication Repair
+Started: 2026-07-28 09:49:30
+============================================
+
+Environment file: C:\Users\User\Desktop\CreatorOS\apps\api\.env
+Environment validation: PASSED
+
+Database host: localhost
+Database port: 55432
+
+PostgreSQL is not reachable. Attempting recovery...
+Docker recovery warning: failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
+Waiting for PostgreSQL... attempt 1/12
+Waiting for PostgreSQL... attempt 2/12
+Waiting for PostgreSQL... attempt 3/12
+Waiting for PostgreSQL... attempt 4/12
+Waiting for PostgreSQL... attempt 5/12
+Waiting for PostgreSQL... attempt 6/12
+Waiting for PostgreSQL... attempt 7/12
+Waiting for PostgreSQL... attempt 8/12
+Waiting for PostgreSQL... attempt 9/12
+Waiting for PostgreSQL... attempt 10/12
+Waiting for PostgreSQL... attempt 11/12
+Waiting for PostgreSQL... attempt 12/12
+
+DATABASE CONNECTION: FAILED
+PostgreSQL is still unavailable on localhost:55432.
+ابدأ PostgreSQL أو Docker Desktop ثم شغّل السكربت مرة أخرى.

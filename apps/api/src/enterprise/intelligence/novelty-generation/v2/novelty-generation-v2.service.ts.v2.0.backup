@@ -1,0 +1,349 @@
+﻿import {
+  BadRequestException,
+  Injectable,
+} from '@nestjs/common';
+import { randomUUID } from 'node:crypto';
+import { GenerateNoveltyV2Dto } from './dto/generate-novelty-v2.dto';
+import { ConceptMutationEngine } from './engines/concept-mutation.engine';
+import { DnaNoveltyEvaluatorEngine } from './engines/dna-novelty-evaluator.engine';
+import { DnaRecombinationEngine } from './engines/dna-recombination.engine';
+import { IdeaDnaExtractorEngine } from './engines/idea-dna-extractor.engine';
+import { IdeaRebuilderEngine } from './engines/idea-rebuilder.engine';
+import type {
+  EvaluatedIdeaDna,
+  IdeaDna,
+  NoveltyV2Iteration,
+  NoveltyV2Result,
+  NoveltyV2Thresholds,
+} from './models/novelty-v2.models';
+
+@Injectable()
+export class NoveltyGenerationV2Service {
+  private readonly defaultThresholds: NoveltyV2Thresholds = {
+    structuralNovelty: 72,
+    mechanismNovelty: 78,
+    ipProtectability: 78,
+    dataMoatStrength: 72,
+    commercialValue: 75,
+    feasibility: 62,
+    maximumDuplicateRisk: 24,
+    total: 76,
+  };
+
+  constructor(
+    private readonly extractor: IdeaDnaExtractorEngine,
+    private readonly mutationEngine: ConceptMutationEngine,
+    private readonly recombinationEngine: DnaRecombinationEngine,
+    private readonly evaluator: DnaNoveltyEvaluatorEngine,
+    private readonly rebuilder: IdeaRebuilderEngine,
+  ) {}
+
+  generate(dto: GenerateNoveltyV2Dto): NoveltyV2Result {
+    this.validate(dto);
+
+    const runId = randomUUID();
+
+    const maximumIterations = this.integer(
+      dto.maximumIterations ?? 6,
+      1,
+      12,
+    );
+
+    const populationSize = this.integer(
+      dto.populationSize ?? 24,
+      6,
+      60,
+    );
+
+    const eliteSize = this.integer(
+      dto.eliteSize ?? 5,
+      2,
+      12,
+    );
+
+    const thresholds: NoveltyV2Thresholds = {
+      ...this.defaultThresholds,
+      ...(dto.thresholds ?? {}),
+    };
+
+    const knownCompetitorPatterns = this.clean(
+      dto.knownCompetitorPatterns,
+    );
+
+    const originalDna = this.extractor.extract(dto);
+
+    let elites: IdeaDna[] = [originalDna];
+    let best = this.evaluator.evaluate(
+      originalDna,
+      originalDna,
+      knownCompetitorPatterns,
+      thresholds,
+    );
+
+    const iterations: NoveltyV2Iteration[] = [];
+    const globalFingerprints = new Set<string>([
+      this.evaluator.fingerprint(originalDna),
+    ]);
+
+    let totalCandidatesGenerated = 1;
+    let uniqueCandidatesEvaluated = 1;
+
+    for (
+      let iteration = 1;
+      iteration <= maximumIterations;
+      iteration += 1
+    ) {
+      const mutations = this.mutationEngine.generate(
+        elites,
+        iteration,
+        populationSize,
+      );
+
+      const recombinations =
+        this.recombinationEngine.recombine(
+          mutations,
+          iteration,
+          Math.max(
+            2,
+            Math.floor(populationSize / 3),
+          ),
+        );
+
+      const population = [
+        ...elites,
+        ...mutations,
+        ...recombinations,
+      ];
+
+      totalCandidatesGenerated +=
+        mutations.length + recombinations.length;
+
+      const uniquePopulation: IdeaDna[] = [];
+      const iterationFingerprints = new Set<string>();
+
+      for (const candidate of population) {
+        const fingerprint =
+          this.evaluator.fingerprint(candidate);
+
+        if (iterationFingerprints.has(fingerprint)) {
+          continue;
+        }
+
+        iterationFingerprints.add(fingerprint);
+
+        if (!globalFingerprints.has(fingerprint)) {
+          globalFingerprints.add(fingerprint);
+          uniqueCandidatesEvaluated += 1;
+        }
+
+        uniquePopulation.push(candidate);
+      }
+
+      const evaluated = uniquePopulation.map(
+        (candidate) =>
+          this.evaluator.evaluate(
+            candidate,
+            originalDna,
+            knownCompetitorPatterns,
+            thresholds,
+          ),
+      );
+
+      const ranked = this.rank(evaluated);
+
+      if (ranked.length === 0) {
+        break;
+      }
+
+      best = ranked[0] ?? best;
+
+      elites = ranked
+        .slice(0, eliteSize)
+        .map((candidate) =>
+          this.stripEvaluation(candidate),
+        );
+
+      const accepted =
+        best.acceptanceFailures.length === 0;
+
+      iterations.push({
+        iteration,
+        populationSize: population.length,
+        uniqueCandidates: uniquePopulation.length,
+        selectedCandidateIds: elites.map(
+          (candidate) => candidate.id,
+        ),
+        bestCandidateId: best.id,
+        bestScore: best.scores.total,
+        accepted,
+      });
+
+      if (accepted) {
+        break;
+      }
+    }
+
+    const accepted =
+      best.acceptanceFailures.length === 0;
+
+    return {
+      success: true,
+      engine:
+        'Protectable Idea Novelty Generation Engine',
+      version: '2.0.0',
+      runId,
+      status: accepted
+        ? 'accepted'
+        : 'best-effort',
+
+      originalDna,
+      finalProtectableIdeaDna: best,
+      finalProtectableIdea:
+        this.rebuilder.rebuild(best),
+
+      thresholds,
+      iterations,
+      totalCandidatesGenerated,
+      uniqueCandidatesEvaluated,
+    };
+  }
+
+  getStatus() {
+    return {
+      success: true,
+      engine:
+        'Protectable Idea Novelty Generation Engine',
+      version: '2.0.0',
+      phase: 'Idea DNA Evolution',
+      status: 'operational',
+      architecture: {
+        ideaDnaExtractor: true,
+        conceptMutationEngine: true,
+        dnaRecombinationEngine: true,
+        structuralNoveltyEvaluator: true,
+        businessModelMutation: true,
+        technologyMutation: true,
+        marketMutation: true,
+        networkMutation: true,
+        dataMoatMutation: true,
+        intellectualPropertyMutation: true,
+        riskMutation: true,
+        evolutionarySelection: true,
+        duplicateCandidateSuppression: true,
+        ideaRebuilder: true,
+      },
+      defaultThresholds: this.defaultThresholds,
+    };
+  }
+
+  private rank(
+    candidates: EvaluatedIdeaDna[],
+  ): EvaluatedIdeaDna[] {
+    return [...candidates].sort((left, right) => {
+      const failureDifference =
+        left.acceptanceFailures.length -
+        right.acceptanceFailures.length;
+
+      if (failureDifference !== 0) {
+        return failureDifference;
+      }
+
+      if (
+        right.scores.total !==
+        left.scores.total
+      ) {
+        return (
+          right.scores.total -
+          left.scores.total
+        );
+      }
+
+      if (
+        left.scores.duplicateRisk !==
+        right.scores.duplicateRisk
+      ) {
+        return (
+          left.scores.duplicateRisk -
+          right.scores.duplicateRisk
+        );
+      }
+
+      return (
+        right.scores.diversity -
+        left.scores.diversity
+      );
+    });
+  }
+
+  private stripEvaluation(
+    evaluated: EvaluatedIdeaDna,
+  ): IdeaDna {
+    const {
+      scores: _scores,
+      weaknesses: _weaknesses,
+      acceptanceFailures: _acceptanceFailures,
+      ...idea
+    } = evaluated;
+
+    return idea;
+  }
+
+  private validate(dto: GenerateNoveltyV2Dto): void {
+    if (!dto || typeof dto !== 'object') {
+      throw new BadRequestException(
+        'Request body is required.',
+      );
+    }
+
+    if (!dto.title || dto.title.trim().length < 3) {
+      throw new BadRequestException(
+        'title must contain at least 3 characters.',
+      );
+    }
+
+    if (
+      !dto.description ||
+      dto.description.trim().length < 20
+    ) {
+      throw new BadRequestException(
+        'description must contain at least 20 characters.',
+      );
+    }
+  }
+
+  private clean(values?: string[]): string[] {
+    if (!Array.isArray(values)) {
+      return [];
+    }
+
+    return [
+      ...new Set(
+        values
+          .filter(
+            (value) =>
+              typeof value === 'string',
+          )
+          .map((value) => value.trim())
+          .filter(Boolean),
+      ),
+    ];
+  }
+
+  private integer(
+    value: number,
+    minimum: number,
+    maximum: number,
+  ): number {
+    if (!Number.isFinite(value)) {
+      return minimum;
+    }
+
+    return Math.max(
+      minimum,
+      Math.min(
+        maximum,
+        Math.floor(value),
+      ),
+    );
+  }
+}

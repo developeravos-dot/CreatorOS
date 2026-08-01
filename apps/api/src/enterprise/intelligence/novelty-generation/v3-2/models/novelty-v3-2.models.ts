@@ -1,0 +1,184 @@
+﻿import type {
+  NoveltyV31Result,
+  PatentEvidenceRecord,
+  PatentSearchQueryPlan,
+} from '../../v3-1/models/novelty-v3-1.models';
+
+export type PatentSearchProviderId =
+  | 'local-simulation'
+  | 'lens-patents'
+  | 'google-patents'
+  | 'espacenet'
+  | 'wipo-patentscope'
+  | 'uspto';
+
+export type PatentSearchJobStatus =
+  | 'queued'
+  | 'running'
+  | 'completed'
+  | 'partial'
+  | 'failed'
+  | 'provider-unavailable';
+
+export interface PatentSearchProviderStatus {
+  id: PatentSearchProviderId;
+  name: string;
+  enabled: boolean;
+  available: boolean;
+  mode:
+    | 'local-simulation'
+  | 'lens-patents'
+    | 'public-api'
+    | 'licensed-api'
+    | 'browser-adapter'
+    | 'unconfigured';
+  requiresCredentials: boolean;
+  capabilities: string[];
+  limitation?: string;
+}
+
+export interface PatentSearchRequest {
+  jobId: string;
+  queryPlan: PatentSearchQueryPlan;
+  maximumDocuments: number;
+  language: string;
+  jurisdiction?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  contextPatterns: string[];
+}
+
+export interface NormalizedPatentDocument {
+  documentId: string;
+  providerId: PatentSearchProviderId;
+
+  title: string;
+  abstract: string;
+  claims: string[];
+
+  publicationNumber?: string;
+  applicationNumber?: string;
+  publicationDate?: string;
+  priorityDate?: string;
+
+  applicants: string[];
+  inventors: string[];
+  classifications: string[];
+
+  sourceReference: string;
+  sourceUrl?: string;
+
+  queryId: string;
+  retrievedAt: string;
+
+  verificationStatus:
+    | 'unverified'
+    | 'partially-verified'
+    | 'verified';
+
+  synthetic: boolean;
+  rawScore?: number;
+}
+
+export interface PatentSearchJob {
+  jobId: string;
+  queryId: string;
+  providerId: PatentSearchProviderId;
+  status: PatentSearchJobStatus;
+
+  startedAt: string;
+  completedAt?: string;
+
+  documentsFound: number;
+  documents: NormalizedPatentDocument[];
+
+  errors: string[];
+  warnings: string[];
+}
+
+export interface ClaimSimilarityResult {
+  claimNumber: number;
+  documentId: string;
+  publicationNumber?: string;
+  documentTitle: string;
+
+  claimSimilarity: number;
+  elementCoverage: number;
+  semanticOverlap: number;
+
+  overlappingElements: string[];
+  distinguishingElements: string[];
+
+  risk:
+    | 'low'
+    | 'moderate'
+    | 'high'
+    | 'critical';
+
+  verified: boolean;
+}
+
+export interface PatentSearchExecutionSummary {
+  requestedProviders: PatentSearchProviderId[];
+  availableProviders: PatentSearchProviderId[];
+  unavailableProviders: PatentSearchProviderId[];
+
+  jobsCreated: number;
+  jobsCompleted: number;
+  jobsFailed: number;
+
+  totalDocuments: number;
+  uniqueDocuments: number;
+  verifiedDocuments: number;
+  syntheticDocuments: number;
+
+  durationMs: number;
+}
+
+export interface AutoEvidenceIngestionResult {
+  evidenceRecordsCreated: number;
+  patentEvidenceCreated: number;
+  priorArtEvidenceCreated: number;
+
+  verifiedEvidenceCreated: number;
+  unverifiedEvidenceCreated: number;
+
+  evidenceRecords: PatentEvidenceRecord[];
+}
+
+export interface NoveltyV32Result {
+  success: boolean;
+  engine: string;
+  version: string;
+  runId: string;
+
+  status:
+    | 'search-completed'
+    | 'search-partial'
+    | 'provider-configuration-required'
+    | 'search-failed';
+
+  baselineCalibration: NoveltyV31Result;
+
+  providerRegistry: PatentSearchProviderStatus[];
+  searchPlan: PatentSearchQueryPlan[];
+  searchJobs: PatentSearchJob[];
+
+  normalizedDocuments: NormalizedPatentDocument[];
+  claimSimilarityAnalysis: ClaimSimilarityResult[];
+
+  executionSummary: PatentSearchExecutionSummary;
+  autoEvidenceIngestion: AutoEvidenceIngestionResult;
+
+  recalibratedResult: NoveltyV31Result;
+
+  decision: {
+    formalSearchExecuted: boolean;
+    externalProviderUsed: boolean;
+    verifiedDocumentsFound: boolean;
+    filingReady: boolean;
+    nextAction: string;
+    limitations: string[];
+  };
+}
+

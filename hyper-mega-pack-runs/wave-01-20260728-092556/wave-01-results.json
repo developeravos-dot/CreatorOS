@@ -1,0 +1,62 @@
+[
+    {
+        "Test":  "Auth Me",
+        "Status":  "PASSED",
+        "Uri":  "http://localhost:3000/api/v1/auth/me",
+        "Detail":  "{\"sub\":\"creatoros-bootstrap-admin\",\"username\":\"admin\",\"roles\":[\"admin\"],\"iat\":1785216369,\"exp\":1785217269}"
+    },
+    {
+        "Test":  "Platform Status",
+        "Status":  "PASSED",
+        "Uri":  "http://localhost:3000/api/v1/platform/status",
+        "Detail":  "{\"platform\":{\"name\":\"CreatorOS / AVOS\",\"version\":\"0.3.0\",\"status\":\"operational\"},\"phase\":{\"id\":\"PHASE-3.0\",\"name\":\"Blueprint Engine Mega Pack\",\"status\":\"operational\"},\"registry\":{\"registry\":\"system-registry\",\"status\":\"operational\",\"domains\":5,\"capabilities\":9,\"dependencies\":20,\"sources\":{\"domainRegistry\":\"operational\",\"capabilityRegistry\":\"operational\",\"dependencyRegistry\":\"operational\"},\"governance\":{\"foundationFirst\":true,\"capabilityFirst\":true,\"blueprintDriven\":true,\"humanFinalAuthority\":true}},\"eventBus\":{\"module\":\"event-bus\",\"status\":\"operational\",\"provider\":\"InMemoryEventBus\",\"subscriptions\":1,\"receivedEvents\":0},\"knowledge\":{\"module\":\"knowledge\",\"package\":\"@creatoros/knowledge\",\"status\":\"operational\",\"provider\":\"InMemoryKnowledgeStore\",\"objects\":0,\"relations\":0,\"versions\":0},\"workflow\":{\"module\":\"workflow\",\"package\":\"@creatoros/workflow\",\"status\":\"operational\",\"provider\":\"InMemoryWorkflowEngine\",\"definitions\":0,\"instances\":0,\"running\":0,\"paused\":0,\"completed\":0,\"failed\":0,\"cancelled\":0},\"messaging\":{\"module\":\"messaging\",\"package\":\"@creatoros/messaging\",\"status\":\"operational\",\"provider\":\"InMemoryMessagingBroker\",\"topics\":0,\"subscriptions\":0,\"messages\":0,\"deliveries\":0,\"delivered\":0,\"failed\":0,\"deadLetters\":0,\"fullyDeliveredMessages\":0},\"runtime\":{\"module\":\"runtime\",\"bootstrapped\":true,\"bootstrap\":{\"registered\":6,\"validated\":6,\"loaded\":6,\"started\":6,\"failed\":0},\"runtime\":\"@creatoros/runtime\",\"version\":\"0.1.0\",\"status\":\"operational\",\"provider\":\"InMemoryRuntimeEngine\",\"plugins\":6,\"enabled\":6,\"disabled\":0,\"registered\":0,\"validated\":0,\"loaded\":0,\"started\":6,\"stopped\":0,\"failed\":0,\"capabilities\":14,\"activeCapabilities\":14,\"lifecycleEvents\":24},\"governance\":{\"foundationFirst\":true,\"capabilityFirst\":true,\"blueprintDriven\":true,\"humanFinalAuthority\":true},\"timestamp\":\"2026-07-28T05:26:09.539Z\"}"
+    },
+    {
+        "Test":  "Runtime Health",
+        "Status":  "PASSED",
+        "Uri":  "http://localhost:3000/api/v1/runtime/health",
+        "Detail":  "{\"module\":\"runtime\",\"bootstrapped\":true,\"bootstrap\":{\"registered\":6,\"validated\":6,\"loaded\":6,\"started\":6,\"failed\":0},\"runtime\":\"@creatoros/runtime\",\"version\":\"0.1.0\",\"status\":\"operational\",\"provider\":\"InMemoryRuntimeEngine\",\"plugins\":6,\"enabled\":6,\"disabled\":0,\"registered\":0,\"validated\":0,\"loaded\":0,\"started\":6,\"stopped\":0,\"failed\":0,\"capabilities\":14,\"activeCapabilities\":14,\"lifecycleEvents\":24}"
+    },
+    {
+        "Test":  "Capabilities",
+        "Status":  "FAILED",
+        "Uri":  "http://localhost:3000/api/v1/capabilities",
+        "Detail":  "The remote server returned an error: (500) Internal Server Error."
+    },
+    {
+        "Test":  "Registry Summary",
+        "Status":  "PASSED",
+        "Uri":  "http://localhost:3000/api/v1/registry/summary",
+        "Detail":  "{\"registry\":\"system-registry\",\"status\":\"operational\",\"domains\":5,\"capabilities\":9,\"dependencies\":20,\"sources\":{\"domainRegistry\":\"operational\",\"capabilityRegistry\":\"operational\",\"dependencyRegistry\":\"operational\"},\"governance\":{\"foundationFirst\":true,\"capabilityFirst\":true,\"blueprintDriven\":true,\"humanFinalAuthority\":true}}"
+    },
+    {
+        "Test":  "Blueprint Status",
+        "Status":  "FAILED",
+        "Uri":  "http://localhost:3000/api/v1/blueprints/status",
+        "Detail":  "The remote server returned an error: (500) Internal Server Error."
+    },
+    {
+        "Test":  "Knowledge Status",
+        "Status":  "PASSED",
+        "Uri":  "http://localhost:3000/api/v1/knowledge/status",
+        "Detail":  "{\"module\":\"knowledge\",\"package\":\"@creatoros/knowledge\",\"status\":\"operational\",\"provider\":\"InMemoryKnowledgeStore\",\"objects\":0,\"relations\":0,\"versions\":0}"
+    },
+    {
+        "Test":  "Workflow Status",
+        "Status":  "PASSED",
+        "Uri":  "http://localhost:3000/api/v1/workflows/status",
+        "Detail":  "{\"module\":\"workflow\",\"package\":\"@creatoros/workflow\",\"status\":\"operational\",\"provider\":\"InMemoryWorkflowEngine\",\"definitions\":0,\"instances\":0,\"running\":0,\"paused\":0,\"completed\":0,\"failed\":0,\"cancelled\":0}"
+    },
+    {
+        "Test":  "Messaging Status",
+        "Status":  "PASSED",
+        "Uri":  "http://localhost:3000/api/v1/messaging/status",
+        "Detail":  "{\"module\":\"messaging\",\"package\":\"@creatoros/messaging\",\"status\":\"operational\",\"provider\":\"InMemoryMessagingBroker\",\"topics\":0,\"subscriptions\":0,\"messages\":0,\"deliveries\":0,\"delivered\":0,\"failed\":0,\"deadLetters\":0,\"fullyDeliveredMessages\":0}"
+    },
+    {
+        "Test":  "Events Status",
+        "Status":  "PASSED",
+        "Uri":  "http://localhost:3000/api/v1/events/status",
+        "Detail":  "{\"module\":\"event-bus\",\"status\":\"operational\",\"provider\":\"InMemoryEventBus\",\"subscriptions\":1,\"receivedEvents\":0}"
+    }
+]

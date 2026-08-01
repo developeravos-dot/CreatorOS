@@ -1,0 +1,52 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  background: #05070d;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button:disabled {
+  cursor: not-allowed !important;
+  opacity: 0.55;
+}
+
+@media (max-width: 950px) {
+  aside {
+    width: 220px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  #root > div {
+    display: block !important;
+  }
+
+  aside {
+    width: 100% !important;
+    min-height: auto !important;
+    position: static !important;
+    border-left: 0 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  main {
+    padding: 20px !important;
+  }
+}

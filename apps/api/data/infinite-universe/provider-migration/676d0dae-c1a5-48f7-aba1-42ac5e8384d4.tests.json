@@ -1,0 +1,45 @@
+{
+  "worldId": "676d0dae-c1a5-48f7-aba1-42ac5e8384d4",
+  "version": 1,
+  "updatedAt": "2026-07-31T21:10:07.142Z",
+  "tests": [
+    {
+      "migrationTestId": "1eb117ec-f84b-4b8b-8341-53f388f03f54",
+      "worldId": "676d0dae-c1a5-48f7-aba1-42ac5e8384d4",
+      "bibleId": "e35d3e67-c449-494d-a0fa-c3986cd06da6",
+      "entityType": "character",
+      "entityId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+      "entityName": "نُور",
+      "currentProviderId": "manual-export",
+      "candidateProviderId": "mock-image",
+      "workload": "character-reference",
+      "scores": {
+        "identity": 98,
+        "colors": 98,
+        "proportions": 97,
+        "signatureElements": 98,
+        "style": 95,
+        "continuity": 99,
+        "total": 97.7
+      },
+      "thresholds": {
+        "minimumIdentity": 95,
+        "minimumColors": 95,
+        "minimumProportions": 95,
+        "minimumSignatureElements": 95,
+        "minimumStyle": 92,
+        "minimumContinuity": 97,
+        "minimumTotal": 97
+      },
+      "status": "approved",
+      "productionAllowed": true,
+      "rollbackProviderId": "manual-export",
+      "failures": [],
+      "warnings": [],
+      "humanApprovalRequired": true,
+      "approvedByHuman": true,
+      "createdAt": "2026-07-31T21:09:41.060Z",
+      "updatedAt": "2026-07-31T21:10:07.141Z"
+    }
+  ]
+}

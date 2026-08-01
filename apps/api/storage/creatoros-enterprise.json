@@ -1,0 +1,45 @@
+{
+  "projects": [
+    {
+      "id": "78726aa9-1bb6-4a15-a4d3-cc909d47ead7",
+      "name": "CreatorOS Media Project",
+      "description": "منظومة إنتاج محتوى ذكية",
+      "platform": "Both",
+      "status": "planning",
+      "createdAt": "2026-07-30T08:17:23.727Z",
+      "updatedAt": "2026-07-30T08:17:23.727Z"
+    }
+  ],
+  "scripts": [
+    {
+      "id": "3ef46c17-21d3-4da4-bead-f38a43f47f30",
+      "projectId": "78726aa9-1bb6-4a15-a4d3-cc909d47ead7",
+      "title": "السكربت الأول",
+      "content": "هذا أول سكربت داخل CreatorOS Enterprise.",
+      "status": "draft",
+      "createdAt": "2026-07-30T08:17:35.809Z",
+      "updatedAt": "2026-07-30T08:17:35.809Z"
+    }
+  ],
+  "calendar": [
+    {
+      "id": "be25f353-6534-4333-a9a7-8f3100b80b1d",
+      "projectId": "78726aa9-1bb6-4a15-a4d3-cc909d47ead7",
+      "title": "نشر الفيديو الأول",
+      "scheduledAt": "2026-07-31T08:17:47.071Z",
+      "platform": "Both",
+      "status": "scheduled",
+      "createdAt": "2026-07-30T08:17:48.056Z"
+    }
+  ],
+  "prompts": [
+    {
+      "id": "24f2b2c1-8098-4a39-838e-f29e4ce848c0",
+      "name": "مولد أفكار المحتوى",
+      "purpose": "توليد أفكار أصلية قابلة للانتشار",
+      "prompt": "أنشئ عشر أفكار محتوى أصلية ومبتكرة تناسب YouTube وTikTok.",
+      "createdAt": "2026-07-30T08:17:55.739Z",
+      "updatedAt": "2026-07-30T08:17:55.739Z"
+    }
+  ]
+}

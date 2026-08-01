@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  />
+  <title>CreatorOS</title>
+  <link
+    rel="stylesheet"
+    href="styles.css"
+  />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">C</div>
+        <div>
+          <strong>CreatorOS</strong>
+          <span>Enterprise v1</span>
+        </div>
+      </div>
+
+      <nav>
+        <button data-page="dashboard">Dashboard</button>
+        <button data-page="projects">Projects</button>
+        <button data-page="builder">Project Builder</button>
+        <button data-page="ai">AI Workspace</button>
+        <button data-page="security">Trust & Security</button>
+        <button data-page="operations">Operations</button>
+        <button data-page="settings">Settings</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span class="status-dot"></span>
+        Desktop Foundation
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">CREATOR INTELLIGENCE PLATFORM</p>
+          <h1>Build anything from one command.</h1>
+        </div>
+        <button
+          id="refresh-status"
+          class="primary"
+        >
+          Refresh Systems
+        </button>
+      </header>
+
+      <section id="page-dashboard">
+        <div class="hero-card">
+          <div>
+            <span class="badge">PRODUCTION READY</span>
+            <h2>CreatorOS Enterprise Command Center</h2>
+            <p>
+              One workspace for projects, AI teams,
+              security, deployment and production.
+            </p>
+          </div>
+          <div class="hero-score">
+            <strong>100</strong>
+            <span>Readiness</span>
+          </div>
+        </div>
+
+        <div class="grid five">
+          <article class="status-card">
+            <span>Platform Core</span>
+            <strong id="platform-status">Checking...</strong>
+          </article>
+          <article class="status-card">
+            <span>Intelligence</span>
+            <strong id="intelligence-status">Checking...</strong>
+          </article>
+          <article class="status-card">
+            <span>Security</span>
+            <strong id="security-status">Checking...</strong>
+          </article>
+          <article class="status-card">
+            <span>Operations</span>
+            <strong id="operations-status">Checking...</strong>
+          </article>
+          <article class="status-card">
+            <span>Production</span>
+            <strong id="production-status">Checking...</strong>
+          </article>
+        </div>
+
+        <div class="grid two">
+          <article class="panel">
+            <h3>Active Capabilities</h3>
+            <ul class="capability-list">
+              <li>Capability Fabric</li>
+              <li>Knowledge Fabric</li>
+              <li>AI Organization OS</li>
+              <li>Trust & Security</li>
+              <li>Plugin Marketplace</li>
+              <li>Production Validation</li>
+            </ul>
+          </article>
+          <article class="panel">
+            <h3>Governance</h3>
+            <div class="governance">
+              <span>Foundation First</span>
+              <span>Capability First</span>
+              <span>Blueprint Driven</span>
+              <span>Human Final Authority</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="page-projects" hidden>
+        <div class="section-title">
+          <h2>Projects</h2>
+          <p>Manage all CreatorOS initiatives.</p>
+        </div>
+        <div class="empty-state">
+          <strong>No desktop projects yet</strong>
+          <p>
+            Create the first project from Project Builder.
+          </p>
+        </div>
+      </section>
+
+      <section id="page-builder" hidden>
+        <div class="section-title">
+          <h2>Project Builder</h2>
+          <p>
+            Convert a project idea into an executable blueprint.
+          </p>
+        </div>
+
+        <div class="grid two">
+          <form
+            id="project-form"
+            class="panel form"
+          >
+            <label>
+              Project name
+              <input
+                id="project-name"
+                required
+                placeholder="Example: Creator Studio"
+              />
+            </label>
+            <label>
+              Project type
+              <select id="project-type">
+                <option>Web Application</option>
+                <option>Desktop Application</option>
+                <option>Mobile Application</option>
+                <option>AI Platform</option>
+                <option>Enterprise System</option>
+              </select>
+            </label>
+            <label>
+              Full specification
+              <textarea
+                id="project-description"
+                required
+                rows="10"
+                placeholder="Describe the project from A to Z..."
+              ></textarea>
+            </label>
+            <button class="primary" type="submit">
+              Build Blueprint
+            </button>
+          </form>
+
+          <article class="panel">
+            <h3>Builder Output</h3>
+            <pre id="builder-output">Waiting for a project...</pre>
+          </article>
+        </div>
+      </section>
+
+      <section id="page-ai" hidden>
+        <div class="section-title">
+          <h2>AI Workspace</h2>
+          <p>
+            Organize specialist AI agents around one mission.
+          </p>
+        </div>
+
+        <div class="grid two">
+          <article class="panel form">
+            <label>
+              Mission
+              <textarea
+                id="ai-mission"
+                rows="12"
+                placeholder="Define the mission for the AI organization..."
+              ></textarea>
+            </label>
+            <button
+              id="ai-run"
+              class="primary"
+            >
+              Prepare AI Team
+            </button>
+          </article>
+
+          <article class="panel">
+            <h3>AI Organization</h3>
+            <pre id="ai-output">No active mission.</pre>
+          </article>
+        </div>
+      </section>
+
+      <section id="page-security" hidden>
+        <div class="section-title">
+          <h2>Trust & Security</h2>
+          <p>
+            Identity, access, zero trust and audit control.
+          </p>
+        </div>
+        <div class="grid three">
+          <article class="panel"><h3>Identity</h3><p>Role-based access control enabled.</p></article>
+          <article class="panel"><h3>Zero Trust</h3><p>Verify every request and deny by default.</p></article>
+          <article class="panel"><h3>Audit</h3><p>Authentication and sensitive actions tracked.</p></article>
+        </div>
+      </section>
+
+      <section id="page-operations" hidden>
+        <div class="section-title">
+          <h2>Operations</h2>
+          <p>
+            Plugins, deployments, runbooks and recovery.
+          </p>
+        </div>
+        <div class="grid three">
+          <article class="panel"><h3>Marketplace</h3><p>Extension lifecycle operational.</p></article>
+          <article class="panel"><h3>Deployment</h3><p>Plan, execute, verify and roll back.</p></article>
+          <article class="panel"><h3>Recovery</h3><p>Verified backups and release manifests.</p></article>
+        </div>
+      </section>
+
+      <section id="page-settings" hidden>
+        <div class="section-title">
+          <h2>Settings</h2>
+          <p>Desktop and API environment.</p>
+        </div>
+        <div class="grid two">
+          <article class="panel form">
+            <label>
+              CreatorOS API URL
+              <input id="api-url" readonly />
+            </label>
+            <p class="muted">
+              Override with CREATOROS_API_URL before launching.
+            </p>
+          </article>
+          <article class="panel">
+            <h3>Environment</h3>
+            <pre id="environment-output">Loading...</pre>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

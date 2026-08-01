@@ -1,0 +1,43 @@
+import { Module } from '@nestjs/common';
+import { PrismaService } from './prisma.service';
+import {
+  AgentRepository,
+  ApprovalGateRepository,
+  AuditLogRepository,
+  BlueprintRepository,
+  BlueprintVersionRepository,
+  CapabilityRepository,
+  ExecutionPlanRepository,
+  IntegrationRepository,
+  KnowledgeEdgeRepository,
+  KnowledgeNodeRepository,
+  OrganizationUnitRepository,
+  RuntimePluginRepository,
+} from './repositories';
+
+const repositories = [
+  AgentRepository,
+  ApprovalGateRepository,
+  AuditLogRepository,
+  BlueprintRepository,
+  BlueprintVersionRepository,
+  CapabilityRepository,
+  ExecutionPlanRepository,
+  IntegrationRepository,
+  KnowledgeEdgeRepository,
+  KnowledgeNodeRepository,
+  OrganizationUnitRepository,
+  RuntimePluginRepository,
+];
+
+@Module({
+  providers: [
+    PrismaService,
+    ...repositories,
+  ],
+  exports: [
+    PrismaService,
+    ...repositories,
+  ],
+})
+export class PersistenceRepositoriesModule {}

@@ -1,0 +1,115 @@
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '../../persistence/prisma.service';
+import { KnowledgeInsightStatus } from '../../../generated/prisma/enums';
+import { CreateKnowledgeEvidenceDto, CreateKnowledgeInsightDto, CreateKnowledgeSourceDto, KnowledgeGraphQueryDto, TransitionKnowledgeInsightDto, UpdateKnowledgeSourceDto } from './dto/knowledge-intelligence.dto';
+
+@Injectable()
+export class KnowledgeIntelligenceService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  private async audit(action: string, resourceType: string, resourceId?: string, payload?: object) {
+    await this.prisma.auditLog.create({ data: { eventType: `knowledge.${action}`, actorType: 'SYSTEM', resourceType, resourceId, action, payload: payload as any } });
+  }
+
+  private conflict(error: unknown): never {
+    if ((error as { code?: string }).code === 'P2002') throw new ConflictException('A knowledge record with this key already exists.');
+    throw error;
+  }
+
+  async dashboard() {
+    const [nodes, edges, sources, evidence, insights, proposed, approved, rejected] = await Promise.all([
+      this.prisma.knowledgeNode.count({ where: { status: 'ACTIVE' } }),
+      this.prisma.knowledgeEdge.count(),
+      this.prisma.knowledgeSource.count({ where: { status: 'ACTIVE' } }),
+      this.prisma.knowledgeEvidence.count(),
+      this.prisma.knowledgeInsight.count(),
+      this.prisma.knowledgeInsight.count({ where: { status: 'PROPOSED' } }),
+      this.prisma.knowledgeInsight.count({ where: { status: 'APPROVED' } }),
+      this.prisma.knowledgeInsight.count({ where: { status: 'REJECTED' } }),
+    ]);
+    return { graph: { nodes, edges }, provenance: { sources, evidence }, insights: { total: insights, proposed, approved, rejected }, humanFinalAuthority: true };
+  }
+
+  graph(input: KnowledgeGraphQueryDto) {
+    const limit = input.limit ?? 50;
+    return this.prisma.knowledgeNode.findMany({
+      where: {
+        ...(input.includeInactive ? {} : { status: 'ACTIVE' }),
+        ...(input.type ? { type: input.type } : {}),
+        ...(input.query ? { OR: [{ name: { contains: input.query, mode: 'insensitive' } }, { description: { contains: input.query, mode: 'insensitive' } }, { nodeKey: { contains: input.query, mode: 'insensitive' } }] } : {}),
+      },
+      include: { outgoing: true, incoming: true, evidence: { include: { source: true } }, insights: true },
+      orderBy: { updatedAt: 'desc' },
+      take: limit,
+    });
+  }
+
+  async traverse(nodeId: string, depth = 1) {
+    const node = await this.prisma.knowledgeNode.findUnique({ where: { id: nodeId } });
+    if (!node) throw new NotFoundException('Knowledge node not found.');
+    const boundedDepth = Math.max(1, Math.min(depth, 4));
+    const nodes = new Map<string, unknown>([[node.id, node]]);
+    let frontier = [node.id];
+    const edges: unknown[] = [];
+    for (let level = 0; level < boundedDepth && frontier.length; level += 1) {
+      const found = await this.prisma.knowledgeEdge.findMany({ where: { OR: [{ sourceId: { in: frontier } }, { targetId: { in: frontier } }] } });
+      edges.push(...found);
+      const ids = [...new Set(found.flatMap((edge) => [edge.sourceId, edge.targetId]))].filter((id) => !nodes.has(id));
+      if (!ids.length) break;
+      const related = await this.prisma.knowledgeNode.findMany({ where: { id: { in: ids } } });
+      related.forEach((item) => nodes.set(item.id, item));
+      frontier = related.map((item) => item.id);
+    }
+    return { rootNodeId: nodeId, depth: boundedDepth, nodes: [...nodes.values()], edges };
+  }
+
+  listSources() { return this.prisma.knowledgeSource.findMany({ orderBy: { updatedAt: 'desc' } }); }
+  async createSource(input: CreateKnowledgeSourceDto) {
+    try {
+      const row = await this.prisma.knowledgeSource.create({ data: { ...input, metadata: (input.metadata ?? {}) as any } });
+      await this.audit('source.created', 'KnowledgeSource', row.id, { sourceKey: row.sourceKey });
+      return row;
+    } catch (error) { this.conflict(error); }
+  }
+  async updateSource(id: string, input: UpdateKnowledgeSourceDto) {
+    const found = await this.prisma.knowledgeSource.findUnique({ where: { id } });
+    if (!found) throw new NotFoundException('Knowledge source not found.');
+    const row = await this.prisma.knowledgeSource.update({ where: { id }, data: { ...input, ...(input.metadata !== undefined ? { metadata: input.metadata as any } : {}) } });
+    await this.audit('source.updated', 'KnowledgeSource', id, { status: row.status });
+    return row;
+  }
+
+  listEvidence(nodeId?: string) { return this.prisma.knowledgeEvidence.findMany({ where: nodeId ? { nodeId } : undefined, include: { node: true, source: true }, orderBy: { createdAt: 'desc' }, take: 200 }); }
+  async createEvidence(input: CreateKnowledgeEvidenceDto) {
+    const [node, source] = await Promise.all([this.prisma.knowledgeNode.findUnique({ where: { id: input.nodeId } }), this.prisma.knowledgeSource.findUnique({ where: { id: input.sourceId } })]);
+    if (!node) throw new NotFoundException('Knowledge node not found.');
+    if (!source) throw new NotFoundException('Knowledge source not found.');
+    const observedAt = input.observedAt ? new Date(input.observedAt) : new Date();
+    if (Number.isNaN(observedAt.getTime())) throw new ConflictException('observedAt must be a valid date.');
+    const row = await this.prisma.knowledgeEvidence.create({ data: { nodeId: input.nodeId, sourceId: input.sourceId, claim: input.claim, confidence: input.confidence, score: input.score, context: (input.context ?? {}) as any, observedAt } });
+    await this.audit('evidence.created', 'KnowledgeEvidence', row.id, { nodeId: row.nodeId, sourceId: row.sourceId });
+    return row;
+  }
+
+  listInsights(status?: KnowledgeInsightStatus) { return this.prisma.knowledgeInsight.findMany({ where: status ? { status } : undefined, include: { node: true }, orderBy: { updatedAt: 'desc' } }); }
+  async createInsight(input: CreateKnowledgeInsightDto) {
+    if (input.nodeId) {
+      const node = await this.prisma.knowledgeNode.findUnique({ where: { id: input.nodeId } });
+      if (!node) throw new NotFoundException('Knowledge node not found.');
+    }
+    try {
+      const row = await this.prisma.knowledgeInsight.create({ data: { insightKey: input.insightKey, title: input.title, summary: input.summary, category: input.category, confidence: input.confidence, score: input.score, nodeId: input.nodeId, evidenceIds: (input.evidenceIds ?? []) as any, recommendations: (input.recommendations ?? []) as any, metadata: (input.metadata ?? {}) as any, status: 'PROPOSED' } });
+      await this.audit('insight.proposed', 'KnowledgeInsight', row.id, { insightKey: row.insightKey });
+      return row;
+    } catch (error) { this.conflict(error); }
+  }
+  async transitionInsight(id: string, input: TransitionKnowledgeInsightDto) {
+    const found = await this.prisma.knowledgeInsight.findUnique({ where: { id } });
+    if (!found) throw new NotFoundException('Knowledge insight not found.');
+    if (found.status !== 'PROPOSED') throw new ConflictException('Only proposed insights can be reviewed.');
+    if (![KnowledgeInsightStatus.APPROVED, KnowledgeInsightStatus.REJECTED].includes(input.status)) throw new ConflictException('Human review must approve or reject the insight.');
+    const row = await this.prisma.knowledgeInsight.update({ where: { id }, data: { status: input.status, reviewNote: input.reviewNote, reviewedAt: new Date() } });
+    await this.audit('insight.reviewed', 'KnowledgeInsight', id, { status: row.status });
+    return row;
+  }
+}

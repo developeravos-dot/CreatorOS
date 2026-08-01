@@ -1,0 +1,382 @@
+﻿import {
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+
+import { randomUUID } from 'node:crypto';
+
+import { PermanentUniverseMemoryService } from '../persistent-memory/permanent-universe-memory.service';
+
+import { GenerateCinematicScriptDto } from './dto/generate-cinematic-script.dto';
+
+import { SceneScreenplayEngine } from './engines/scene-screenplay.engine';
+import { ScriptQualityEngine } from './engines/script-quality.engine';
+
+import type {
+  CinematicEpisodeScript,
+  CinematicScriptGenerationResult,
+  LocalizedScriptVersion,
+} from './models/cinematic-script.models';
+
+@Injectable()
+export class CinematicScriptEngineService {
+  constructor(
+    private readonly memory:
+      PermanentUniverseMemoryService,
+
+    private readonly screenplay:
+      SceneScreenplayEngine,
+
+    private readonly qualityEngine:
+      ScriptQualityEngine,
+  ) {}
+
+  async generate(
+    dto: GenerateCinematicScriptDto,
+  ): Promise<CinematicScriptGenerationResult> {
+    const world =
+      await this.memory.loadWorld(
+        dto.worldId,
+      );
+
+    if (!world) {
+      throw new NotFoundException(
+        `World not found: ${dto.worldId}.`,
+      );
+    }
+
+    const characters =
+      await this.memory.loadCharacters(
+        dto.worldId,
+      );
+
+    const episodes =
+      await this.memory.loadEpisodes(
+        dto.worldId,
+      );
+
+    const episode =
+      episodes.find(
+        (item) =>
+          item.episodeId ===
+          dto.episodeId,
+      );
+
+    if (!episode) {
+      throw new NotFoundException(
+        `Episode not found: ${dto.episodeId}.`,
+      );
+    }
+
+    const includeCamera =
+      dto.includeCameraDirections ??
+      true;
+
+    const includeLighting =
+      dto.includeLightingDirections ??
+      true;
+
+    const includeSound =
+      dto.includeSoundDirections ??
+      true;
+
+    const includeSubtext =
+      dto.includeSubtext ??
+      true;
+
+    const scenes =
+      episode.scenes.map(
+        (scene) =>
+          this.screenplay.create(
+            episode,
+            scene,
+            characters,
+            includeCamera,
+            includeLighting,
+            includeSound,
+            includeSubtext,
+          ),
+      );
+
+    const sourceLanguageCode =
+      dto.sourceLanguageCode ??
+      world.universeDna.languages.find(
+        (language) =>
+          language.primary,
+      )?.code ??
+      'ar';
+
+    const quality =
+      this.qualityEngine.evaluate(
+        scenes,
+      );
+
+    const selectedLanguages =
+      dto.localizationLanguageCodes?.length
+        ? dto.localizationLanguageCodes
+        : world.universeDna.languages.map(
+            (language) =>
+              language.code,
+          );
+
+    const script:
+      CinematicEpisodeScript = {
+        scriptId: randomUUID(),
+        worldId: dto.worldId,
+        episodeId:
+          dto.episodeId,
+
+        episodeNumber:
+          episode.episodeNumber,
+
+        title:
+          episode.title,
+
+        logline:
+          episode.logline,
+
+        synopsis:
+          episode.synopsis,
+
+        audienceTier:
+          episode.audienceTier,
+
+        sourceLanguageCode,
+
+        selectedCharacterIds:
+          episode.selectedCharacters.map(
+            (character) =>
+              character.characterId,
+          ),
+
+        selectedCharacterNames:
+          episode.selectedCharacters.map(
+            (character) =>
+              character.characterName,
+          ),
+
+        scenes,
+
+        psychologicalArc: {
+          openingState:
+            'فضول آمن داخل عالم مألوف',
+
+          centralConflict:
+            `التقدم نحو "${episode.sourceStoryThread}" مقابل الخوف من نتائجه.`,
+
+          emotionalTurningPoint:
+            'تكتشف الشخصيات أن حماية الصداقة والحقيقة تحتاج إلى قرار مشترك.',
+
+          closingState:
+            episode.scenes.some(
+              (scene) =>
+                scene.type ===
+                'cliffhanger',
+            )
+              ? 'دهشة وفضول نحو الحلقة التالية'
+              : 'ارتياح مؤقت مع سؤال غير مغلق',
+
+          primaryAudienceEmotion:
+            episode.pressureProfile
+              .dominantPressure,
+
+          secondaryAudienceEmotion:
+            'التعاطف',
+
+          ethicalHook:
+            'هل يجب كشف الحقيقة حتى عندما قد تؤذي شخصًا نحبه؟',
+
+          unresolvedQuestion:
+            `ما الحقيقة الكاملة وراء ${episode.sourceStoryThread}؟`,
+        },
+
+        quality,
+
+        localizationVersions:
+          this.localizationVersions(
+            world.universeDna
+              .languages,
+            selectedLanguages,
+            sourceLanguageCode,
+            episode.title,
+            episode.logline,
+          ),
+
+        productionReadiness: {
+          screenplayReady:
+            quality.totalScore >= 75,
+
+          storyboardReady:
+            scenes.every(
+              (scene) =>
+                scene.camera.length > 0,
+            ),
+
+          voiceGenerationReady:
+            scenes.every(
+              (scene) =>
+                scene.dialogue.length > 0,
+            ),
+
+          animationPromptReady:
+            scenes.every(
+              (scene) =>
+                Boolean(
+                  scene.openingVisual,
+                ),
+            ),
+
+          localizationReady:
+            selectedLanguages.length >
+            0,
+        },
+
+        status: 'draft',
+
+        createdAt:
+          new Date().toISOString(),
+      };
+
+    await this.memory.saveScript(
+      dto.worldId,
+      script,
+    );
+
+    return {
+      success: true,
+
+      engine:
+        'CreatorOS Cinematic Script and Dialogue Engine',
+
+      version: '1.0.0',
+
+      status:
+        'script-generated',
+
+      script,
+
+      nextActions: [
+        'مراجعة السيناريو واعتماده بشريًا.',
+        'إنشاء Storyboard لكل مشهد.',
+        'إنشاء ملفات أصوات الشخصيات.',
+        'توليد النسخ اللغوية المحلية.',
+        'تحويل المشاهد إلى أوامر إنتاج بصري.',
+        'تطبيق آثار الحلقة بعد اعتماد النسخة النهائية.',
+      ],
+    };
+  }
+
+  async getWorldScripts(
+    worldId: string,
+  ) {
+    return this.memory.loadScripts(
+      worldId,
+    );
+  }
+
+  getStatus() {
+    return {
+      success: true,
+
+      engine:
+        'CreatorOS Cinematic Script and Dialogue Engine',
+
+      version: '1.0.0',
+
+      phase:
+        'Cinematic Screenplay Foundation',
+
+      status: 'operational',
+
+      architecture: {
+        sceneScreenplayEngine: true,
+        characterVoiceEngine: true,
+        dialoguePsychologyEngine: true,
+        subtextEngine: true,
+        visualDirectionEngine: true,
+        cameraPlanner: true,
+        lightingPlanner: true,
+        soundPlanner: true,
+        audienceSafetyGuard: true,
+        scriptQualityEngine: true,
+        localizationPlanning: true,
+        permanentScriptStorage: true,
+      },
+
+      constitutionalRules: {
+        characterVoiceConsistency:
+          true,
+
+        psychologicalContinuity:
+          true,
+
+        ageSafetyRequired:
+          true,
+
+        subtextBeforeExposition:
+          true,
+
+        visualStorytellingFirst:
+          true,
+
+        humanFinalAuthority:
+          true,
+      },
+    };
+  }
+
+  private localizationVersions(
+    languages:
+      Array<{
+        code: string;
+        name: string;
+        localizationMode:
+          | 'translation'
+          | 'cultural-adaptation'
+          | 'native-reproduction';
+      }>,
+
+    selectedCodes: string[],
+    sourceLanguageCode: string,
+    title: string,
+    logline: string,
+  ): LocalizedScriptVersion[] {
+    return languages
+      .filter(
+        (language) =>
+          selectedCodes.includes(
+            language.code,
+          ),
+      )
+      .map(
+        (language) => ({
+          languageCode:
+            language.code,
+
+          adaptationMode:
+            language.localizationMode,
+
+          status:
+            language.code ===
+            sourceLanguageCode
+              ? 'source-ready'
+              : 'localization-planned',
+
+          title,
+          logline,
+
+          culturalInstructions: [
+            'الحفاظ على هوية الشخصيات الأساسية.',
+            'تكييف التعبيرات والفكاهة دون تغيير الحدث.',
+            'منع الترجمة الحرفية للنكات أو العبارات العاطفية.',
+          ],
+
+          voiceInstructions: [
+            'الحفاظ على العمر الظاهري للشخصية.',
+            'الحفاظ على الإيقاع النفسي وأسلوب اتخاذ القرار.',
+            `إنتاج الأداء وفق نمط ${language.localizationMode}.`,
+          ],
+        }),
+      );
+  }
+}

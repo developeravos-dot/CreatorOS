@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "lib": ["ES2022"],
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUncheckedIndexedAccess": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@creatoros/core": ["packages/core/src"],
+      "@creatoros/config": ["packages/config/src"],
+      "@creatoros/contracts": ["packages/contracts/src"],
+      "@creatoros/events": ["packages/events/src"],
+      "@creatoros/logging": ["packages/logging/src"],
+      "@creatoros/shared": ["packages/shared/src"],
+      "@creatoros/storage": ["packages/storage/src"],
+      "@creatoros/workflow": ["packages/workflow/src"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage"
+  ]
+}

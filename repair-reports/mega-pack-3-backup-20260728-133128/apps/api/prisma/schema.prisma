@@ -1,0 +1,427 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum RecordStatus {
+  DRAFT
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ExecutionStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+model RuntimePlugin {
+  id           String       @id @default(cuid())
+  pluginKey    String       @unique
+  name         String
+  version      String
+  status       RecordStatus @default(ACTIVE)
+  capabilities Json
+  metadata     Json?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([status])
+}
+
+model Blueprint {
+  id           String             @id @default(cuid())
+  blueprintKey String             @unique
+  name         String
+  description  String?
+  status       RecordStatus       @default(DRAFT)
+  definition   Json
+  metadata     Json?
+  versions     BlueprintVersion[]
+  approvals    ApprovalGate[]
+  plans        ExecutionPlan[]
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  @@index([status])
+}
+
+model BlueprintVersion {
+  id          String   @id @default(cuid())
+  blueprintId String
+  version     Int
+  definition  Json
+  changeNote  String?
+  createdAt   DateTime @default(now())
+
+  blueprint Blueprint @relation(fields: [blueprintId], references: [id], onDelete: Cascade)
+
+  @@unique([blueprintId, version])
+  @@index([blueprintId])
+}
+
+model ApprovalGate {
+  id           String         @id @default(cuid())
+  blueprintId  String
+  gateType     String
+  status       ApprovalStatus @default(PENDING)
+  approvedBy   String?
+  decisionNote String?
+  decidedAt    DateTime?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  blueprint Blueprint @relation(fields: [blueprintId], references: [id], onDelete: Cascade)
+
+  @@index([blueprintId])
+  @@index([status])
+}
+
+model ExecutionPlan {
+  id          String          @id @default(cuid())
+  blueprintId String
+  planKey     String          @unique
+  status      ExecutionStatus @default(PENDING)
+  definition  Json
+  result      Json?
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  blueprint Blueprint @relation(fields: [blueprintId], references: [id], onDelete: Cascade)
+
+  @@index([blueprintId])
+  @@index([status])
+}
+
+model KnowledgeNode {
+  id          String          @id @default(cuid())
+  nodeKey     String          @unique
+  type        String
+  name        String
+  description String?
+  properties  Json
+  status      RecordStatus    @default(ACTIVE)
+  outgoing    KnowledgeEdge[] @relation("OutgoingEdges")
+  incoming    KnowledgeEdge[] @relation("IncomingEdges")
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([type])
+  @@index([status])
+}
+
+model KnowledgeEdge {
+  id         String   @id @default(cuid())
+  sourceId   String
+  targetId   String
+  relation   String
+  properties Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  source KnowledgeNode @relation("OutgoingEdges", fields: [sourceId], references: [id], onDelete: Cascade)
+  target KnowledgeNode @relation("IncomingEdges", fields: [targetId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceId, targetId, relation])
+  @@index([sourceId])
+  @@index([targetId])
+  @@index([relation])
+}
+
+model Capability {
+  id            String       @id @default(cuid())
+  capabilityKey String       @unique
+  domain        String
+  name          String
+  description   String?
+  status        RecordStatus @default(ACTIVE)
+  contract      Json
+  dependencies  Json
+  metadata      Json?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([domain])
+  @@index([status])
+}
+
+model OrganizationUnit {
+  id        String       @id @default(cuid())
+  unitKey   String       @unique
+  name      String
+  type      String
+  status    RecordStatus @default(ACTIVE)
+  purpose   String?
+  metadata  Json?
+  agents    Agent[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@index([type])
+  @@index([status])
+}
+
+model Agent {
+  id                 String       @id @default(cuid())
+  agentKey           String       @unique
+  organizationUnitId String?
+  name               String
+  role               String
+  status             RecordStatus @default(ACTIVE)
+  instructions       Json
+  capabilities       Json
+  memoryConfig       Json?
+  metadata           Json?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  organizationUnit OrganizationUnit? @relation(fields: [organizationUnitId], references: [id], onDelete: SetNull)
+
+  @@index([organizationUnitId])
+  @@index([role])
+  @@index([status])
+}
+
+model Integration {
+  id             String       @id @default(cuid())
+  integrationKey String       @unique
+  name           String
+  type           String
+  status         RecordStatus @default(ACTIVE)
+  configuration  Json
+  metadata       Json?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([type])
+  @@index([status])
+}
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  eventType    String
+  actorType    String
+  actorId      String?
+  resourceType String
+  resourceId   String?
+  action       String
+  payload      Json?
+  occurredAt   DateTime @default(now())
+
+  @@index([eventType])
+  @@index([actorId])
+  @@index([resourceType, resourceId])
+  @@index([occurredAt])
+}
+
+enum CreatorUserStatus {
+  ACTIVE
+  SUSPENDED
+  DISABLED
+}
+
+model CreatorUser {
+  id                   String                       @id @default(cuid())
+  username             String                       @unique
+  email                String?                      @unique
+  passwordHash         String
+  status               CreatorUserStatus            @default(ACTIVE)
+  roles                CreatorUserRole[]
+  tokens               CreatorRefreshToken[]
+  profile              CreatorUserProfile?
+  sessions             CreatorSession[]
+  apiKeys              CreatorApiKey[]
+  personalAccessTokens CreatorPersonalAccessToken[]
+  createdAt            DateTime                     @default(now())
+  updatedAt            DateTime                     @updatedAt
+
+  @@index([status])
+}
+
+model CreatorRole {
+  id          String                  @id @default(cuid())
+  key         String                  @unique
+  name        String
+  description String?
+  users       CreatorUserRole[]
+  permissions CreatorRolePermission[]
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+}
+
+model CreatorPermission {
+  id          String                  @id @default(cuid())
+  key         String                  @unique
+  description String?
+  roles       CreatorRolePermission[]
+  createdAt   DateTime                @default(now())
+}
+
+model CreatorUserRole {
+  userId     String
+  roleId     String
+  user       CreatorUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role       CreatorRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  assignedAt DateTime    @default(now())
+
+  @@id([userId, roleId])
+}
+
+model CreatorRolePermission {
+  roleId       String
+  permissionId String
+  role         CreatorRole       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   CreatorPermission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+}
+
+model CreatorRefreshToken {
+  id        String      @id @default(cuid())
+  userId    String
+  tokenHash String      @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime    @default(now())
+  user      CreatorUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+}
+
+model CreatorOutboxEvent {
+  id            String    @id @default(cuid())
+  eventName     String
+  aggregateType String?
+  aggregateId   String?
+  payload       Json
+  occurredAt    DateTime  @default(now())
+  publishedAt   DateTime?
+  attempts      Int       @default(0)
+  lastError     String?
+
+  @@index([publishedAt, occurredAt])
+}
+
+model CreatorIdempotencyKey {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  method      String
+  path        String
+  requestHash String
+  statusCode  Int?
+  response    Json?
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  @@index([expiresAt])
+}
+
+model CreatorJobRun {
+  id         String    @id @default(cuid())
+  jobName    String
+  status     String
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+  details    Json?
+
+  @@index([jobName, startedAt])
+}
+
+enum CreatorSessionStatus {
+  ACTIVE
+  REVOKED
+  EXPIRED
+}
+
+enum CreatorCredentialStatus {
+  ACTIVE
+  REVOKED
+  EXPIRED
+}
+
+model CreatorUserProfile {
+  id          String      @id @default(cuid())
+  userId      String      @unique
+  displayName String?
+  firstName   String?
+  lastName    String?
+  avatarUrl   String?
+  locale      String      @default("en-US")
+  timezone    String      @default("UTC")
+  metadata    Json?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  user        CreatorUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CreatorSession {
+  id         String               @id @default(cuid())
+  userId     String
+  sessionKey String               @unique
+  status     CreatorSessionStatus @default(ACTIVE)
+  ipAddress  String?
+  userAgent  String?
+  deviceName String?
+  lastSeenAt DateTime             @default(now())
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+  user       CreatorUser          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([expiresAt])
+}
+
+model CreatorApiKey {
+  id         String                  @id @default(cuid())
+  userId     String
+  name       String
+  keyPrefix  String
+  keyHash    String                  @unique
+  status     CreatorCredentialStatus @default(ACTIVE)
+  scopes     String[]
+  lastUsedAt DateTime?
+  expiresAt  DateTime?
+  revokedAt  DateTime?
+  createdAt  DateTime                @default(now())
+  updatedAt  DateTime                @updatedAt
+  user       CreatorUser             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([keyPrefix])
+}
+
+model CreatorPersonalAccessToken {
+  id          String                  @id @default(cuid())
+  userId      String
+  name        String
+  tokenPrefix String
+  tokenHash   String                  @unique
+  status      CreatorCredentialStatus @default(ACTIVE)
+  scopes      String[]
+  lastUsedAt  DateTime?
+  expiresAt   DateTime?
+  revokedAt   DateTime?
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+  user        CreatorUser             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([tokenPrefix])
+}

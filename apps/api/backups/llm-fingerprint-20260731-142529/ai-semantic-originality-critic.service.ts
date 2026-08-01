@@ -1,0 +1,1376 @@
+﻿import { Injectable } from '@nestjs/common';
+import { AiCriticResult } from './ai-semantic-critic.service';
+
+interface SemanticOriginalityInput {
+  request: string;
+  content: string;
+  originalityEvaluation: {
+    passed: boolean;
+    originalityPassed: boolean;
+    safetyPassed: boolean;
+    originalityScore: number;
+    duplicationScore: number;
+    distinctItemCount: number;
+    detectedItemCount: number;
+    genericContentDetected: boolean;
+    duplicatedPairs?: Array<{
+      firstItem: number;
+      secondItem: number;
+      similarity: number;
+    }>;
+    genericItems?: number[];
+    riskFlags?: string[];
+    warnings?: string[];
+    reasons?: string[];
+  };
+}
+
+type FingerprintDimension =
+  | 'domain'
+  | 'audience'
+  | 'contentMechanism'
+  | 'aiRole'
+  | 'valueProposition'
+  | 'monetization'
+  | 'productionStyle'
+  | 'contentFormat'
+  | 'goal';
+
+interface IdeaFingerprint {
+  domain: string[];
+  audience: string[];
+  contentMechanism: string[];
+  aiRole: string[];
+  valueProposition: string[];
+  monetization: string[];
+  productionStyle: string[];
+  contentFormat: string[];
+  goal: string[];
+}
+
+interface ExtractedItem {
+  index: number;
+  title: string;
+  body: string;
+  normalized: string;
+  fingerprint: IdeaFingerprint;
+}
+
+interface FingerprintSimilarity {
+  firstItem: number;
+  secondItem: number;
+  similarity: number;
+  matchedDimensions: FingerprintDimension[];
+  dimensionScores: Record<FingerprintDimension, number>;
+  reason: string;
+}
+
+interface FingerprintDefinition {
+  name: string;
+  patterns: RegExp[];
+}
+
+@Injectable()
+export class AiSemanticOriginalityCriticService {
+  review(
+    input: SemanticOriginalityInput,
+  ): AiCriticResult {
+    const items = this.extractItems(
+      input.content,
+    );
+
+    const duplicatedConcepts:
+      FingerprintSimilarity[] = [];
+
+    for (
+      let firstIndex = 0;
+      firstIndex < items.length;
+      firstIndex += 1
+    ) {
+      for (
+        let secondIndex = firstIndex + 1;
+        secondIndex < items.length;
+        secondIndex += 1
+      ) {
+        const first = items[firstIndex];
+        const second = items[secondIndex];
+
+        if (!first || !second) {
+          continue;
+        }
+
+        const comparison =
+          this.compareFingerprints(
+            first,
+            second,
+          );
+
+        /*
+         * A pair is considered duplicated only when the
+         * complete idea architecture is substantially similar.
+         *
+         * Shared broad words such as education, analytics,
+         * health or marketing are not enough by themselves.
+         */
+        const isDuplicate =
+          comparison.similarity >= 78 &&
+          comparison.matchedDimensions.length >= 4;
+
+        if (isDuplicate) {
+          duplicatedConcepts.push(
+            comparison,
+          );
+        }
+      }
+    }
+
+    const genericItems =
+      items
+        .filter(
+          (item) =>
+            this.isGenericFingerprint(
+              item.fingerprint,
+            ),
+        )
+        .map((item) => item.index);
+
+    const repeatedDomainCount =
+      this.countRepeatedDomains(items);
+
+    const legacyScore =
+      input.originalityEvaluation
+        .originalityScore;
+
+    const duplicatePenalty =
+      duplicatedConcepts.reduce(
+        (total, duplicate) =>
+          total +
+          Math.max(
+            8,
+            Math.round(
+              duplicate.similarity / 10,
+            ),
+          ),
+        0,
+      );
+
+    const genericPenalty =
+      genericItems.length * 5;
+
+    /*
+     * Repeated domains receive only a light penalty.
+     * Different ideas are allowed inside one domain when
+     * audience, mechanism, value and AI role differ.
+     */
+    const repeatedDomainPenalty =
+      Math.max(
+        0,
+        repeatedDomainCount - 5,
+      ) * 2;
+
+    const semanticScore =
+      Math.max(
+        0,
+        Math.min(
+          100,
+          legacyScore -
+            duplicatePenalty -
+            genericPenalty -
+            repeatedDomainPenalty,
+        ),
+      );
+
+    const warnings: string[] = [];
+    const recommendations: string[] = [];
+    const reasons: string[] = [];
+
+    if (duplicatedConcepts.length > 0) {
+      warnings.push(
+        `تم اكتشاف ${duplicatedConcepts.length} أزواج متشابهة في بصمة الفكرة الكاملة.`,
+      );
+
+      for (
+        const duplicate of
+        duplicatedConcepts.slice(0, 5)
+      ) {
+        recommendations.push(
+          `ميّز الفكرتين ${duplicate.firstItem} و${duplicate.secondItem}: ${duplicate.reason}`,
+        );
+      }
+    }
+
+    if (genericItems.length > 0) {
+      warnings.push(
+        `بصمة الفكرة غير مكتملة في العناصر: ${genericItems.join(', ')}.`,
+      );
+
+      recommendations.push(
+        `أضف جمهورًا محددًا، وآلية محتوى، ودورًا واضحًا للذكاء الاصطناعي، وقيمة عملية للعناصر: ${genericItems.join(', ')}.`,
+      );
+    }
+
+    if (repeatedDomainCount > 6) {
+      warnings.push(
+        'عدد كبير من الأفكار ينتمي إلى المجال نفسه، لكن لم تُعتبر مكررة إلا عند تشابه بصمتها الكاملة.',
+      );
+
+      recommendations.push(
+        'يمكن زيادة التنوع بإضافة مجالات وجماهير ونماذج قيمة مختلفة.',
+      );
+    }
+
+    const allowedDuplicatePairs =
+      Math.max(
+        1,
+        Math.floor(
+          items.length * 0.12,
+        ),
+      );
+
+    /*
+     * Fingerprint completeness is advisory unless most
+     * generated ideas are structurally empty.
+     *
+     * A valid idea must not be rejected merely because
+     * its wording does not match every predefined pattern.
+     */
+    const maximumBlockingGenericItems =
+      Math.max(
+        2,
+        Math.floor(
+          items.length * 0.6,
+        ),
+      );
+
+    const hasCriticalGenericFailure =
+      items.length > 0 &&
+      genericItems.length >
+        maximumBlockingGenericItems;
+
+    const passed =
+      semanticScore >= 72 &&
+      duplicatedConcepts.length <=
+        allowedDuplicatePairs &&
+      !hasCriticalGenericFailure;
+
+    reasons.push(
+      passed
+        ? genericItems.length > 0
+          ? 'اجتازت الأفكار فحص التنوع دون تكرار جوهري، مع وجود أبعاد تحتاج إلى وصف أكثر وضوحًا.'
+          : 'اجتازت الأفكار فحص التنوع اعتمادًا على بصمة المجال والجمهور والآلية ودور الذكاء الاصطناعي والقيمة.'
+        : duplicatedConcepts.length > allowedDuplicatePairs
+          ? 'توجد أفكار متشابهة جوهريًا في عدة أبعاد أساسية.'
+          : 'غالبية الأفكار لا تحتوي على بصمة كافية تسمح بتقييم تنوعها بثقة.',
+    );
+
+    return {
+      passed,
+      score: semanticScore,
+      confidence:
+        items.length >= 5
+          ? 92
+          : 76,
+      reasons,
+      warnings: [
+        ...(input.originalityEvaluation
+          .warnings ?? []),
+        ...warnings,
+      ],
+      recommendations:
+        this.unique(recommendations),
+      metadata: {
+        engine:
+          'CreatorOS Idea Diversity Engine',
+        engineVersion: '1.0.0',
+        comparisonMethod:
+          'multi-dimensional-idea-fingerprint',
+        analyzedItemCount: items.length,
+        duplicatedConcepts,
+        genericItems,
+        fingerprintCompletenessWarning:
+          genericItems.length > 0,
+        criticalGenericFailure:
+          hasCriticalGenericFailure,
+        maximumBlockingGenericItems,
+        repeatedDomainCount,
+        legacyOriginalityScore:
+          legacyScore,
+        semanticOriginalityScore:
+          semanticScore,
+        dimensions: [
+          'domain',
+          'audience',
+          'contentMechanism',
+          'aiRole',
+          'valueProposition',
+          'monetization',
+          'productionStyle',
+          'contentFormat',
+          'goal',
+        ],
+      },
+    };
+  }
+
+  private extractItems(
+    content: string,
+  ): ExtractedItem[] {
+    const normalizedContent =
+      content.replace(/\r/g, '');
+
+    const numberedPattern =
+      /(?:^|\n)\s*(\d{1,3})[\.\-\)]\s+([\s\S]*?)(?=(?:\n\s*\d{1,3}[\.\-\)]\s+)|$)/g;
+
+    const items: ExtractedItem[] = [];
+
+    let match:
+      RegExpExecArray | null;
+
+    while (
+      (match =
+        numberedPattern.exec(
+          normalizedContent,
+        )) !== null
+    ) {
+      const index =
+        Number(match[1]);
+
+      const raw =
+        (match[2] ?? '').trim();
+
+      if (!raw) {
+        continue;
+      }
+
+      const title =
+        this.extractTitle(raw);
+
+      const body =
+        raw
+          .replace(
+            /^(\*\*|__)?[^:\n]{2,120}(\*\*|__)?\s*:\s*/,
+            '',
+          )
+          .trim();
+
+      const normalized =
+        this.normalizeText(
+          `${title} ${body}`,
+        );
+
+      items.push({
+        index,
+        title,
+        body,
+        normalized,
+        fingerprint:
+          this.createFingerprint(
+            normalized,
+          ),
+      });
+    }
+
+    if (items.length > 0) {
+      return items;
+    }
+
+    return normalizedContent
+      .split(/\n{2,}/)
+      .map((part) => part.trim())
+      .filter(
+        (part) => part.length >= 40,
+      )
+      .map(
+        (part, itemIndex) => {
+          const normalized =
+            this.normalizeText(part);
+
+          return {
+            index: itemIndex + 1,
+            title:
+              this.extractTitle(part),
+            body: part,
+            normalized,
+            fingerprint:
+              this.createFingerprint(
+                normalized,
+              ),
+          };
+        },
+      );
+  }
+
+  private createFingerprint(
+    value: string,
+  ): IdeaFingerprint {
+    return {
+      domain:
+        this.matchDefinitions(
+          value,
+          this.domainDefinitions(),
+        ),
+      audience:
+        this.matchDefinitions(
+          value,
+          this.audienceDefinitions(),
+        ),
+      contentMechanism:
+        this.matchDefinitions(
+          value,
+          this.mechanismDefinitions(),
+        ),
+      aiRole:
+        this.matchDefinitions(
+          value,
+          this.aiRoleDefinitions(),
+        ),
+      valueProposition:
+        this.matchDefinitions(
+          value,
+          this.valueDefinitions(),
+        ),
+      monetization:
+        this.matchDefinitions(
+          value,
+          this.monetizationDefinitions(),
+        ),
+      productionStyle:
+        this.matchDefinitions(
+          value,
+          this.productionDefinitions(),
+        ),
+      contentFormat:
+        this.matchDefinitions(
+          value,
+          this.formatDefinitions(),
+        ),
+      goal:
+        this.matchDefinitions(
+          value,
+          this.goalDefinitions(),
+        ),
+    };
+  }
+
+  private compareFingerprints(
+    first: ExtractedItem,
+    second: ExtractedItem,
+  ): FingerprintSimilarity {
+    const dimensions:
+      FingerprintDimension[] = [
+        'domain',
+        'audience',
+        'contentMechanism',
+        'aiRole',
+        'valueProposition',
+        'monetization',
+        'productionStyle',
+        'contentFormat',
+        'goal',
+      ];
+
+    const weights:
+      Record<
+        FingerprintDimension,
+        number
+      > = {
+        domain: 0.1,
+        audience: 0.14,
+        contentMechanism: 0.17,
+        aiRole: 0.17,
+        valueProposition: 0.15,
+        monetization: 0.08,
+        productionStyle: 0.07,
+        contentFormat: 0.06,
+        goal: 0.06,
+      };
+
+    const dimensionScores =
+      {} as Record<
+        FingerprintDimension,
+        number
+      >;
+
+    const matchedDimensions:
+      FingerprintDimension[] = [];
+
+    let weightedScore = 0;
+    let availableWeight = 0;
+
+    for (const dimension of dimensions) {
+      const firstValues =
+        first.fingerprint[dimension];
+
+      const secondValues =
+        second.fingerprint[dimension];
+
+      const weight =
+        weights[dimension];
+
+      if (
+        firstValues.length === 0 &&
+        secondValues.length === 0
+      ) {
+        dimensionScores[dimension] = 0;
+        continue;
+      }
+
+      const score =
+        this.jaccard(
+          firstValues,
+          secondValues,
+        );
+
+      dimensionScores[dimension] =
+        Math.round(score * 100);
+
+      availableWeight += weight;
+      weightedScore += score * weight;
+
+      if (score >= 0.5) {
+        matchedDimensions.push(
+          dimension,
+        );
+      }
+    }
+
+    const similarity =
+      availableWeight === 0
+        ? 0
+        : Math.round(
+            Math.min(
+              1,
+              weightedScore /
+                availableWeight,
+            ) * 100,
+          );
+
+    return {
+      firstItem: first.index,
+      secondItem: second.index,
+      similarity,
+      matchedDimensions,
+      dimensionScores,
+      reason:
+        matchedDimensions.length > 0
+          ? `تتشابه البصمة في الأبعاد الأساسية: ${matchedDimensions.join(', ')}.`
+          : 'لا يوجد تشابه جوهري في بصمة الفكرتين.',
+    };
+  }
+
+  private isGenericFingerprint(
+    fingerprint: IdeaFingerprint,
+  ): boolean {
+    const importantDimensions:
+      FingerprintDimension[] = [
+        'audience',
+        'contentMechanism',
+        'aiRole',
+        'valueProposition',
+      ];
+
+    const populatedImportant =
+      importantDimensions.filter(
+        (dimension) =>
+          fingerprint[dimension].length >
+          0,
+      ).length;
+
+    const totalPopulated =
+      Object.values(fingerprint)
+        .filter(
+          (values) =>
+            values.length > 0,
+        ).length;
+
+    return (
+      populatedImportant < 2 ||
+      totalPopulated < 3
+    );
+  }
+
+  private countRepeatedDomains(
+    items: ExtractedItem[],
+  ): number {
+    const counts =
+      new Map<string, number>();
+
+    for (const item of items) {
+      for (
+        const domain of
+        item.fingerprint.domain
+      ) {
+        counts.set(
+          domain,
+          (counts.get(domain) ?? 0) + 1,
+        );
+      }
+    }
+
+    return Math.max(
+      0,
+      ...counts.values(),
+    );
+  }
+
+  private domainDefinitions():
+    FingerprintDefinition[] {
+    return [
+      {
+        name: 'education',
+        patterns: [
+          /تعليم/,
+          /تعلم/,
+          /دروس/,
+          /دورات/,
+          /تدريب/,
+          /طلاب/,
+          /معلمين/,
+        ],
+      },
+      {
+        name: 'health',
+        patterns: [
+          /صح/,
+          /طب/,
+          /لياق/,
+          /تغذي/,
+          /مرض/,
+          /علاج/,
+        ],
+      },
+      {
+        name: 'business',
+        patterns: [
+          /اعمال/,
+          /شركات/,
+          /مشاريع/,
+          /تجاري/,
+          /رياد/,
+        ],
+      },
+      {
+        name: 'marketing',
+        patterns: [
+          /تسويق/,
+          /اعلان/,
+          /مبيعات/,
+          /علامه تجاريه/,
+        ],
+      },
+      {
+        name: 'entertainment',
+        patterns: [
+          /ترفيه/,
+          /العاب/,
+          /قصص/,
+          /كوميد/,
+          /افلام/,
+        ],
+      },
+      {
+        name: 'design',
+        patterns: [
+          /تصميم/,
+          /فنون/,
+          /رسوم/,
+          /بصري/,
+          /جرافيك/,
+        ],
+      },
+      {
+        name: 'news-media',
+        patterns: [
+          /اخبار/,
+          /صحاف/,
+          /اعلام/,
+          /تقارير/,
+        ],
+      },
+      {
+        name: 'finance',
+        patterns: [
+          /مالي/,
+          /استثمار/,
+          /مصرف/,
+          /تداول/,
+          /اقتصاد/,
+        ],
+      },
+      {
+        name: 'environment',
+        patterns: [
+          /بيئ/,
+          /مناخ/,
+          /استدام/,
+          /طاقه/,
+        ],
+      },
+      {
+        name: 'technology',
+        patterns: [
+          /تقني/,
+          /تكنولوج/,
+          /برمج/,
+          /تطبيق/,
+          /روبوت/,
+        ],
+      },
+      {
+        name: 'travel',
+        patterns: [
+          /سفر/,
+          /سياح/,
+          /رحلات/,
+          /وجهات/,
+        ],
+      },
+      {
+        name: 'food',
+        patterns: [
+          /طبخ/,
+          /وصفات/,
+          /طعام/,
+          /مطبخ/,
+        ],
+      },
+    ];
+  }
+
+  private audienceDefinitions():
+    FingerprintDefinition[] {
+    return [
+      {
+        name: 'students',
+        patterns: [
+          /طلاب/,
+          /متعلمين/,
+          /مدارس/,
+          /جامعات/,
+        ],
+      },
+      {
+        name: 'teachers',
+        patterns: [
+          /معلمين/,
+          /مدربين/,
+          /باحثين/,
+        ],
+      },
+      {
+        name: 'creators',
+        patterns: [
+          /صناع المحتوى/,
+          /اصحاب القنوات/,
+          /يوتيوبر/,
+          /مبدعين/,
+        ],
+      },
+      {
+        name: 'business-owners',
+        patterns: [
+          /اصحاب الاعمال/,
+          /شركات صغيره/,
+          /شركات متوسطه/,
+          /رواد الاعمال/,
+        ],
+      },
+      {
+        name: 'professionals',
+        patterns: [
+          /محترفين/,
+          /موظفين/,
+          /متخصصين/,
+        ],
+      },
+      {
+        name: 'families',
+        patterns: [
+          /عائلات/,
+          /اسر/,
+          /اباء/,
+          /امهات/,
+          /اطفال/,
+        ],
+      },
+      {
+        name: 'gamers',
+        patterns: [
+          /لاعبين/,
+          /العاب الالكترونيه/,
+        ],
+      },
+      {
+        name: 'patients',
+        patterns: [
+          /مرضى/,
+          /مراجعين/,
+          /افراد معنيين بالصحه/,
+        ],
+      },
+      {
+        name: 'general-public',
+        patterns: [
+          /الجمهور العام/,
+          /المشاهدين/,
+          /المستخدمين/,
+          /الافراد/,
+        ],
+      },
+    ];
+  }
+
+  private mechanismDefinitions():
+    FingerprintDefinition[] {
+    return [
+      {
+        name: 'analysis',
+        patterns: [
+          /تحليل/,
+          /قياس/,
+          /بيانات/,
+          /احصائ/,
+        ],
+      },
+      {
+        name: 'personalized-generation',
+        patterns: [
+          /توليد مخصص/,
+          /انشاء مخصص/,
+          /حسب اهتمامات/,
+          /حسب المستخدم/,
+        ],
+      },
+      {
+        name: 'simulation',
+        patterns: [
+          /محاكاه/,
+          /سيناريو/,
+          /اعاده بناء/,
+        ],
+      },
+      {
+        name: 'comparison',
+        patterns: [
+          /مقارنه/,
+          /اختبار/,
+          /تجربه/,
+          /تقييم/,
+        ],
+      },
+      {
+        name: 'tutorial',
+        patterns: [
+          /دروس/,
+          /شرح/,
+          /خطوات/,
+          /دورات/,
+          /كيفيه/,
+        ],
+      },
+      {
+        name: 'live-interaction',
+        patterns: [
+          /مباشر/,
+          /تفاعلي/,
+          /بث/,
+          /فوري/,
+        ],
+      },
+      {
+        name: 'storytelling',
+        patterns: [
+          /قصه/,
+          /سرد/,
+          /حلقات/,
+          /دراما/,
+        ],
+      },
+      {
+        name: 'recommendation',
+        patterns: [
+          /توصيات/,
+          /اقتراح/,
+          /ترشيح/,
+        ],
+      },
+      {
+        name: 'automation',
+        patterns: [
+          /اتمت/,
+          /تلقائي/,
+          /ذاتي/,
+          /وكلاء/,
+        ],
+      },
+    ];
+  }
+
+  private aiRoleDefinitions():
+    FingerprintDefinition[] {
+    return [
+      {
+        name: 'data-analyst',
+        patterns: [
+          /تحليل البيانات/,
+          /استخراج الانماط/,
+          /تحليل السلوك/,
+        ],
+      },
+      {
+        name: 'content-generator',
+        patterns: [
+          /توليد المحتوى/,
+          /انشاء الفيديو/,
+          /انتاج الفيديو/,
+          /توليد الصور/,
+          /كتابه السيناريو/,
+        ],
+      },
+      {
+        name: 'personalization-engine',
+        patterns: [
+          /تخصيص/,
+          /مخصص/,
+          /حسب اهتمامات/,
+          /حسب الذوق/,
+        ],
+      },
+      {
+        name: 'translator',
+        patterns: [
+          /ترجمه/,
+          /دبلجه/,
+          /لغات/,
+        ],
+      },
+      {
+        name: 'advisor',
+        patterns: [
+          /استشار/,
+          /نصائح/,
+          /توجيه/,
+          /توصيات/,
+        ],
+      },
+      {
+        name: 'predictor',
+        patterns: [
+          /توقع/,
+          /تنبؤ/,
+          /استشراف/,
+        ],
+      },
+      {
+        name: 'moderator',
+        patterns: [
+          /مراجعه/,
+          /تحقق/,
+          /تدقيق/,
+          /رقابه/,
+        ],
+      },
+      {
+        name: 'interactive-agent',
+        patterns: [
+          /مساعد/,
+          /وكيل/,
+          /روبوت محادثه/,
+          /تفاعل مباشر/,
+        ],
+      },
+    ];
+  }
+
+  private valueDefinitions():
+    FingerprintDefinition[] {
+    return [
+      {
+        name: 'save-time',
+        patterns: [
+          /توفير الوقت/,
+          /سرعه/,
+          /اسرع/,
+        ],
+      },
+      {
+        name: 'reduce-cost',
+        patterns: [
+          /خفض التكلف/,
+          /تقليل النفقات/,
+          /توفير المال/,
+        ],
+      },
+      {
+        name: 'improve-performance',
+        patterns: [
+          /تحسين الاداء/,
+          /زياده الانتاجيه/,
+          /رفع الكفاءه/,
+        ],
+      },
+      {
+        name: 'education-value',
+        patterns: [
+          /تسهيل التعلم/,
+          /تعليم/,
+          /تطوير المهارات/,
+        ],
+      },
+      {
+        name: 'decision-support',
+        patterns: [
+          /دعم القرار/,
+          /اتخاذ القرار/,
+          /فهم الاداء/,
+          /توجيه الاستراتيجيات/,
+        ],
+      },
+      {
+        name: 'accessibility',
+        patterns: [
+          /تسهيل الوصول/,
+          /التواصل العالمي/,
+          /ذوي الاحتياجات/,
+        ],
+      },
+      {
+        name: 'entertainment-value',
+        patterns: [
+          /ترفيه/,
+          /تجربه ممتعه/,
+          /تشويق/,
+        ],
+      },
+      {
+        name: 'personal-outcome',
+        patterns: [
+          /نتائج شخصيه/,
+          /حلول شخصيه/,
+          /تجربه مخصصه/,
+        ],
+      },
+    ];
+  }
+
+  private monetizationDefinitions():
+    FingerprintDefinition[] {
+    return [
+      {
+        name: 'advertising',
+        patterns: [
+          /اعلانات/,
+          /رعايات/,
+          /مشاهدات/,
+        ],
+      },
+      {
+        name: 'subscription',
+        patterns: [
+          /اشتراك/,
+          /عضويه/,
+          /محتوى مدفوع/,
+        ],
+      },
+      {
+        name: 'services',
+        patterns: [
+          /خدمات/,
+          /استشارات مدفوعه/,
+          /تنفيذ للعميل/,
+        ],
+      },
+      {
+        name: 'affiliate',
+        patterns: [
+          /عموله/,
+          /تسويق بالعموله/,
+          /روابط شراء/,
+        ],
+      },
+      {
+        name: 'digital-products',
+        patterns: [
+          /دورات مدفوعه/,
+          /منتجات رقميه/,
+          /قوالب/,
+          /تقارير مدفوعه/,
+        ],
+      },
+      {
+        name: 'licensing',
+        patterns: [
+          /ترخيص/,
+          /بيع الحقوق/,
+          /بيع المحتوى/,
+        ],
+      },
+    ];
+  }
+
+  private productionDefinitions():
+    FingerprintDefinition[] {
+    return [
+      {
+        name: 'automated-production',
+        patterns: [
+          /انتاج تلقائي/,
+          /توليد تلقائي/,
+          /اتمته الانتاج/,
+        ],
+      },
+      {
+        name: 'cinematic',
+        patterns: [
+          /سينمائي/,
+          /واقعي/,
+          /مشاهد بصريه/,
+        ],
+      },
+      {
+        name: 'animation',
+        patterns: [
+          /رسوم متحركه/,
+          /انيميشن/,
+          /انمي/,
+        ],
+      },
+      {
+        name: 'presenter-led',
+        patterns: [
+          /مقدم/,
+          /مذيع/,
+          /شخصيه افتراضيه/,
+        ],
+      },
+      {
+        name: 'data-visualization',
+        patterns: [
+          /رسوم بيانيه/,
+          /تصور البيانات/,
+          /لوحات معلومات/,
+        ],
+      },
+    ];
+  }
+
+  private formatDefinitions():
+    FingerprintDefinition[] {
+    return [
+      {
+        name: 'short-video',
+        patterns: [
+          /فيديوهات قصيره/,
+          /شورتس/,
+          /مقاطع قصيره/,
+        ],
+      },
+      {
+        name: 'long-form',
+        patterns: [
+          /حلقات طويله/,
+          /وثائقي/,
+          /برنامج/,
+        ],
+      },
+      {
+        name: 'live',
+        patterns: [
+          /بث مباشر/,
+          /حدث مباشر/,
+          /لايف/,
+        ],
+      },
+      {
+        name: 'series',
+        patterns: [
+          /سلسله/,
+          /حلقات/,
+          /مواسم/,
+        ],
+      },
+      {
+        name: 'tutorial-format',
+        patterns: [
+          /دروس/,
+          /شرح عملي/,
+          /خطوه بخطوه/,
+        ],
+      },
+      {
+        name: 'report-format',
+        patterns: [
+          /تقارير/,
+          /ملخص/,
+          /تحليل اسبوعي/,
+        ],
+      },
+    ];
+  }
+
+  private goalDefinitions():
+    FingerprintDefinition[] {
+    return [
+      {
+        name: 'educate',
+        patterns: [
+          /تعليم/,
+          /تدريب/,
+          /شرح/,
+        ],
+      },
+      {
+        name: 'entertain',
+        patterns: [
+          /ترفيه/,
+          /متعه/,
+          /تشويق/,
+        ],
+      },
+      {
+        name: 'inform',
+        patterns: [
+          /معلومات/,
+          /اخبار/,
+          /توعيه/,
+        ],
+      },
+      {
+        name: 'convert',
+        patterns: [
+          /بيع/,
+          /مبيعات/,
+          /تحويل العملاء/,
+        ],
+      },
+      {
+        name: 'optimize',
+        patterns: [
+          /تحسين/,
+          /رفع الكفاءه/,
+          /تطوير الاداء/,
+        ],
+      },
+      {
+        name: 'connect',
+        patterns: [
+          /تواصل/,
+          /مجتمع/,
+          /ربط/,
+        ],
+      },
+    ];
+  }
+
+  private matchDefinitions(
+    value: string,
+    definitions: FingerprintDefinition[],
+  ): string[] {
+    return definitions
+      .filter(
+        (definition) =>
+          definition.patterns.some(
+            (pattern) =>
+              pattern.test(value),
+          ),
+      )
+      .map(
+        (definition) =>
+          definition.name,
+      );
+  }
+
+  private extractTitle(
+    raw: string,
+  ): string {
+    const boldTitle =
+      raw.match(
+        /(?:\*\*|__)(.*?)(?:\*\*|__)/,
+      );
+
+    if (boldTitle?.[1]) {
+      return boldTitle[1].trim();
+    }
+
+    const colonIndex =
+      raw.indexOf(':');
+
+    if (
+      colonIndex > 0 &&
+      colonIndex <= 120
+    ) {
+      return raw
+        .slice(0, colonIndex)
+        .trim();
+    }
+
+    return raw
+      .split('\n')[0]
+      ?.slice(0, 120)
+      .trim() ?? '';
+  }
+
+  private normalizeText(
+    value: string,
+  ): string {
+    return value
+      .toLowerCase()
+      .normalize('NFKD')
+      .replace(
+        /[\u064B-\u065F\u0670]/g,
+        '',
+      )
+      .replace(/[إأآ]/g, 'ا')
+      .replace(/ى/g, 'ي')
+      .replace(/ة/g, 'ه')
+      .replace(/ؤ/g, 'و')
+      .replace(/ئ/g, 'ي')
+      .replace(
+        /[^\p{L}\p{N}\s]/gu,
+        ' ',
+      )
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  private jaccard(
+    firstValues: string[],
+    secondValues: string[],
+  ): number {
+    const first =
+      new Set(firstValues);
+
+    const second =
+      new Set(secondValues);
+
+    if (
+      first.size === 0 &&
+      second.size === 0
+    ) {
+      return 0;
+    }
+
+    const intersection =
+      [...first].filter(
+        (value) =>
+          second.has(value),
+      ).length;
+
+    const union =
+      new Set([
+        ...first,
+        ...second,
+      ]).size;
+
+    return union === 0
+      ? 0
+      : intersection / union;
+  }
+
+  private unique<T>(
+    values: T[],
+  ): T[] {
+    return [...new Set(values)];
+  }
+}
+

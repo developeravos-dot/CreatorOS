@@ -1,0 +1,14 @@
+﻿import { Module } from '@nestjs/common';
+
+import { WorldEngineModule } from './world-engine/world-engine.module';
+
+@Module({
+  imports: [
+    WorldEngineModule,
+  ],
+
+  exports: [
+    WorldEngineModule,
+  ],
+})
+export class InfiniteUniverseModule {}

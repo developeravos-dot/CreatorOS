@@ -1,0 +1,23 @@
+services:
+  creatoros-postgres:
+    image: postgres:17-alpine
+    container_name: creatoros-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: creatoros
+      POSTGRES_PASSWORD: creatoros_dev_password
+      POSTGRES_DB: creatoros
+    ports:
+      - "55432:5432"
+    volumes:
+      - creatoros_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U creatoros -d creatoros
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  creatoros_postgres_data:

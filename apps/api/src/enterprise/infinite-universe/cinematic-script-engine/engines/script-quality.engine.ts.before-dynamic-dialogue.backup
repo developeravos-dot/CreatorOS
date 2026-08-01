@@ -1,0 +1,157 @@
+﻿import { Injectable } from '@nestjs/common';
+
+import type {
+  CinematicSceneScript,
+  CinematicEpisodeScript,
+} from '../models/cinematic-script.models';
+
+@Injectable()
+export class ScriptQualityEngine {
+  evaluate(
+    scenes: CinematicSceneScript[],
+  ): CinematicEpisodeScript['quality'] {
+    const warnings: string[] = [];
+
+    const dialogueCount =
+      scenes.reduce(
+        (sum, scene) =>
+          sum +
+          scene.dialogue.length,
+        0,
+      );
+
+    const unsuitableScenes =
+      scenes.filter(
+        (scene) =>
+          !scene.safetyAssessment
+            .suitable,
+      );
+
+    const repeatedDialogue =
+      this.repetitionRisk(
+        scenes,
+      );
+
+    const dialogueConsistency =
+      dialogueCount > 0
+        ? 90
+        : 30;
+
+    const psychologicalContinuity =
+      scenes.every(
+        (scene) =>
+          scene.dialogue.every(
+            (line) =>
+              line.hiddenEmotion &&
+              line.bodyLanguage,
+          ),
+      )
+        ? 95
+        : 70;
+
+    const ageSuitability =
+      Math.max(
+        0,
+        100 -
+        unsuitableScenes.length *
+          30,
+      );
+
+    const sceneProgression =
+      new Set(
+        scenes.map(
+          (scene) =>
+            scene.sourceSceneType,
+        ),
+      ).size >=
+      Math.min(
+        4,
+        scenes.length,
+      )
+        ? 92
+        : 65;
+
+    if (
+      unsuitableScenes.length >
+      0
+    ) {
+      warnings.push(
+        `${unsuitableScenes.length} مشاهد تحتاج مراجعة سلامة عمرية.`,
+      );
+    }
+
+    if (
+      repeatedDialogue > 45
+    ) {
+      warnings.push(
+        'يوجد تشابه مرتفع في الحوار بين بعض الشخصيات.',
+      );
+    }
+
+    if (
+      warnings.length === 0
+    ) {
+      warnings.push(
+        'لا توجد مخاطر جودة حرجة في المسودة الحالية.',
+      );
+    }
+
+    const totalScore =
+      dialogueConsistency * 0.22 +
+      psychologicalContinuity * 0.25 +
+      ageSuitability * 0.22 +
+      sceneProgression * 0.21 +
+      (
+        100 -
+        repeatedDialogue
+      ) *
+        0.1;
+
+    return {
+      dialogueConsistency,
+      psychologicalContinuity,
+      ageSuitability,
+      sceneProgression,
+
+      repetitionRisk:
+        repeatedDialogue,
+
+      totalScore:
+        Math.round(
+          totalScore * 100,
+        ) / 100,
+
+      warnings,
+    };
+  }
+
+  private repetitionRisk(
+    scenes: CinematicSceneScript[],
+  ): number {
+    const lines =
+      scenes.flatMap(
+        (scene) =>
+          scene.dialogue.map(
+            (line) =>
+              line.dialogue
+                .trim()
+                .toLowerCase(),
+          ),
+      );
+
+    if (lines.length <= 1) {
+      return 0;
+    }
+
+    const unique =
+      new Set(lines).size;
+
+    return Math.round(
+      (
+        1 -
+        unique / lines.length
+      ) *
+        100,
+    );
+  }
+}

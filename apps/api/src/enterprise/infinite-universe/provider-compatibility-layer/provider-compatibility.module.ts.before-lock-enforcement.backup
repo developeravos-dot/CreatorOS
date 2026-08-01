@@ -1,0 +1,25 @@
+﻿import { Module } from '@nestjs/common';
+
+import { ImageProviderAdapterModule } from '../image-provider-adapter/image-provider-adapter.module';
+
+import { ProviderCompatibilityController } from './provider-compatibility.controller';
+import { ProviderCompatibilityService } from './provider-compatibility.service';
+
+@Module({
+  imports: [
+    ImageProviderAdapterModule,
+  ],
+
+  controllers: [
+    ProviderCompatibilityController,
+  ],
+
+  providers: [
+    ProviderCompatibilityService,
+  ],
+
+  exports: [
+    ProviderCompatibilityService,
+  ],
+})
+export class ProviderCompatibilityModule {}

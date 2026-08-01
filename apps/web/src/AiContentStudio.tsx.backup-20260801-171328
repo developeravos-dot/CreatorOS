@@ -1,0 +1,249 @@
+import { useState } from "react";
+import {
+  aiContentApi,
+  type AiContentPlatform,
+  type AiContentProductionPackage,
+  type AiContentTone,
+} from "./enterprise-api";
+
+export function AiContentStudio() {
+  const [topic, setTopic] = useState("");
+  const [audience, setAudience] = useState("");
+  const [platform, setPlatform] =
+    useState<AiContentPlatform>("Both");
+  const [tone, setTone] =
+    useState<AiContentTone>("professional");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] =
+    useState<AiContentProductionPackage | null>(null);
+  const [error, setError] = useState("");
+
+  const generate = async () => {
+    if (!topic.trim() || !audience.trim()) {
+      setError("أدخل الموضوع والجمهور المستهدف.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const response =
+        await aiContentApi.createProductionPackage({
+          topic: topic.trim(),
+          audience: audience.trim(),
+          platform,
+          tone,
+          durationSeconds: platform === "TikTok" ? 60 : 360,
+        });
+
+      setResult(response);
+    } catch (caught) {
+      setError(
+        caught instanceof Error
+          ? caught.message
+          : "تعذر إنشاء حزمة المحتوى.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <section
+      dir="rtl"
+      style={{
+        display: "grid",
+        gap: 18,
+        padding: 22,
+        borderRadius: 20,
+        background: "#111827",
+        color: "#f8fafc",
+      }}
+    >
+      <div>
+        <div
+          style={{
+            color: "#8b5cf6",
+            fontSize: 12,
+            fontWeight: 800,
+            letterSpacing: 1.4,
+          }}
+        >
+          CREATOROS AI CONTENT ENGINE
+        </div>
+        <h2 style={{ marginBottom: 6 }}>
+          استوديو صناعة المحتوى الذكي
+        </h2>
+        <p style={{ margin: 0, color: "#94a3b8" }}>
+          أنشئ الفكرة والسكربت والتحسين والمراجعة وخطة
+          الإنتاج في عملية واحدة.
+        </p>
+      </div>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "repeat(auto-fit, minmax(220px, 1fr))",
+          gap: 12,
+        }}
+      >
+        <input
+          value={topic}
+          onChange={(event) => setTopic(event.target.value)}
+          placeholder="موضوع المحتوى"
+          style={fieldStyle}
+        />
+
+        <input
+          value={audience}
+          onChange={(event) => setAudience(event.target.value)}
+          placeholder="الجمهور المستهدف"
+          style={fieldStyle}
+        />
+
+        <select
+          value={platform}
+          onChange={(event) =>
+            setPlatform(
+              event.target.value as AiContentPlatform,
+            )
+          }
+          style={fieldStyle}
+        >
+          <option value="YouTube">YouTube</option>
+          <option value="TikTok">TikTok</option>
+          <option value="Both">YouTube + TikTok</option>
+        </select>
+
+        <select
+          value={tone}
+          onChange={(event) =>
+            setTone(event.target.value as AiContentTone)
+          }
+          style={fieldStyle}
+        >
+          <option value="professional">احترافي</option>
+          <option value="cinematic">سينمائي</option>
+          <option value="educational">تعليمي</option>
+          <option value="entertaining">ترفيهي</option>
+          <option value="inspirational">ملهم</option>
+        </select>
+      </div>
+
+      <button
+        disabled={loading}
+        onClick={() => void generate()}
+        style={{
+          border: 0,
+          borderRadius: 12,
+          padding: "13px 18px",
+          fontWeight: 800,
+          cursor: loading ? "wait" : "pointer",
+          background: "#8b5cf6",
+          color: "white",
+        }}
+      >
+        {loading
+          ? "جارٍ إنشاء حزمة الإنتاج..."
+          : "إنشاء حزمة المحتوى الكاملة"}
+      </button>
+
+      {error && (
+        <div
+          style={{
+            padding: 12,
+            borderRadius: 12,
+            background: "rgba(239,68,68,.14)",
+            color: "#fca5a5",
+          }}
+        >
+          {error}
+        </div>
+      )}
+
+      {result && (
+        <div style={{ display: "grid", gap: 14 }}>
+          <ResultBlock title="الفكرة">
+            <strong>{result.idea.title}</strong>
+            <p>{result.idea.hook}</p>
+            <small>التقييم: {result.idea.score}/100</small>
+          </ResultBlock>
+
+          <ResultBlock title="السكربت">
+            <h3>{result.script.title}</h3>
+            <p>{result.script.hook}</p>
+            {result.script.sections.map((section) => (
+              <div key={section.heading}>
+                <strong>{section.heading}</strong>
+                <p>{section.narration}</p>
+                <small>{section.visualDirection}</small>
+              </div>
+            ))}
+          </ResultBlock>
+
+          <ResultBlock title="التحسين">
+            <p>{result.optimization.description}</p>
+            <strong>
+              {result.optimization.hashtags.join(" ")}
+            </strong>
+          </ResultBlock>
+
+          <ResultBlock title="مراجعة الجودة">
+            <strong>
+              النتيجة: {result.review.overallScore}/100
+            </strong>
+            <ul>
+              {result.review.recommendations.map(
+                (recommendation) => (
+                  <li key={recommendation}>
+                    {recommendation}
+                  </li>
+                ),
+              )}
+            </ul>
+          </ResultBlock>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function ResultBlock(props: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <article
+      style={{
+        padding: 16,
+        borderRadius: 14,
+        background: "rgba(255,255,255,.05)",
+        border: "1px solid rgba(255,255,255,.08)",
+      }}
+    >
+      <div
+        style={{
+          color: "#a78bfa",
+          fontWeight: 800,
+          marginBottom: 10,
+        }}
+      >
+        {props.title}
+      </div>
+      {props.children}
+    </article>
+  );
+}
+
+const fieldStyle: React.CSSProperties = {
+  width: "100%",
+  boxSizing: "border-box",
+  border: "1px solid rgba(255,255,255,.12)",
+  borderRadius: 12,
+  padding: "12px 14px",
+  background: "#0f172a",
+  color: "#f8fafc",
+  outline: "none",
+};

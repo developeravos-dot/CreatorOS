@@ -1,0 +1,778 @@
+﻿import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+
+import { randomUUID } from 'node:crypto';
+
+import { ImageProviderAdapterService } from '../image-provider-adapter/image-provider-adapter.service';
+import { PermanentUniverseMemoryService } from '../persistent-memory/permanent-universe-memory.service';
+
+import { ResolveCompatibleProviderDto } from './dto/resolve-compatible-provider.dto';
+
+import type {
+  ProviderCompatibilityProfile,
+  ProviderResolutionDecision,
+  ProviderWorkload,
+} from './models/provider-compatibility.models';
+
+@Injectable()
+export class ProviderCompatibilityService {
+  private profiles:
+    ProviderCompatibilityProfile[] = [];
+
+  constructor(
+    private readonly memory:
+      PermanentUniverseMemoryService,
+  ) {
+    this.refreshProfiles();
+  }
+
+  getStatus() {
+    return {
+      success: true,
+
+      engine:
+        'CreatorOS Provider Compatibility Layer',
+
+      version: '1.1.0',
+
+      phase:
+        'Provider-Neutral Compatibility and Lock Enforcement',
+
+      status: 'operational',
+
+      architecture: {
+        unifiedProviderInterface: true,
+        providerProfileEngine: true,
+        workloadCapabilityMapping: true,
+        providerResolutionEngine: true,
+        fallbackProviderSelection: true,
+        migrationGateIntegrationReady: true,
+        hybridProviderReady: true,
+        providerLockReady: true,
+        providerLockEnforcement: true,
+        unauthorizedProviderBlocking: true,
+        rollbackProviderResolution: true,
+      },
+    };
+  }
+
+  getProfiles() {
+    this.refreshProfiles();
+
+    return {
+      success: true,
+      count: this.profiles.length,
+      profiles: this.profiles,
+    };
+  }
+
+  getProfile(
+    providerId: string,
+  ) {
+    this.refreshProfiles();
+
+    const profile =
+      this.profiles.find(
+        (item) =>
+          item.providerId ===
+          providerId,
+      );
+
+    if (!profile) {
+      throw new NotFoundException(
+        `Provider compatibility profile not found: ${providerId}.`,
+      );
+    }
+
+    return {
+      success: true,
+      profile,
+    };
+  }
+
+  async resolve(
+    dto: ResolveCompatibleProviderDto,
+  ): Promise<{
+    success: true;
+    decision:
+      ProviderResolutionDecision & {
+        lockApplied: boolean;
+        lockId?: string;
+        fallbackProviderId?: string;
+      };
+  }> {
+    this.refreshProfiles();
+
+    const eligible =
+      this.profiles
+        .filter(
+          (profile) =>
+            profile.available &&
+            profile.configured &&
+            profile.supportedWorkloads.includes(
+              dto.workload,
+            ),
+        )
+        .sort(
+          (left, right) =>
+            this.workloadScore(
+              right,
+              dto.workload,
+            ) -
+            this.workloadScore(
+              left,
+              dto.workload,
+            ),
+        );
+
+    if (eligible.length === 0) {
+      throw new BadRequestException(
+        `No compatible provider exists for workload: ${dto.workload}.`,
+      );
+    }
+
+    const providerLock =
+      await this.findProviderLock(
+        dto,
+      );
+
+    let selected:
+      ProviderCompatibilityProfile | undefined;
+
+    if (providerLock) {
+      selected =
+        eligible.find(
+          (profile) =>
+            profile.providerId ===
+            providerLock.providerId,
+        );
+
+      if (!selected) {
+        selected =
+          providerLock.fallbackProviderId
+            ? eligible.find(
+                (profile) =>
+                  profile.providerId ===
+                  providerLock.fallbackProviderId,
+              )
+            : undefined;
+
+        if (!selected) {
+          throw new BadRequestException(
+            `Locked provider and fallback provider are unavailable for ${providerLock.entityName}.`,
+          );
+        }
+      }
+
+      if (
+        dto.requestedProviderId &&
+        dto.requestedProviderId !==
+          providerLock.providerId
+      ) {
+        throw new BadRequestException(
+          `Provider change blocked. ${providerLock.entityName} is locked to ${providerLock.providerId}. Run and approve a new migration test before changing the provider.`,
+        );
+      }
+    } else if (
+      dto.requestedProviderId
+    ) {
+      selected =
+        eligible.find(
+          (profile) =>
+            profile.providerId ===
+            dto.requestedProviderId,
+        );
+
+      if (!selected) {
+        throw new BadRequestException(
+          `Requested provider is unavailable or incompatible: ${dto.requestedProviderId}.`,
+        );
+      }
+    } else {
+      selected =
+        eligible[0];
+    }
+
+    if (!selected) {
+      throw new BadRequestException(
+        'Provider resolution failed.',
+      );
+    }
+
+    const score =
+      this.workloadScore(
+        selected,
+        dto.workload,
+      );
+
+    const allowed =
+      Boolean(providerLock) ||
+      selected.governance
+        .productionAllowed ||
+      selected.executionMode ===
+        'manual-export' ||
+      selected.executionMode ===
+        'simulation';
+
+    const fallbacks =
+      eligible
+        .filter(
+          (profile) =>
+            profile.providerId !==
+            selected?.providerId,
+        )
+        .map(
+          (profile) =>
+            profile.providerId,
+        );
+
+    const decision:
+      ProviderResolutionDecision & {
+        lockApplied: boolean;
+        lockId?: string;
+        fallbackProviderId?: string;
+      } = {
+        workload:
+          dto.workload,
+
+        requestedProviderId:
+          dto.requestedProviderId,
+
+        resolvedProviderId:
+          selected.providerId,
+
+        profileId:
+          selected.profileId,
+
+        allowed,
+        score,
+
+        reason:
+          providerLock
+            ? `تم تطبيق قفل المزود على ${providerLock.entityName}. المزود المعتمد هو ${selected.providerId}.`
+            : this.resolutionReason(
+                selected,
+                dto.workload,
+              ),
+
+        fallbackProviderIds:
+          fallbacks,
+
+        migrationGateRequired:
+          providerLock
+            ? false
+            : selected.governance
+                .migrationTestRequired,
+
+        humanApprovalRequired:
+          providerLock
+            ? false
+            : selected.governance
+                .humanApprovalRequired,
+
+        lockApplied:
+          Boolean(providerLock),
+
+        lockId:
+          providerLock?.lockId,
+
+        fallbackProviderId:
+          providerLock
+            ?.fallbackProviderId,
+      };
+
+    return {
+      success: true,
+      decision,
+    };
+  }
+
+  private async findProviderLock(
+    dto: ResolveCompatibleProviderDto,
+  ) {
+    if (
+      !dto.worldId ||
+      !dto.entityType ||
+      !dto.entityId
+    ) {
+      return undefined;
+    }
+
+    const locks =
+      await this.memory
+        .loadProviderEntityLocks(
+          dto.worldId,
+        );
+
+    return locks.find(
+      (providerLock) =>
+        providerLock.locked &&
+        providerLock.entityType ===
+          dto.entityType &&
+        providerLock.entityId ===
+          dto.entityId &&
+        providerLock.workload ===
+          dto.workload,
+    );
+  }
+
+  private refreshProfiles(): void {
+    const providerResult = {
+      providers: [
+        {
+          providerId: 'manual-export' as const,
+          displayName:
+            'Manual Prompt Export Provider',
+          available: true,
+          configured: true,
+          capabilities: {
+            textToImage: false,
+            referenceImageInput: false,
+            negativePrompt: true,
+            multipleImages: true,
+            transparentBackground: false,
+            deterministicSeed: false,
+          },
+          executionMode:
+            'manual-export' as const,
+          limitations: [
+            'لا يولد صورًا تلقائيًا.',
+            'يصدر ملفات JSON وTXT جاهزة للاستخدام في مولد صور خارجي.',
+            'يجب إعادة الصور الناتجة واعتمادها لاحقًا.',
+          ],
+        },
+        {
+          providerId: 'mock-image' as const,
+          displayName:
+            'CreatorOS Mock Image Provider',
+          available: true,
+          configured: true,
+          capabilities: {
+            textToImage: true,
+            referenceImageInput: false,
+            negativePrompt: true,
+            multipleImages: true,
+            transparentBackground: false,
+            deterministicSeed: true,
+          },
+          executionMode:
+            'simulation' as const,
+          limitations: [
+            'مزود اختبار فقط.',
+            'لا ينتج ملفات صور حقيقية.',
+            'لا يستخدم في الإنتاج النهائي.',
+          ],
+        },
+      ],
+    };
+
+    const now =
+      new Date().toISOString();
+
+    this.profiles =
+      providerResult.providers.map(
+        (provider) => {
+          const existing =
+            this.profiles.find(
+              (profile) =>
+                profile.providerId ===
+                provider.providerId,
+            );
+
+          return {
+            profileId:
+              existing?.profileId ??
+              randomUUID(),
+
+            providerId:
+              provider.providerId,
+
+            displayName:
+              provider.displayName,
+
+            available:
+              provider.available,
+
+            configured:
+              provider.configured,
+
+            approvalStatus:
+              provider.executionMode ===
+              'manual-export'
+                ? 'approved'
+                : 'sandbox',
+
+            executionMode:
+              provider.executionMode,
+
+            supportedWorkloads:
+              this.supportedWorkloads(),
+
+            capabilities: {
+              ...provider.capabilities,
+            },
+
+            strengths:
+              this.strengths(
+                provider.providerId,
+                provider.capabilities,
+              ),
+
+            weaknesses:
+              this.weaknesses(
+                provider.providerId,
+                provider.capabilities,
+              ),
+
+            limitations: [
+              ...provider.limitations,
+            ],
+
+            compatibility:
+              this.compatibilityScores(
+                provider.providerId,
+                provider.capabilities,
+              ),
+
+            recommendedSettings:
+              this.recommendedSettings(
+                provider.providerId,
+              ),
+
+            governance: {
+              sandboxRequired:
+                provider.executionMode !==
+                'manual-export',
+
+              migrationTestRequired:
+                provider.executionMode !==
+                'manual-export',
+
+              humanApprovalRequired:
+                true,
+
+              productionAllowed:
+                provider.executionMode ===
+                'manual-export',
+            },
+
+            createdAt:
+              existing?.createdAt ??
+              now,
+
+            updatedAt:
+              now,
+          };
+        },
+      );
+  }
+
+  private supportedWorkloads():
+    ProviderWorkload[] {
+    return [
+      'character-reference',
+      'character-expression',
+      'character-pose',
+      'environment-reference',
+      'prop-reference',
+      'storyboard-frame',
+    ];
+  }
+
+  private compatibilityScores(
+    providerId: string,
+    capabilities: {
+      textToImage: boolean;
+      referenceImageInput: boolean;
+      negativePrompt: boolean;
+      multipleImages: boolean;
+      transparentBackground: boolean;
+      deterministicSeed: boolean;
+    },
+  ) {
+    if (
+      providerId ===
+      'manual-export'
+    ) {
+      return {
+        characterReference: 100,
+        characterExpression: 100,
+        characterPose: 100,
+        environmentReference: 100,
+        propReference: 100,
+        storyboardFrame: 100,
+        overall: 100,
+      };
+    }
+
+    if (
+      providerId ===
+      'mock-image'
+    ) {
+      return {
+        characterReference: 55,
+        characterExpression: 55,
+        characterPose: 55,
+        environmentReference: 60,
+        propReference: 60,
+        storyboardFrame: 55,
+        overall: 57,
+      };
+    }
+
+    const base =
+      capabilities.referenceImageInput
+        ? 85
+        : capabilities.textToImage
+          ? 70
+          : 30;
+
+    const seedBonus =
+      capabilities.deterministicSeed
+        ? 5
+        : 0;
+
+    return {
+      characterReference:
+        Math.min(
+          100,
+          base + seedBonus,
+        ),
+
+      characterExpression:
+        Math.min(
+          100,
+          base + seedBonus,
+        ),
+
+      characterPose:
+        Math.min(
+          100,
+          base + seedBonus,
+        ),
+
+      environmentReference:
+        Math.min(
+          100,
+          base + 5,
+        ),
+
+      propReference:
+        Math.min(
+          100,
+          base + 5,
+        ),
+
+      storyboardFrame:
+        Math.min(
+          100,
+          base,
+        ),
+
+      overall:
+        Math.min(
+          100,
+          base + 2,
+        ),
+    };
+  }
+
+  private strengths(
+    providerId: string,
+    capabilities: {
+      textToImage: boolean;
+      referenceImageInput: boolean;
+      negativePrompt: boolean;
+      multipleImages: boolean;
+      transparentBackground: boolean;
+      deterministicSeed: boolean;
+    },
+  ): string[] {
+    if (
+      providerId ===
+      'manual-export'
+    ) {
+      return [
+        'استقلال كامل عن المزود.',
+        'إمكانية نقل الطلب إلى أي منصة.',
+        'الحفاظ على Prompt وNegative Prompt كاملين.',
+      ];
+    }
+
+    const result: string[] = [];
+
+    if (capabilities.textToImage) {
+      result.push(
+        'يدعم توليد الصور من النص.',
+      );
+    }
+
+    if (
+      capabilities.referenceImageInput
+    ) {
+      result.push(
+        'يدعم الصور المرجعية.',
+      );
+    }
+
+    if (
+      capabilities.deterministicSeed
+    ) {
+      result.push(
+        'يدعم Seed ثابتًا.',
+      );
+    }
+
+    if (
+      capabilities.negativePrompt
+    ) {
+      result.push(
+        'يدعم Negative Prompt.',
+      );
+    }
+
+    return result;
+  }
+
+  private weaknesses(
+    providerId: string,
+    capabilities: {
+      textToImage: boolean;
+      referenceImageInput: boolean;
+      negativePrompt: boolean;
+      multipleImages: boolean;
+      transparentBackground: boolean;
+      deterministicSeed: boolean;
+    },
+  ): string[] {
+    if (
+      providerId ===
+      'manual-export'
+    ) {
+      return [
+        'لا ينتج صورة تلقائيًا.',
+        'يتطلب نقلًا واعتمادًا يدويًا.',
+      ];
+    }
+
+    if (
+      providerId ===
+      'mock-image'
+    ) {
+      return [
+        'مزود محاكاة فقط.',
+        'لا ينتج ملفات صور حقيقية.',
+      ];
+    }
+
+    const result: string[] = [];
+
+    if (
+      !capabilities.referenceImageInput
+    ) {
+      result.push(
+        'لا يدعم الصور المرجعية.',
+      );
+    }
+
+    if (
+      !capabilities.deterministicSeed
+    ) {
+      result.push(
+        'لا يدعم Seed ثابتًا.',
+      );
+    }
+
+    return result;
+  }
+
+  private recommendedSettings(
+    providerId: string,
+  ) {
+    if (
+      providerId ===
+      'manual-export'
+    ) {
+      return {
+        width: 1024,
+        height: 1024,
+        imageCount: 1,
+        referenceStrength: 1,
+        styleStrength: 0.85,
+        guidanceScale: 8,
+        seed: 1001,
+      };
+    }
+
+    return {
+      width: 1024,
+      height: 1024,
+      imageCount: 1,
+      referenceStrength: 0.9,
+      styleStrength: 0.75,
+      guidanceScale: 7,
+      seed: 1001,
+    };
+  }
+
+  private workloadScore(
+    profile:
+      ProviderCompatibilityProfile,
+
+    workload:
+      ProviderWorkload,
+  ): number {
+    switch (workload) {
+      case 'character-reference':
+        return profile.compatibility
+          .characterReference;
+
+      case 'character-expression':
+        return profile.compatibility
+          .characterExpression;
+
+      case 'character-pose':
+        return profile.compatibility
+          .characterPose;
+
+      case 'environment-reference':
+        return profile.compatibility
+          .environmentReference;
+
+      case 'prop-reference':
+        return profile.compatibility
+          .propReference;
+
+      case 'storyboard-frame':
+        return profile.compatibility
+          .storyboardFrame;
+
+      default:
+        return profile.compatibility
+          .overall;
+    }
+  }
+
+  private resolutionReason(
+    profile:
+      ProviderCompatibilityProfile,
+
+    workload:
+      ProviderWorkload,
+  ): string {
+    return [
+      `تم اختيار ${profile.displayName}`,
+      `لعبء العمل ${workload}`,
+      `بدرجة توافق ${this.workloadScore(profile, workload)}`,
+
+      profile.governance
+        .migrationTestRequired
+        ? 'ويجب اجتياز بوابة اختبار الهجرة قبل الإنتاج الحقيقي'
+        : 'ولا يحتاج إلى اختبار هجرة لأنه مزود تصدير محايد',
+    ].join('، ');
+  }
+}
+

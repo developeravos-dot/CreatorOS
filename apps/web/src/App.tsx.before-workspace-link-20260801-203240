@@ -1,0 +1,173 @@
+import {
+  useState,
+  useMemo,
+} from "react";
+
+import {
+  enterpriseApi,
+  type EnterpriseDashboard,
+  type EnterpriseProject,
+  type EnterpriseScript,
+} from "./enterprise-api";
+import { NavButton } from "./components/shared";
+import { styles } from "./styles/appStyles";
+import {
+  useCreatorDashboard,
+  useCreatorOperations,
+} from "./hooks";
+import { CreatorDialogs } from "./dialogs";
+import {
+  CreatorHeader,
+  CreatorSidebar,
+  MainLayout,
+  type CreatorView,
+} from "./layouts";
+import DashboardPage from "./pages/DashboardPage";
+import ProjectsPage from "./pages/ProjectsPage";
+import ScriptsPage from "./pages/ScriptsPage";
+import CalendarPage from "./pages/CalendarPage";
+import PromptsPage from "./pages/PromptsPage";
+import AIContentStudioPage from "./pages/AIContentStudioPage";
+type View = CreatorView;
+
+function App() {
+  const [view, setView] = useState<View>("dashboard");
+  const {
+    dashboard,
+    connected,
+    loading,
+    busy,
+    message,
+    error,
+    setError,
+    setMessage,
+    loadDashboard,
+    runAction,
+  } = useCreatorDashboard();
+  const operations = useCreatorOperations({
+    dashboard,
+    setError,
+    runAction,
+  });
+
+  const {
+    createProject,
+    createScript,
+    scheduleContent,
+    createPrompt,
+    changeProjectStatus,
+    deleteProject,
+    changeScriptStatus,
+    editScript,
+  } = operations;
+const currentTitle = useMemo(() => {
+    const titles: Record<View, string> = {
+      dashboard: "مركز قيادة المحتوى",
+      projects: "إدارة المشاريع",
+      scripts: "محرر السكربتات",
+      calendar: "تقويم المحتوى",
+      prompts: "مكتبة القوالب الذكية",
+      "ai-content": "استوديو المحتوى الذكي",
+    };
+
+    return titles[view];
+  }, [view]);
+
+  return (
+    <MainLayout
+      sidebar={
+        <CreatorSidebar
+          view={view}
+          connected={connected}
+          onViewChange={setView}
+        />
+      }
+      header={
+        <CreatorHeader
+          title={currentTitle}
+          loading={loading}
+          busy={busy}
+          onRefresh={loadDashboard}
+        />
+      }
+    >
+
+        {message && (
+          <div style={styles.successMessage}>{message}</div>
+        )}
+
+        {error && (
+          <div style={styles.errorMessage}>{error}</div>
+        )}
+
+        {loading ? (
+          <div style={styles.loading}>
+            جارٍ تحميل CreatorOS Enterprise...
+          </div>
+        ) : (
+          <>
+            {view === "dashboard" && (
+              <DashboardPage
+                dashboard={dashboard}
+                connected={connected}
+                busy={busy}
+                onCreateProject={createProject}
+                onCreateScript={createScript}
+                onSchedule={scheduleContent}
+                onCreatePrompt={createPrompt}
+              />
+            )}
+
+            {view === "projects" && (
+              <ProjectsPage
+                projects={dashboard.projects}
+                busy={busy}
+                onCreate={createProject}
+                onStatus={changeProjectStatus}
+                onDelete={deleteProject}
+              />
+            )}
+
+            {view === "scripts" && (
+              <ScriptsPage
+                scripts={dashboard.scripts}
+                projects={dashboard.projects}
+                busy={busy}
+                onCreate={createScript}
+                onEdit={editScript}
+                onStatus={changeScriptStatus}
+              />
+            )}
+
+            {view === "calendar" && (
+              <CalendarPage
+                items={dashboard.calendar}
+                projects={dashboard.projects}
+                busy={busy}
+                onCreate={scheduleContent}
+              />
+            )}
+
+            {view === "prompts" && (
+              <PromptsPage
+                prompts={dashboard.prompts}
+                busy={busy}
+                onCreate={createPrompt}
+              />
+            )}
+            {view === "ai-content" && (
+              <AIContentStudioPage />
+            )}
+          </>
+        )}
+      <CreatorDialogs
+        dashboard={dashboard}
+        busy={busy}
+        error={error}
+        operations={operations}
+      />
+</MainLayout>
+  );
+}
+
+export default App;

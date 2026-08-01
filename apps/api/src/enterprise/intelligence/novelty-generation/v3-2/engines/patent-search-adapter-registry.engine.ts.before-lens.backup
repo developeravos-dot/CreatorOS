@@ -1,0 +1,108 @@
+﻿import { Injectable } from '@nestjs/common';
+import { EpoOpsPatentAdapter } from '../adapters/epo-ops-patent.adapter';
+import { LocalSimulationPatentAdapter } from '../adapters/local-simulation-patent.adapter';
+import type { PatentSearchAdapter } from '../adapters/patent-search-adapter';
+import type {
+  PatentSearchProviderId,
+  PatentSearchProviderStatus,
+} from '../models/novelty-v3-2.models';
+
+@Injectable()
+export class PatentSearchAdapterRegistry {
+  constructor(
+    private readonly localSimulationAdapter:
+      LocalSimulationPatentAdapter,
+
+    private readonly epoOpsPatentAdapter:
+      EpoOpsPatentAdapter,
+  ) {}
+
+  getAdapter(
+    providerId: PatentSearchProviderId,
+  ): PatentSearchAdapter | undefined {
+    if (
+      providerId === 'local-simulation'
+    ) {
+      return this.localSimulationAdapter;
+    }
+
+    if (providerId === 'espacenet') {
+      const status =
+        this.epoOpsPatentAdapter.getStatus();
+
+      return status.available
+        ? this.epoOpsPatentAdapter
+        : undefined;
+    }
+
+    return undefined;
+  }
+
+  getStatuses():
+    PatentSearchProviderStatus[] {
+    return [
+      this.localSimulationAdapter.getStatus(),
+      this.epoOpsPatentAdapter.getStatus(),
+
+      {
+        id: 'google-patents',
+        name: 'Google Patents Adapter',
+        enabled: false,
+        available: false,
+        mode: 'browser-adapter',
+        requiresCredentials: false,
+        capabilities: [
+          'patent document search',
+          'claims retrieval',
+          'family lookup',
+        ],
+        limitation:
+          'واجهة التنفيذ غير مهيأة.',
+      },
+
+      {
+        id: 'wipo-patentscope',
+        name: 'WIPO Patentscope Adapter',
+        enabled: false,
+        available: false,
+        mode: 'browser-adapter',
+        requiresCredentials: false,
+        capabilities: [
+          'PCT search',
+          'international application retrieval',
+        ],
+        limitation:
+          'واجهة التنفيذ غير مهيأة.',
+      },
+
+      {
+        id: 'uspto',
+        name: 'USPTO Patent Adapter',
+        enabled: false,
+        available: false,
+        mode: 'public-api',
+        requiresCredentials: false,
+        capabilities: [
+          'US patent search',
+          'application lookup',
+          'claims retrieval',
+        ],
+        limitation:
+          'واجهة USPTO غير مهيأة.',
+      },
+    ];
+  }
+
+  availableProviders():
+    PatentSearchProviderId[] {
+    return this.getStatuses()
+      .filter(
+        (status) =>
+          status.enabled &&
+          status.available,
+      )
+      .map(
+        (status) => status.id,
+      );
+  }
+}

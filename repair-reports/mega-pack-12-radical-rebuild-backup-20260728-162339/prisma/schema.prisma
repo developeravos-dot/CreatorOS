@@ -1,0 +1,1363 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum RecordStatus {
+  DRAFT
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ExecutionStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+model RuntimePlugin {
+  id           String       @id @default(cuid())
+  pluginKey    String       @unique
+  name         String
+  version      String
+  status       RecordStatus @default(ACTIVE)
+  capabilities Json
+  metadata     Json?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([status])
+}
+
+model Blueprint {
+  id           String             @id @default(cuid())
+  blueprintKey String             @unique
+  name         String
+  description  String?
+  status       RecordStatus       @default(DRAFT)
+  definition   Json
+  metadata     Json?
+  versions     BlueprintVersion[]
+  approvals    ApprovalGate[]
+  plans        ExecutionPlan[]
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  @@index([status])
+}
+
+model BlueprintVersion {
+  id          String   @id @default(cuid())
+  blueprintId String
+  version     Int
+  definition  Json
+  changeNote  String?
+  createdAt   DateTime @default(now())
+
+  blueprint Blueprint @relation(fields: [blueprintId], references: [id], onDelete: Cascade)
+
+  @@unique([blueprintId, version])
+  @@index([blueprintId])
+}
+
+model ApprovalGate {
+  id           String         @id @default(cuid())
+  blueprintId  String
+  gateType     String
+  status       ApprovalStatus @default(PENDING)
+  approvedBy   String?
+  decisionNote String?
+  decidedAt    DateTime?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  blueprint Blueprint @relation(fields: [blueprintId], references: [id], onDelete: Cascade)
+
+  @@index([blueprintId])
+  @@index([status])
+}
+
+model ExecutionPlan {
+  id          String          @id @default(cuid())
+  blueprintId String
+  planKey     String          @unique
+  status      ExecutionStatus @default(PENDING)
+  definition  Json
+  result      Json?
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  blueprint Blueprint @relation(fields: [blueprintId], references: [id], onDelete: Cascade)
+
+  @@index([blueprintId])
+  @@index([status])
+}
+
+model KnowledgeNode {
+  id          String              @id @default(cuid())
+  nodeKey     String              @unique
+  type        String
+  name        String
+  description String?
+  properties  Json
+  status      RecordStatus        @default(ACTIVE)
+  outgoing    KnowledgeEdge[]     @relation("OutgoingEdges")
+  incoming    KnowledgeEdge[]     @relation("IncomingEdges")
+  evidence    KnowledgeEvidence[]
+  insights    KnowledgeInsight[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  @@index([type])
+  @@index([status])
+}
+
+model KnowledgeEdge {
+  id         String   @id @default(cuid())
+  sourceId   String
+  targetId   String
+  relation   String
+  properties Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  source KnowledgeNode @relation("OutgoingEdges", fields: [sourceId], references: [id], onDelete: Cascade)
+  target KnowledgeNode @relation("IncomingEdges", fields: [targetId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceId, targetId, relation])
+  @@index([sourceId])
+  @@index([targetId])
+  @@index([relation])
+}
+
+model Capability {
+  id            String       @id @default(cuid())
+  capabilityKey String       @unique
+  domain        String
+  name          String
+  description   String?
+  status        RecordStatus @default(ACTIVE)
+  contract      Json
+  dependencies  Json
+  metadata      Json?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([domain])
+  @@index([status])
+}
+
+model OrganizationUnit {
+  id         String       @id @default(cuid())
+  unitKey    String       @unique
+  name       String
+  type       String
+  status     RecordStatus @default(ACTIVE)
+  purpose    String?
+  metadata   Json?
+  agents     Agent[]
+  agentTeams AgentTeam[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  @@index([type])
+  @@index([status])
+}
+
+model Agent {
+  id                 String       @id @default(cuid())
+  agentKey           String       @unique
+  organizationUnitId String?
+  name               String
+  role               String
+  status             RecordStatus @default(ACTIVE)
+  instructions       Json
+  capabilities       Json
+  memoryConfig       Json?
+  metadata           Json?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  organizationUnit   OrganizationUnit?        @relation(fields: [organizationUnitId], references: [id], onDelete: SetNull)
+  teamMemberships    AgentTeamMember[]
+  missionAssignments AgentMissionAssignment[]
+  proposedDecisions  AgentDecision[]
+
+  @@index([organizationUnitId])
+  @@index([role])
+  @@index([status])
+}
+
+model Integration {
+  id             String       @id @default(cuid())
+  integrationKey String       @unique
+  name           String
+  type           String
+  status         RecordStatus @default(ACTIVE)
+  configuration  Json
+  metadata       Json?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([type])
+  @@index([status])
+}
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  eventType    String
+  actorType    String
+  actorId      String?
+  resourceType String
+  resourceId   String?
+  action       String
+  payload      Json?
+  occurredAt   DateTime @default(now())
+
+  @@index([eventType])
+  @@index([actorId])
+  @@index([resourceType, resourceId])
+  @@index([occurredAt])
+}
+
+enum CreatorUserStatus {
+  ACTIVE
+  SUSPENDED
+  DISABLED
+}
+
+model CreatorUser {
+  id                   String                       @id @default(cuid())
+  username             String                       @unique
+  email                String?                      @unique
+  passwordHash         String
+  status               CreatorUserStatus            @default(ACTIVE)
+  roles                CreatorUserRole[]
+  tokens               CreatorRefreshToken[]
+  profile              CreatorUserProfile?
+  sessions             CreatorSession[]
+  apiKeys              CreatorApiKey[]
+  personalAccessTokens CreatorPersonalAccessToken[]
+  createdAt            DateTime                     @default(now())
+  updatedAt            DateTime                     @updatedAt
+
+  @@index([status])
+}
+
+model CreatorRole {
+  id          String                  @id @default(cuid())
+  key         String                  @unique
+  name        String
+  description String?
+  users       CreatorUserRole[]
+  permissions CreatorRolePermission[]
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+}
+
+model CreatorPermission {
+  id          String                  @id @default(cuid())
+  key         String                  @unique
+  description String?
+  roles       CreatorRolePermission[]
+  createdAt   DateTime                @default(now())
+}
+
+model CreatorUserRole {
+  userId     String
+  roleId     String
+  user       CreatorUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role       CreatorRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  assignedAt DateTime    @default(now())
+
+  @@id([userId, roleId])
+}
+
+model CreatorRolePermission {
+  roleId       String
+  permissionId String
+  role         CreatorRole       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   CreatorPermission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+}
+
+model CreatorRefreshToken {
+  id        String      @id @default(cuid())
+  userId    String
+  tokenHash String      @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime    @default(now())
+  user      CreatorUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+}
+
+model CreatorOutboxEvent {
+  id            String    @id @default(cuid())
+  eventName     String
+  aggregateType String?
+  aggregateId   String?
+  payload       Json
+  occurredAt    DateTime  @default(now())
+  publishedAt   DateTime?
+  attempts      Int       @default(0)
+  lastError     String?
+
+  @@index([publishedAt, occurredAt])
+}
+
+model CreatorIdempotencyKey {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  method      String
+  path        String
+  requestHash String
+  statusCode  Int?
+  response    Json?
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  @@index([expiresAt])
+}
+
+model CreatorJobRun {
+  id         String    @id @default(cuid())
+  jobName    String
+  status     String
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+  details    Json?
+
+  @@index([jobName, startedAt])
+}
+
+enum CreatorSessionStatus {
+  ACTIVE
+  REVOKED
+  EXPIRED
+}
+
+enum CreatorCredentialStatus {
+  ACTIVE
+  REVOKED
+  EXPIRED
+}
+
+model CreatorUserProfile {
+  id          String      @id @default(cuid())
+  userId      String      @unique
+  displayName String?
+  firstName   String?
+  lastName    String?
+  avatarUrl   String?
+  locale      String      @default("en-US")
+  timezone    String      @default("UTC")
+  metadata    Json?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  user        CreatorUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CreatorSession {
+  id         String               @id @default(cuid())
+  userId     String
+  sessionKey String               @unique
+  status     CreatorSessionStatus @default(ACTIVE)
+  ipAddress  String?
+  userAgent  String?
+  deviceName String?
+  lastSeenAt DateTime             @default(now())
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+  user       CreatorUser          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([expiresAt])
+}
+
+model CreatorApiKey {
+  id         String                  @id @default(cuid())
+  userId     String
+  name       String
+  keyPrefix  String
+  keyHash    String                  @unique
+  status     CreatorCredentialStatus @default(ACTIVE)
+  scopes     String[]
+  lastUsedAt DateTime?
+  expiresAt  DateTime?
+  revokedAt  DateTime?
+  createdAt  DateTime                @default(now())
+  updatedAt  DateTime                @updatedAt
+  user       CreatorUser             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([keyPrefix])
+}
+
+model CreatorPersonalAccessToken {
+  id          String                  @id @default(cuid())
+  userId      String
+  name        String
+  tokenPrefix String
+  tokenHash   String                  @unique
+  status      CreatorCredentialStatus @default(ACTIVE)
+  scopes      String[]
+  lastUsedAt  DateTime?
+  expiresAt   DateTime?
+  revokedAt   DateTime?
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+  user        CreatorUser             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([tokenPrefix])
+}
+
+enum GovernancePolicyStatus {
+  DRAFT
+  ACTIVE
+  SUSPENDED
+  RETIRED
+}
+
+enum GovernanceDecisionStatus {
+  PROPOSED
+  APPROVED
+  REJECTED
+  SUPERSEDED
+}
+
+enum GovernanceRiskStatus {
+  OPEN
+  MITIGATING
+  ACCEPTED
+  CLOSED
+}
+
+enum GovernanceRiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum GovernanceComplianceStatus {
+  NOT_ASSESSED
+  COMPLIANT
+  PARTIALLY_COMPLIANT
+  NON_COMPLIANT
+  EXEMPTED
+}
+
+enum GovernanceChangeStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  IMPLEMENTED
+  CANCELLED
+}
+
+model GovernancePolicy {
+  id          String                 @id @default(cuid())
+  policyKey   String                 @unique
+  name        String
+  description String?
+  version     Int                    @default(1)
+  status      GovernancePolicyStatus @default(DRAFT)
+  category    String
+  rules       Json
+  owner       String?
+  effectiveAt DateTime?
+  retiredAt   DateTime?
+  metadata    Json?
+  assessments GovernanceAssessment[]
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+
+  @@index([status])
+  @@index([category])
+}
+
+model GovernanceDecision {
+  id           String                   @id @default(cuid())
+  decisionKey  String                   @unique
+  title        String
+  context      String
+  decision     String
+  consequences String?
+  alternatives Json?
+  status       GovernanceDecisionStatus @default(PROPOSED)
+  decisionType String                   @default("ADR")
+  owner        String?
+  approvedBy   String?
+  decidedAt    DateTime?
+  supersedesId String?
+  metadata     Json?
+  createdAt    DateTime                 @default(now())
+  updatedAt    DateTime                 @updatedAt
+
+  @@index([status])
+  @@index([decisionType])
+}
+
+model GovernanceRisk {
+  id              String                 @id @default(cuid())
+  riskKey         String                 @unique
+  title           String
+  description     String
+  category        String
+  likelihood      Int
+  impact          Int
+  score           Int
+  level           GovernanceRiskLevel
+  status          GovernanceRiskStatus   @default(OPEN)
+  owner           String?
+  mitigationPlan  String?
+  contingencyPlan String?
+  reviewAt        DateTime?
+  closedAt        DateTime?
+  metadata        Json?
+  assessments     GovernanceAssessment[]
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+
+  @@index([status])
+  @@index([level])
+  @@index([category])
+}
+
+model GovernanceComplianceRule {
+  id          String                 @id @default(cuid())
+  ruleKey     String                 @unique
+  name        String
+  description String?
+  framework   String
+  control     String
+  severity    GovernanceRiskLevel    @default(MEDIUM)
+  active      Boolean                @default(true)
+  evidence    Json?
+  metadata    Json?
+  assessments GovernanceAssessment[]
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+
+  @@index([framework])
+  @@index([active])
+}
+
+model GovernanceAssessment {
+  id           String                     @id @default(cuid())
+  policyId     String?
+  riskId       String?
+  ruleId       String?
+  subjectType  String
+  subjectId    String?
+  status       GovernanceComplianceStatus @default(NOT_ASSESSED)
+  score        Int?
+  findings     Json?
+  evidence     Json?
+  assessedBy   String?
+  assessedAt   DateTime                   @default(now())
+  nextReviewAt DateTime?
+  createdAt    DateTime                   @default(now())
+  updatedAt    DateTime                   @updatedAt
+
+  policy GovernancePolicy?         @relation(fields: [policyId], references: [id], onDelete: SetNull)
+  risk   GovernanceRisk?           @relation(fields: [riskId], references: [id], onDelete: SetNull)
+  rule   GovernanceComplianceRule? @relation(fields: [ruleId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([subjectType, subjectId])
+  @@index([policyId])
+  @@index([riskId])
+  @@index([ruleId])
+}
+
+model GovernanceChangeRequest {
+  id             String                 @id @default(cuid())
+  changeKey      String                 @unique
+  title          String
+  description    String
+  rationale      String
+  impactAnalysis Json
+  rollbackPlan   String?
+  status         GovernanceChangeStatus @default(DRAFT)
+  requestedBy    String?
+  approvedBy     String?
+  implementedBy  String?
+  submittedAt    DateTime?
+  decidedAt      DateTime?
+  implementedAt  DateTime?
+  metadata       Json?
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+
+  @@index([status])
+}
+
+enum OpsServiceStatus {
+  OPERATIONAL
+  DEGRADED
+  MAINTENANCE
+  OUTAGE
+  RETIRED
+}
+
+enum OpsIncidentSeverity {
+  SEV1
+  SEV2
+  SEV3
+  SEV4
+}
+
+enum OpsIncidentStatus {
+  OPEN
+  INVESTIGATING
+  MITIGATING
+  RESOLVED
+  CLOSED
+}
+
+enum OpsDeploymentStatus {
+  PLANNED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  ROLLED_BACK
+  CANCELLED
+}
+
+model OpsService {
+  id          String           @id @default(cuid())
+  serviceKey  String           @unique
+  name        String
+  description String?
+  owner       String?
+  status      OpsServiceStatus @default(OPERATIONAL)
+  metadata    Json?
+  incidents   OpsIncident[]
+  runbooks    OpsRunbook[]
+  sla         OpsSla?
+  deployments OpsDeployment[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([status])
+}
+
+model OpsIncident {
+  id          String              @id @default(cuid())
+  serviceId   String?
+  title       String
+  description String
+  severity    OpsIncidentSeverity
+  status      OpsIncidentStatus   @default(OPEN)
+  commander   String?
+  resolution  String?
+  resolvedAt  DateTime?
+  closedAt    DateTime?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  service     OpsService?         @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+
+  @@index([serviceId])
+  @@index([severity, status])
+  @@index([createdAt])
+}
+
+model OpsRunbook {
+  id         String      @id @default(cuid())
+  runbookKey String      @unique
+  serviceId  String?
+  title      String
+  content    String
+  owner      String?
+  version    Int         @default(1)
+  active     Boolean     @default(true)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  service    OpsService? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+
+  @@index([serviceId, active])
+}
+
+model OpsSla {
+  id                 String     @id @default(cuid())
+  serviceId          String     @unique
+  name               String
+  targetAvailability Int
+  responseMinutes    Int
+  resolutionMinutes  Int
+  active             Boolean    @default(true)
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+  service            OpsService @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+}
+
+model OpsDeployment {
+  id          String              @id @default(cuid())
+  serviceId   String
+  version     String
+  environment String              @default("production")
+  status      OpsDeploymentStatus @default(PLANNED)
+  initiatedBy String?
+  notes       String?
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  service     OpsService          @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@index([serviceId, status])
+  @@index([createdAt])
+}
+
+enum IntegrationEndpointStatus {
+  ACTIVE
+  INACTIVE
+  DEGRADED
+  DISABLED
+}
+
+enum IntegrationDeliveryStatus {
+  PENDING
+  RETRYING
+  DELIVERED
+  FAILED
+  DEAD_LETTER
+  CANCELLED
+}
+
+enum IntegrationSagaStatus {
+  RUNNING
+  COMPLETED
+  FAILED
+  COMPENSATING
+  COMPENSATED
+  CANCELLED
+}
+
+model IntegrationEndpoint {
+  id            String                    @id @default(cuid())
+  endpointKey   String                    @unique
+  name          String
+  type          String
+  description   String?
+  status        IntegrationEndpointStatus @default(ACTIVE)
+  configuration Json
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+
+  @@index([type, status])
+}
+
+model IntegrationEventDefinition {
+  id          String   @id @default(cuid())
+  eventName   String   @unique
+  domain      String
+  version     String
+  description String?
+  schema      Json
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([domain, active])
+}
+
+model IntegrationEvent {
+  id            String                @id @default(cuid())
+  eventName     String
+  aggregateType String
+  aggregateId   String?
+  payload       Json
+  correlationId String?
+  occurredAt    DateTime              @default(now())
+  deliveries    IntegrationDelivery[]
+
+  @@index([eventName, occurredAt])
+  @@index([correlationId])
+}
+
+model IntegrationWebhook {
+  id         String                @id @default(cuid())
+  webhookKey String                @unique
+  name       String
+  url        String
+  eventNames Json
+  secret     String?
+  active     Boolean               @default(true)
+  deliveries IntegrationDelivery[]
+  createdAt  DateTime              @default(now())
+  updatedAt  DateTime              @updatedAt
+
+  @@index([active])
+}
+
+model IntegrationDelivery {
+  id            String                    @id @default(cuid())
+  eventId       String
+  webhookId     String
+  status        IntegrationDeliveryStatus @default(PENDING)
+  attempts      Int                       @default(0)
+  responseBody  String?
+  lastError     String?
+  nextAttemptAt DateTime?
+  deliveredAt   DateTime?
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+  event         IntegrationEvent          @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  webhook       IntegrationWebhook        @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+
+  @@index([status, nextAttemptAt])
+  @@index([eventId])
+  @@index([webhookId])
+}
+
+model IntegrationSaga {
+  id            String                @id @default(cuid())
+  sagaKey       String                @unique
+  name          String
+  correlationId String?
+  status        IntegrationSagaStatus @default(RUNNING)
+  state         Json
+  error         String?
+  startedAt     DateTime              @default(now())
+  completedAt   DateTime?
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+
+  @@index([status, updatedAt])
+  @@index([correlationId])
+}
+
+enum KnowledgeSourceType {
+  DOCUMENT
+  DATABASE
+  API
+  HUMAN
+  AGENT
+  EVENT
+  EXTERNAL
+}
+
+enum KnowledgeConfidenceLevel {
+  LOW
+  MEDIUM
+  HIGH
+  VERIFIED
+}
+
+enum KnowledgeInsightStatus {
+  PROPOSED
+  APPROVED
+  REJECTED
+  RETIRED
+}
+
+model KnowledgeSource {
+  id        String              @id @default(cuid())
+  sourceKey String              @unique
+  name      String
+  type      KnowledgeSourceType
+  uri       String?
+  metadata  Json
+  status    RecordStatus        @default(ACTIVE)
+  evidence  KnowledgeEvidence[]
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+
+  @@index([type, status])
+}
+
+model KnowledgeEvidence {
+  id         String                   @id @default(cuid())
+  nodeId     String
+  sourceId   String
+  claim      String
+  confidence KnowledgeConfidenceLevel
+  score      Float
+  context    Json
+  observedAt DateTime
+  node       KnowledgeNode            @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+  source     KnowledgeSource          @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  createdAt  DateTime                 @default(now())
+  updatedAt  DateTime                 @updatedAt
+
+  @@index([nodeId, confidence])
+  @@index([sourceId, observedAt])
+}
+
+model KnowledgeInsight {
+  id              String                   @id @default(cuid())
+  insightKey      String                   @unique
+  title           String
+  summary         String
+  category        String
+  confidence      KnowledgeConfidenceLevel
+  score           Float
+  status          KnowledgeInsightStatus   @default(PROPOSED)
+  nodeId          String?
+  evidenceIds     Json
+  recommendations Json
+  metadata        Json
+  reviewNote      String?
+  reviewedAt      DateTime?
+  node            KnowledgeNode?           @relation(fields: [nodeId], references: [id], onDelete: SetNull)
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @updatedAt
+
+  @@index([status, confidence])
+  @@index([category, updatedAt])
+  @@index([nodeId])
+}
+
+enum AgentTeamStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  RETIRED
+}
+
+enum AgentMissionPriority {
+  LOW
+  NORMAL
+  HIGH
+  CRITICAL
+}
+
+enum AgentMissionStatus {
+  DRAFT
+  QUEUED
+  RUNNING
+  BLOCKED
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum AgentDecisionStatus {
+  PROPOSED
+  APPROVED
+  REJECTED
+  SUPERSEDED
+}
+
+model AgentTeam {
+  id                 String            @id @default(cuid())
+  teamKey            String            @unique
+  organizationUnitId String?
+  name               String
+  purpose            String?
+  status             AgentTeamStatus   @default(ACTIVE)
+  operatingModel     Json
+  metadata           Json
+  organizationUnit   OrganizationUnit? @relation(fields: [organizationUnitId], references: [id], onDelete: SetNull)
+  members            AgentTeamMember[]
+  missions           AgentMission[]
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  @@index([organizationUnitId])
+  @@index([status])
+}
+
+model AgentTeamMember {
+  id               String    @id @default(cuid())
+  teamId           String
+  agentId          String
+  role             String
+  priority         Int       @default(50)
+  responsibilities Json
+  team             AgentTeam @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  agent            Agent     @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@unique([teamId, agentId])
+  @@index([agentId])
+  @@index([role])
+}
+
+model AgentMission {
+  id                   String                   @id @default(cuid())
+  missionKey           String                   @unique
+  teamId               String?
+  title                String
+  description          String?
+  priority             AgentMissionPriority     @default(NORMAL)
+  status               AgentMissionStatus       @default(DRAFT)
+  objective            Json
+  requiredCapabilities Json
+  constraints          Json
+  result               Json?
+  statusNote           String?
+  metadata             Json
+  startedAt            DateTime?
+  completedAt          DateTime?
+  team                 AgentTeam?               @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  assignments          AgentMissionAssignment[]
+  decisions            AgentDecision[]
+  createdAt            DateTime                 @default(now())
+  updatedAt            DateTime                 @updatedAt
+
+  @@index([teamId])
+  @@index([status, priority])
+}
+
+model AgentMissionAssignment {
+  id             String       @id @default(cuid())
+  missionId      String
+  agentId        String
+  assignmentRole String
+  instructions   Json
+  mission        AgentMission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  agent          Agent        @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([missionId, agentId])
+  @@index([agentId])
+}
+
+model AgentDecision {
+  id                String              @id @default(cuid())
+  decisionKey       String              @unique
+  missionId         String?
+  proposedByAgentId String?
+  title             String
+  summary           String
+  options           Json
+  recommendation    Json
+  riskAssessment    Json
+  status            AgentDecisionStatus @default(PROPOSED)
+  reviewNote        String?
+  reviewedAt        DateTime?
+  metadata          Json
+  mission           AgentMission?       @relation(fields: [missionId], references: [id], onDelete: SetNull)
+  proposedByAgent   Agent?              @relation(fields: [proposedByAgentId], references: [id], onDelete: SetNull)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  @@index([missionId])
+  @@index([proposedByAgentId])
+  @@index([status])
+}
+
+// ===== MEGA PACK 11: EVENT & MESSAGING PLATFORM =====
+enum EventTopicStatus {
+  ACTIVE
+  PAUSED
+  ARCHIVED
+  DISABLED
+}
+
+enum EventSubscriptionStatus {
+  ACTIVE
+  PAUSED
+  DISABLED
+}
+
+enum EventMessagePriority {
+  LOW
+  NORMAL
+  HIGH
+  CRITICAL
+}
+
+enum EventDeliveryStatus {
+  PENDING
+  PROCESSING
+  RETRYING
+  DELIVERED
+  FAILED
+  DEAD_LETTER
+  CANCELLED
+}
+
+enum EventReplayStatus {
+  PLANNED
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+model EventTopic {
+  id            String              @id @default(cuid())
+  topicKey      String              @unique
+  name          String
+  description   String?
+  status        EventTopicStatus    @default(ACTIVE)
+  partitions    Int                 @default(1)
+  retentionDays Int                 @default(30)
+  ordered       Boolean             @default(false)
+  schema        Json
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  subscriptions EventSubscription[]
+  messages      EventMessage[]
+  replays       EventReplay[]
+
+  @@index([status, updatedAt])
+}
+
+model EventSubscription {
+  id                String                  @id @default(cuid())
+  topicId           String
+  subscriptionKey   String                  @unique
+  name              String
+  consumerType      String
+  endpoint          String?
+  status            EventSubscriptionStatus @default(ACTIVE)
+  maxAttempts       Int                     @default(5)
+  retryDelaySeconds Int                     @default(60)
+  filter            Json
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+  topic             EventTopic              @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  deliveries        EventDelivery[]
+  replays           EventReplay[]
+
+  @@index([topicId, status])
+}
+
+model EventMessage {
+  id             String               @id @default(cuid())
+  topicId        String
+  eventName      String
+  eventVersion   String
+  producer       String
+  aggregateType  String?
+  aggregateId    String?
+  correlationId  String?
+  causationId    String?
+  idempotencyKey String?              @unique
+  priority       EventMessagePriority @default(NORMAL)
+  payload        Json
+  headers        Json
+  occurredAt     DateTime             @default(now())
+  topic          EventTopic           @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  deliveries     EventDelivery[]
+
+  @@index([topicId, occurredAt])
+  @@index([eventName, occurredAt])
+  @@index([correlationId])
+}
+
+model EventDelivery {
+  id             String              @id @default(cuid())
+  messageId      String
+  subscriptionId String
+  status         EventDeliveryStatus @default(PENDING)
+  attempts       Int                 @default(0)
+  response       String?
+  lastError      String?
+  nextAttemptAt  DateTime?
+  deliveredAt    DateTime?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  message        EventMessage        @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  subscription   EventSubscription   @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  deadLetter     EventDeadLetter?
+
+  @@unique([messageId, subscriptionId])
+  @@index([status, nextAttemptAt])
+  @@index([subscriptionId, status])
+}
+
+model EventDeadLetter {
+  id         String        @id @default(cuid())
+  deliveryId String        @unique
+  reason     String
+  payload    Json
+  createdAt  DateTime      @default(now())
+  resolvedAt DateTime?
+  delivery   EventDelivery @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
+
+  @@index([resolvedAt, createdAt])
+}
+
+model EventReplay {
+  id             String             @id @default(cuid())
+  topicId        String
+  subscriptionId String?
+  replayKey      String             @unique
+  fromMessageId  String?
+  toMessageId    String?
+  limit          Int                @default(1000)
+  status         EventReplayStatus  @default(PLANNED)
+  processedCount Int                @default(0)
+  error          String?
+  startedAt      DateTime?
+  completedAt    DateTime?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  topic          EventTopic         @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  subscription   EventSubscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([topicId])
+}
+
+enum ObsMetricKind {
+  COUNTER
+  GAUGE
+  HISTOGRAM
+}
+
+enum ObsHealthStatus {
+  HEALTHY
+  DEGRADED
+  DOWN
+  UNKNOWN
+}
+
+enum ObsLogLevel {
+  TRACE
+  DEBUG
+  INFO
+  WARN
+  ERROR
+  FATAL
+}
+
+enum ObsAlertSeverity {
+  INFO
+  WARNING
+  HIGH
+  CRITICAL
+}
+
+enum ObsAlertStatus {
+  OPEN
+  ACKNOWLEDGED
+  RESOLVED
+  CLOSED
+}
+
+model ObsMetric {
+  id         String        @id @default(cuid())
+  metricKey  String
+  service    String
+  kind       ObsMetricKind
+  value      Float
+  unit       String?
+  labels     Json
+  observedAt DateTime      @default(now())
+  createdAt  DateTime      @default(now())
+
+  @@index([metricKey, observedAt])
+  @@index([service, observedAt])
+}
+
+model ObsHealthCheck {
+  id        String          @id @default(cuid())
+  service   String
+  status    ObsHealthStatus @default(UNKNOWN)
+  latencyMs Float?
+  message   String?
+  details   Json
+  checkedAt DateTime        @default(now())
+  createdAt DateTime        @default(now())
+
+  @@index([service, checkedAt])
+  @@index([status, checkedAt])
+}
+
+model ObsLogEntry {
+  id         String      @id @default(cuid())
+  service    String
+  level      ObsLogLevel
+  message    String
+  traceId    String?
+  spanId     String?
+  context    Json
+  occurredAt DateTime    @default(now())
+  createdAt  DateTime    @default(now())
+
+  @@index([service, occurredAt])
+  @@index([level, occurredAt])
+  @@index([traceId])
+}
+
+model ObsTraceSpan {
+  id           String    @id @default(cuid())
+  traceId      String
+  spanId       String    @unique
+  parentSpanId String?
+  service      String
+  operation    String
+  status       String
+  durationMs   Float?
+  startedAt    DateTime  @default(now())
+  endedAt      DateTime?
+  attributes   Json
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([traceId, startedAt])
+  @@index([service, startedAt])
+}
+
+model ObsAlertRule {
+  id                      String           @id @default(cuid())
+  ruleKey                 String           @unique
+  name                    String
+  metricKey               String
+  operator                String
+  threshold               Float
+  severity                ObsAlertSeverity
+  evaluationWindowMinutes Int              @default(5)
+  enabled                 Boolean          @default(true)
+  labels                  Json
+  events                  ObsAlertEvent[]
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+
+  @@index([enabled, severity])
+  @@index([metricKey])
+}
+
+model ObsAlertEvent {
+  id           String           @id @default(cuid())
+  ruleId       String?
+  fingerprint  String           @unique
+  title        String
+  message      String
+  severity     ObsAlertSeverity
+  status       ObsAlertStatus   @default(OPEN)
+  service      String?
+  currentValue Float?
+  note         String?
+  triggeredAt  DateTime         @default(now())
+  resolvedAt   DateTime?
+  metadata     Json
+  rule         ObsAlertRule?    @relation(fields: [ruleId], references: [id], onDelete: SetNull)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@index([status, severity])
+  @@index([service, triggeredAt])
+  @@index([ruleId])
+}

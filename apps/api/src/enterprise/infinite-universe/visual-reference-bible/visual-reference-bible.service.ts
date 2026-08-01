@@ -1,0 +1,402 @@
+﻿import {
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+
+import { randomUUID } from 'node:crypto';
+
+import { PermanentUniverseMemoryService } from '../persistent-memory/permanent-universe-memory.service';
+
+import { GenerateVisualReferenceBibleDto } from './dto/generate-visual-reference-bible.dto';
+
+import { CharacterReferenceBibleEngine } from './engines/character-reference-bible.engine';
+import { EnvironmentReferenceBibleEngine } from './engines/environment-reference-bible.engine';
+import { PropReferenceBibleEngine } from './engines/prop-reference-bible.engine';
+import { VisualReferenceBibleQualityEngine } from './engines/visual-reference-bible-quality.engine';
+import { WorldVisualRulesEngine } from './engines/world-visual-rules.engine';
+
+import type {
+  VisualReferenceBible,
+  VisualReferenceBibleResult,
+} from './models/visual-reference-bible.models';
+
+@Injectable()
+export class VisualReferenceBibleService {
+  constructor(
+    private readonly memory:
+      PermanentUniverseMemoryService,
+
+    private readonly characterEngine:
+      CharacterReferenceBibleEngine,
+
+    private readonly environmentEngine:
+      EnvironmentReferenceBibleEngine,
+
+    private readonly propEngine:
+      PropReferenceBibleEngine,
+
+    private readonly worldRules:
+      WorldVisualRulesEngine,
+
+    private readonly qualityEngine:
+      VisualReferenceBibleQualityEngine,
+  ) {}
+
+  async generate(
+    dto: GenerateVisualReferenceBibleDto,
+  ): Promise<VisualReferenceBibleResult> {
+    const world =
+      await this.memory.loadWorld(
+        dto.worldId,
+      );
+
+    if (!world) {
+      throw new NotFoundException(
+        `World not found: ${dto.worldId}.`,
+      );
+    }
+
+    const storyboards =
+      await this.memory
+        .loadStoryboards(
+          dto.worldId,
+        );
+
+    const storyboard =
+      storyboards.find(
+        (item) =>
+          item.storyboardId ===
+          dto.storyboardId,
+      );
+
+    if (!storyboard) {
+      throw new NotFoundException(
+        `Storyboard not found: ${dto.storyboardId}.`,
+      );
+    }
+
+    const characters =
+      await this.memory
+        .loadCharacters(
+          dto.worldId,
+        );
+
+    const selectedCharacterIds =
+      new Set(
+        storyboard.scenes
+          .flatMap(
+            (scene) =>
+              scene.frames,
+          )
+          .flatMap(
+            (frame) =>
+              frame.characters,
+          )
+          .map(
+            (character) =>
+              character.characterId,
+          ),
+      );
+
+    const selectedCharacters =
+      characters.filter(
+        (character) =>
+          selectedCharacterIds.has(
+            character.identity
+              .characterId,
+          ),
+      );
+
+    const usedLocations =
+      new Set(
+        storyboard.scenes.map(
+          (scene) =>
+            scene.location,
+        ),
+      );
+
+    const selectedLocations =
+      world.locations.filter(
+        (location) =>
+          usedLocations.has(
+            location.name,
+          ),
+      );
+
+    const visualStyle =
+      dto.visualStyleOverride ??
+      storyboard.visualStyle;
+
+    const characterReferences =
+      selectedCharacters.map(
+        (character, index) =>
+          this.characterEngine.create(
+            character,
+            visualStyle,
+
+            dto.includeExpressionSheets ??
+              true,
+
+            dto.includePoseSheets ??
+              true,
+
+            100 + index * 5,
+          ),
+      );
+
+    const environmentReferences =
+      selectedLocations.map(
+        (location) =>
+          this.environmentEngine.create(
+            world,
+            location,
+            visualStyle,
+
+            dto.includeEnvironmentVariants ??
+              true,
+          ),
+      );
+
+    const propReferences =
+      dto.includePropSheets ===
+        false
+        ? []
+        : this.propEngine
+            .createForCharacters(
+              selectedCharacters,
+              visualStyle,
+            );
+
+    const colorBible =
+      this.worldRules.colorBible(
+        environmentReferences,
+      );
+
+    const scaleBible =
+      this.worldRules.scaleBible(
+        world,
+        selectedCharacters,
+        characterReferences,
+        propReferences,
+      );
+
+    const bibleBase = {
+      characterReferences,
+      environmentReferences,
+      propReferences,
+      colorBible,
+      scaleBible,
+    };
+
+    const quality =
+      this.qualityEngine.evaluate(
+        selectedCharacters.length,
+        selectedLocations.length,
+
+        this.propEngine.countPhysicalElements(
+          selectedCharacters,
+        ),
+
+        bibleBase,
+      );
+
+    const bible:
+      VisualReferenceBible = {
+        bibleId: randomUUID(),
+
+        worldId:
+          dto.worldId,
+
+        storyboardId:
+          dto.storyboardId,
+
+        version: '1.0.0',
+        visualStyle,
+
+        ...bibleBase,
+
+        globalIdentityRules: [
+          'كل شخصية تحتفظ بالوجه والعمر ونسب الجسم نفسها.',
+          'كل شخصية تحتفظ بالملابس والألوان والعناصر المميزة نفسها.',
+          'لا يجوز تغيير تصميم الشخصية بين اللقطات أو اللغات.',
+          'تعبيرات الوجه تتغير دون تغيير بنية الوجه.',
+          'الوضعيات تتغير دون تغيير طول الأطراف أو مقياس الجسم.',
+          'كل بيئة تحتفظ بالمخطط والعمارة والألوان الأساسية.',
+          'كل أداة تحتفظ بالشكل والحجم والمواد والألوان.',
+          'يجب استخدام Character Reference وEnvironment Reference مع كل عملية توليد.',
+          'النسخ متعددة اللغات تستخدم الأصول البصرية نفسها.',
+        ],
+
+        globalNegativePrompt: [
+          'تغير هوية الشخصية',
+          'اختلاف الوجه',
+          'تغير العمر',
+          'تغير الملابس',
+          'اختلاف الألوان',
+          'تغير تصفيفة الشعر',
+          'اختلاف طول الشخصية',
+          'أطراف إضافية',
+          'أصابع مشوهة',
+          'ازدواج الشخصية',
+          'تغير مقياس البيئة',
+          'اختلاف العمارة',
+          'تغير تصميم الأدوات',
+          'كتابة',
+          'شعار',
+          'علامة مائية',
+          'عنف دموي',
+          'رعب قاس',
+          'أسلوب بصري مختلف',
+        ].join(', '),
+
+        quality,
+
+        productionReadiness: {
+          characterReferenceGenerationReady:
+            characterReferences.every(
+              (reference) =>
+                Boolean(
+                  reference.canonicalPrompt,
+                ),
+            ),
+
+          environmentReferenceGenerationReady:
+            environmentReferences.every(
+              (reference) =>
+                Boolean(
+                  reference.canonicalPrompt,
+                ),
+            ),
+
+          propReferenceGenerationReady:
+            propReferences.every(
+              (reference) =>
+                Boolean(
+                  reference.canonicalPrompt,
+                ),
+            ),
+
+          imageProviderConnected:
+            false,
+
+          humanApprovalRequired:
+            dto.requireHumanApproval ??
+            true,
+        },
+
+        status: 'draft',
+
+        createdAt:
+          new Date().toISOString(),
+      };
+
+    await this.memory
+      .saveVisualReferenceBible(
+        dto.worldId,
+        bible,
+      );
+
+    return {
+      success: true,
+
+      engine:
+        'CreatorOS Visual Reference Bible Engine',
+
+      version: '1.0.0',
+
+      status:
+        'visual-reference-bible-generated',
+
+      bible,
+
+      nextActions: [
+        'مراجعة واعتماد هوية كل شخصية.',
+        'توليد Character Reference Images.',
+        'توليد Expression Sheets.',
+        'توليد Pose Sheets.',
+        'توليد Environment Reference Images.',
+        'توليد Prop Reference Images.',
+        'اعتماد Color Bible وScale Bible.',
+        'ربط مزود توليد الصور.',
+        'استخدام الأصول المعتمدة في جميع لقطات الحلقة.',
+      ],
+    };
+  }
+
+  async getWorldBibles(
+    worldId: string,
+  ) {
+    return this.memory
+      .loadVisualReferenceBibles(
+        worldId,
+      );
+  }
+
+  getStatus() {
+    return {
+      success: true,
+
+      engine:
+        'CreatorOS Visual Reference Bible Engine',
+
+      version: '1.0.0',
+
+      phase:
+        'Canonical Visual Identity Foundation',
+
+      status: 'operational',
+
+      architecture: {
+        characterReferenceSheets:
+          true,
+
+        expressionSheets: true,
+        poseSheets: true,
+
+        environmentReferenceSheets:
+          true,
+
+        propReferenceSheets: true,
+
+        colorBible: true,
+        scaleBible: true,
+
+        canonicalPromptEngine:
+          true,
+
+        identityLockEngine:
+          true,
+
+        negativeIdentityGuard:
+          true,
+
+        permanentReferenceStorage:
+          true,
+
+        externalImageProvider:
+          false,
+      },
+
+      constitutionalRules: {
+        canonicalIdentityRequired:
+          true,
+
+        characterIdentityImmutable:
+          true,
+
+        environmentIdentityLocked:
+          true,
+
+        propIdentityLocked:
+          true,
+
+        multilingualVisualReuse:
+          true,
+
+        humanFinalAuthority:
+          true,
+      },
+    };
+  }
+}
+

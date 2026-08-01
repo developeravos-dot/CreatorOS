@@ -1,0 +1,110 @@
+{
+    "pack":  {
+                 "status":  "passed",
+                 "name":  "CreatorOS Foundation Initialization Pack 1",
+                 "version":  "1.0.0",
+                 "executedAt":  "2026-07-28T11:09:57.9061240+04:00"
+             },
+    "authentication":  {
+                           "username":  "admin",
+                           "status":  "operational",
+                           "role":  "admin"
+                       },
+    "runtime":  {
+                    "status":  "unhealthy",
+                    "plugins":  1,
+                    "bootstrap":  {
+                                      "registered":  6,
+                                      "validated":  0,
+                                      "loaded":  0,
+                                      "started":  0,
+                                      "failed":  6
+                                  }
+                },
+    "registry":  {
+                     "summary":  {
+                                     "registry":  "system-registry",
+                                     "status":  "operational",
+                                     "domains":  5,
+                                     "capabilities":  9,
+                                     "dependencies":  20,
+                                     "sources":  {
+                                                     "domainRegistry":  "operational",
+                                                     "capabilityRegistry":  "operational",
+                                                     "dependencyRegistry":  "operational"
+                                                 },
+                                     "governance":  {
+                                                        "foundationFirst":  true,
+                                                        "capabilityFirst":  true,
+                                                        "blueprintDriven":  true,
+                                                        "humanFinalAuthority":  true
+                                                    }
+                                 },
+                     "domains":  1,
+                     "dependencies":  1,
+                     "capabilities":  1
+                 },
+    "masterBlueprint":  {
+                            "status":  null,
+                            "key":  null,
+                            "name":  null,
+                            "id":  null,
+                            "validation":  null
+                        },
+    "foundations":  {
+                        "persistence":  {
+                                            "name":  "CreatorOS Persistence",
+                                            "version":  "4.1.0",
+                                            "status":  "operational",
+                                            "database":  true,
+                                            "provider":  "postgresql",
+                                            "orm":  "prisma",
+                                            "humanFinalAuthority":  true,
+                                            "foundationFirst":  true,
+                                            "capabilityFirst":  true,
+                                            "blueprintDriven":  true
+                                        },
+                        "messaging":  {
+                                          "module":  "messaging",
+                                          "package":  "@creatoros/messaging",
+                                          "status":  "operational",
+                                          "provider":  "InMemoryMessagingBroker",
+                                          "topics":  0,
+                                          "subscriptions":  0,
+                                          "messages":  0,
+                                          "deliveries":  0,
+                                          "delivered":  0,
+                                          "failed":  0,
+                                          "deadLetters":  0,
+                                          "fullyDeliveredMessages":  0
+                                      },
+                        "knowledge":  {
+                                          "module":  "knowledge",
+                                          "package":  "@creatoros/knowledge",
+                                          "status":  "operational",
+                                          "provider":  "InMemoryKnowledgeStore",
+                                          "objects":  0,
+                                          "relations":  0,
+                                          "versions":  0
+                                      },
+                        "workflow":  {
+                                         "module":  "workflow",
+                                         "package":  "@creatoros/workflow",
+                                         "status":  "operational",
+                                         "provider":  "InMemoryWorkflowEngine",
+                                         "definitions":  0,
+                                         "instances":  0,
+                                         "running":  0,
+                                         "paused":  0,
+                                         "completed":  0,
+                                         "failed":  0,
+                                         "cancelled":  0
+                                     }
+                    },
+    "governance":  {
+                       "humanFinalAuthority":  true,
+                       "blueprintDriven":  true,
+                       "capabilityFirst":  true,
+                       "foundationFirst":  true
+                   }
+}

@@ -1,0 +1,27 @@
+{
+    "name":  "creatoros-avos",
+    "version":  "0.1.0",
+    "private":  true,
+    "description":  "CreatorOS / AVOS institutional intelligent content operating system",
+    "scripts":  {
+                    "build":  "pnpm -r build",
+                    "dev":  "pnpm --filter @creatoros/api dev",
+                    "start":  "pnpm --filter @creatoros/api start",
+                    "test":  "pnpm -r test",
+                    "lint":  "pnpm -r lint",
+                    "typecheck":  "pnpm -r typecheck",
+                    "validate:foundation":  "powershell -ExecutionPolicy Bypass -File ./scripts/validation/validate-foundation.ps1"
+                },
+    "engines":  {
+                    "node":  "\u003e=20.0.0",
+                    "pnpm":  "\u003e=9.0.0"
+                },
+    "packageManager":  "pnpm@10.0.0",
+    "devDependencies":  {
+                            "@types/node":  "^22.0.0",
+                            "typescript":  "^5.7.0"
+                        },
+    "dependencies":  {
+                         "@nestjs/mapped-types":  "2.1.1"
+                     }
+}

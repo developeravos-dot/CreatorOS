@@ -1,0 +1,807 @@
+﻿import {
+  Injectable,
+  Logger,
+  OnModuleInit,
+} from '@nestjs/common';
+
+import {
+  access,
+  appendFile,
+  mkdir,
+  readFile,
+  readdir,
+  rename,
+  rm,
+  writeFile,
+} from 'node:fs/promises';
+
+import { constants } from 'node:fs';
+import { join } from 'node:path';
+import { randomUUID } from 'node:crypto';
+
+import type { LivingWorld } from '../world-engine/models/world-engine.models';
+
+import type { LivingCharacter } from '../character-os/models/character-os.models';
+import type { EndlessEpisode } from '../episode-engine/models/episode-engine.models';
+import type { CinematicEpisodeScript } from '../cinematic-script-engine/models/cinematic-script.models';
+
+import type {
+  UniverseMemoryAuditRecord,
+  UniverseMemoryEntityType,
+  UniverseMemoryStatus,
+} from './models/persistent-memory.models';
+
+@Injectable()
+export class PermanentUniverseMemoryService
+  implements OnModuleInit
+{
+  private readonly logger =
+    new Logger(
+      PermanentUniverseMemoryService.name,
+    );
+
+  private readonly dataRoot =
+    process.env
+      .CREATOROS_UNIVERSE_MEMORY_PATH
+      ?.trim() ||
+    join(
+      process.cwd(),
+      'data',
+      'infinite-universe',
+    );
+
+  private readonly worldsDirectory =
+    join(this.dataRoot, 'worlds');
+
+  private readonly charactersDirectory =
+    join(this.dataRoot, 'characters');
+
+  private readonly auditDirectory =
+    join(this.dataRoot, 'audit');
+
+  private readonly episodesDirectory =
+    join(this.dataRoot, 'episodes');
+
+  private readonly scriptsDirectory =
+    join(this.dataRoot, 'scripts');
+
+  private readonly auditFile =
+    join(
+      this.auditDirectory,
+      'universe-audit.jsonl',
+    );
+
+  async onModuleInit(): Promise<void> {
+    await this.ensureDirectories();
+
+    this.logger.log(
+      `Permanent Universe Memory ready: ${this.dataRoot}`,
+    );
+  }
+
+  async saveWorld(
+    world: LivingWorld,
+  ): Promise<void> {
+    await this.ensureDirectories();
+
+    await this.atomicWrite(
+      this.worldFile(world.worldId),
+      world,
+    );
+
+    await this.appendAudit({
+      worldId: world.worldId,
+      entityType: 'world',
+      entityId: world.worldId,
+      operation: 'create',
+      version:
+        this.numericVersion(
+          world.version,
+        ),
+
+      metadata: {
+        name:
+          world.universeDna.name,
+
+        audienceTier:
+          world.universeDna
+            .audienceTier,
+
+        languages:
+          world.universeDna
+            .languages
+            .map(
+              (language) =>
+                language.code,
+            ),
+      },
+    });
+  }
+
+  async loadWorld(
+    worldId: string,
+  ): Promise<LivingWorld | null> {
+    const world =
+      await this.readJson<LivingWorld>(
+        this.worldFile(worldId),
+      );
+
+    if (world) {
+      await this.appendAudit({
+        worldId,
+        entityType: 'world',
+        entityId: worldId,
+        operation: 'load',
+        version:
+          this.numericVersion(
+            world.version,
+          ),
+
+        metadata: {},
+      });
+    }
+
+    return world;
+  }
+
+  async worldExists(
+    worldId: string,
+  ): Promise<boolean> {
+    return this.exists(
+      this.worldFile(worldId),
+    );
+  }
+
+  async saveCharacters(
+    worldId: string,
+    characters: LivingCharacter[],
+  ): Promise<void> {
+    await this.ensureDirectories();
+
+    const payload = {
+      worldId,
+      version: 1,
+      updatedAt:
+        new Date().toISOString(),
+
+      characters,
+    };
+
+    await this.atomicWrite(
+      this.charactersFile(worldId),
+      payload,
+    );
+
+    await this.appendAudit({
+      worldId,
+      entityType:
+        'character-roster',
+      operation: 'update',
+      version: 1,
+
+      metadata: {
+        characterCount:
+          characters.length,
+
+        memoryCount:
+          characters.reduce(
+            (sum, character) =>
+              sum +
+              character.memories.length,
+            0,
+          ),
+
+        relationshipCount:
+          characters.reduce(
+            (sum, character) =>
+              sum +
+              character
+                .relationships.length,
+            0,
+          ),
+      },
+    });
+  }
+
+  async loadCharacters(
+    worldId: string,
+  ): Promise<LivingCharacter[]> {
+    const payload =
+      await this.readJson<{
+        worldId: string;
+        version: number;
+        updatedAt: string;
+        characters: LivingCharacter[];
+      }>(
+        this.charactersFile(worldId),
+      );
+
+    if (!payload) {
+      return [];
+    }
+
+    await this.appendAudit({
+      worldId,
+      entityType:
+        'character-roster',
+      operation: 'load',
+      version: payload.version,
+
+      metadata: {
+        characterCount:
+          payload.characters.length,
+      },
+    });
+
+    return payload.characters;
+  }
+
+  async saveScript(
+    worldId: string,
+    script: CinematicEpisodeScript,
+  ): Promise<void> {
+    const scripts =
+      await this.loadScripts(
+        worldId,
+      );
+
+    const filtered =
+      scripts.filter(
+        (item) =>
+          item.scriptId !==
+          script.scriptId,
+      );
+
+    filtered.push(script);
+
+    filtered.sort(
+      (left, right) =>
+        left.episodeNumber -
+        right.episodeNumber,
+    );
+
+    await this.atomicWrite(
+      this.scriptsFile(worldId),
+      {
+        worldId,
+        version: 1,
+        updatedAt:
+          new Date().toISOString(),
+
+        scripts: filtered,
+      },
+    );
+
+    await this.appendAudit({
+      worldId,
+      entityType: 'script',
+      entityId:
+        script.scriptId,
+      operation: 'create',
+      version: 1,
+
+      metadata: {
+        episodeId:
+          script.episodeId,
+
+        episodeNumber:
+          script.episodeNumber,
+
+        title:
+          script.title,
+
+        qualityScore:
+          script.quality.totalScore,
+      },
+    });
+  }
+
+  async loadScripts(
+    worldId: string,
+  ): Promise<CinematicEpisodeScript[]> {
+    const payload =
+      await this.readJson<{
+        worldId: string;
+        version: number;
+        updatedAt: string;
+        scripts: CinematicEpisodeScript[];
+      }>(
+        this.scriptsFile(worldId),
+      );
+
+    return payload?.scripts ?? [];
+  }
+  async saveEpisode(
+    worldId: string,
+    episode: EndlessEpisode,
+  ): Promise<void> {
+    const episodes =
+      await this.loadEpisodes(
+        worldId,
+      );
+
+    const filtered =
+      episodes.filter(
+        (item) =>
+          item.episodeId !==
+          episode.episodeId,
+      );
+
+    filtered.push(episode);
+
+    filtered.sort(
+      (left, right) =>
+        left.episodeNumber -
+        right.episodeNumber,
+    );
+
+    await this.atomicWrite(
+      this.episodesFile(worldId),
+      {
+        worldId,
+        version: 1,
+        updatedAt:
+          new Date().toISOString(),
+        episodes: filtered,
+      },
+    );
+
+    await this.appendAudit({
+      worldId,
+      entityType: 'episode',
+      entityId:
+        episode.episodeId,
+      operation: 'create',
+      version: 1,
+
+      metadata: {
+        episodeNumber:
+          episode.episodeNumber,
+        title:
+          episode.title,
+        tone:
+          episode.tone,
+        storyThread:
+          episode.sourceStoryThread,
+      },
+    });
+  }
+
+  async loadEpisodes(
+    worldId: string,
+  ): Promise<EndlessEpisode[]> {
+    const payload =
+      await this.readJson<{
+        worldId: string;
+        version: number;
+        updatedAt: string;
+        episodes: EndlessEpisode[];
+      }>(
+        this.episodesFile(worldId),
+      );
+
+    return payload?.episodes ?? [];
+  }
+  async appendCharacterEvent(
+    worldId: string,
+    characterId: string,
+    eventId: string,
+    memoryType: string,
+    emotionalImpact: number,
+  ): Promise<void> {
+    await this.appendAudit({
+      worldId,
+      entityType:
+        'character-event',
+      entityId: eventId,
+      operation: 'event',
+      version: 1,
+
+      metadata: {
+        characterId,
+        memoryType,
+        emotionalImpact,
+      },
+    });
+  }
+
+  async appendCharacterDecision(
+    worldId: string,
+    characterId: string,
+    selectedOptionId: string,
+    selectedOptionTitle: string,
+    score: number,
+  ): Promise<void> {
+    await this.appendAudit({
+      worldId,
+      entityType:
+        'character-decision',
+
+      entityId: randomUUID(),
+      operation: 'decision',
+      version: 1,
+
+      metadata: {
+        characterId,
+        selectedOptionId,
+        selectedOptionTitle,
+        score,
+      },
+    });
+  }
+
+  async deleteWorldMemory(
+    worldId: string,
+  ): Promise<void> {
+    await rm(
+      this.worldFile(worldId),
+      { force: true },
+    );
+
+    await rm(
+      this.charactersFile(worldId),
+      { force: true },
+    );
+
+    await rm(
+      this.episodesFile(worldId),
+      { force: true },
+    );
+
+    await this.appendAudit({
+      worldId,
+      entityType: 'world',
+      entityId: worldId,
+      operation: 'delete',
+      version: 1,
+      metadata: {},
+    });
+  }
+
+  async getStatus():
+    Promise<UniverseMemoryStatus> {
+    await this.ensureDirectories();
+
+    return {
+      success: true,
+      engine:
+        'CreatorOS Permanent Universe Memory',
+      version: '1.0.0',
+      status: 'operational',
+
+      storage: {
+        mode: 'persistent-json',
+        rootDirectory:
+          this.dataRoot,
+        atomicWrites: true,
+        lazyLoading: true,
+        auditLogEnabled: true,
+      },
+
+      capabilities: {
+        persistentWorlds: true,
+        persistentCharacters: true,
+        persistentMemories: true,
+        persistentRelationships: true,
+        persistentPsychology: true,
+        eventAuditTrail: true,
+        decisionAuditTrail: true,
+        restartRecovery: true,
+      },
+
+      statistics: {
+        storedWorlds:
+          await this.countJsonFiles(
+            this.worldsDirectory,
+          ),
+
+        storedCharacterRosters:
+          await this.countJsonFiles(
+            this.charactersDirectory,
+          ),
+
+        auditRecords:
+          await this.countAuditRecords(),
+      },
+    };
+  }
+
+  async readAudit(
+    worldId?: string,
+    maximumRecords = 100,
+  ): Promise<
+    UniverseMemoryAuditRecord[]
+  > {
+    if (
+      !(await this.exists(
+        this.auditFile,
+      ))
+    ) {
+      return [];
+    }
+
+    const content =
+      await readFile(
+        this.auditFile,
+        'utf8',
+      );
+
+    const records =
+      content
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .flatMap((line) => {
+          try {
+            return [
+              JSON.parse(
+                line,
+              ) as UniverseMemoryAuditRecord,
+            ];
+          } catch {
+            return [];
+          }
+        });
+
+    return records
+      .filter(
+        (record) =>
+          !worldId ||
+          record.worldId ===
+            worldId,
+      )
+      .slice(
+        -Math.max(
+          1,
+          Math.min(
+            maximumRecords,
+            1000,
+          ),
+        ),
+      )
+      .reverse();
+  }
+
+  private async appendAudit(
+    input: {
+      worldId: string;
+      entityType:
+        UniverseMemoryEntityType;
+      entityId?: string;
+      operation:
+        UniverseMemoryAuditRecord['operation'];
+      version: number;
+
+      metadata: Record<
+        string,
+        string |
+        number |
+        boolean |
+        string[]
+      >;
+    },
+  ): Promise<void> {
+    await this.ensureDirectories();
+
+    const record:
+      UniverseMemoryAuditRecord = {
+        auditId: randomUUID(),
+        worldId: input.worldId,
+        entityType:
+          input.entityType,
+        entityId: input.entityId,
+        operation:
+          input.operation,
+        timestamp:
+          new Date().toISOString(),
+        version: input.version,
+        metadata: input.metadata,
+      };
+
+    await appendFile(
+      this.auditFile,
+      `${JSON.stringify(record)}\n`,
+      'utf8',
+    );
+  }
+
+  private async atomicWrite(
+    targetFile: string,
+    value: unknown,
+  ): Promise<void> {
+    const temporaryFile =
+      `${targetFile}.${randomUUID()}.tmp`;
+
+    const content =
+      JSON.stringify(
+        value,
+        null,
+        2,
+      );
+
+    await writeFile(
+      temporaryFile,
+      content,
+      'utf8',
+    );
+
+    try {
+      await rename(
+        temporaryFile,
+        targetFile,
+      );
+    } catch {
+      await rm(
+        targetFile,
+        { force: true },
+      );
+
+      await rename(
+        temporaryFile,
+        targetFile,
+      );
+    }
+  }
+
+  private async readJson<T>(
+    file: string,
+  ): Promise<T | null> {
+    if (!(await this.exists(file))) {
+      return null;
+    }
+
+    const content =
+      await readFile(
+        file,
+        'utf8',
+      );
+
+    return JSON.parse(content) as T;
+  }
+
+  private async ensureDirectories():
+    Promise<void> {
+    await mkdir(
+      this.worldsDirectory,
+      { recursive: true },
+    );
+
+    await mkdir(
+      this.charactersDirectory,
+      { recursive: true },
+    );
+
+    await mkdir(
+      this.auditDirectory,
+      { recursive: true },
+    );
+
+    await mkdir(
+      this.episodesDirectory,
+      { recursive: true },
+    );
+
+    await mkdir(
+      this.scriptsDirectory,
+      { recursive: true },
+    );
+  }
+
+  private worldFile(
+    worldId: string,
+  ): string {
+    return join(
+      this.worldsDirectory,
+      `${this.safeId(worldId)}.json`,
+    );
+  }
+
+  private scriptsFile(
+    worldId: string,
+  ): string {
+    return join(
+      this.scriptsDirectory,
+      `${this.safeId(worldId)}.json`,
+    );
+  }
+  private episodesFile(
+    worldId: string,
+  ): string {
+    return join(
+      this.episodesDirectory,
+      `${this.safeId(worldId)}.json`,
+    );
+  }
+  private charactersFile(
+    worldId: string,
+  ): string {
+    return join(
+      this.charactersDirectory,
+      `${this.safeId(worldId)}.json`,
+    );
+  }
+
+  private safeId(value: string): string {
+    const safe =
+      value.replace(
+        /[^a-zA-Z0-9_-]/g,
+        '',
+      );
+
+    if (!safe) {
+      throw new Error(
+        'Invalid persistent-memory identifier.',
+      );
+    }
+
+    return safe;
+  }
+
+  private async exists(
+    file: string,
+  ): Promise<boolean> {
+    try {
+      await access(
+        file,
+        constants.F_OK,
+      );
+
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  private async countJsonFiles(
+    directory: string,
+  ): Promise<number> {
+    const files =
+      await readdir(directory);
+
+    return files.filter(
+      (file) =>
+        file.endsWith('.json'),
+    ).length;
+  }
+
+  private async countAuditRecords():
+    Promise<number> {
+    if (
+      !(await this.exists(
+        this.auditFile,
+      ))
+    ) {
+      return 0;
+    }
+
+    const content =
+      await readFile(
+        this.auditFile,
+        'utf8',
+      );
+
+    return content
+      .split(/\r?\n/)
+      .filter(
+        (line) =>
+          line.trim().length > 0,
+      )
+      .length;
+  }
+
+  private numericVersion(
+    version: string,
+  ): number {
+    const parsed =
+      Number.parseInt(
+        version.split('.')[0] ?? '1',
+        10,
+      );
+
+    return Number.isFinite(parsed)
+      ? parsed
+      : 1;
+  }
+}
+
+

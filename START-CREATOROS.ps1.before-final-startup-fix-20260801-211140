@@ -1,0 +1,149 @@
+﻿$ErrorActionPreference = "Stop"
+
+$Root = "C:\Users\User\Desktop\CreatorOS"
+$ApiPath = Join-Path $Root "apps\api"
+$WebPath = Join-Path $Root "apps\web"
+
+function Stop-PortProcess {
+    param(
+        [Parameter(Mandatory = $true)]
+        [int]$Port
+    )
+
+    $ProcessIds = @(
+        Get-NetTCPConnection `
+            -LocalPort $Port `
+            -State Listen `
+            -ErrorAction SilentlyContinue |
+        Select-Object `
+            -ExpandProperty OwningProcess `
+            -Unique
+    )
+
+    foreach ($ProcessId in $ProcessIds) {
+        if ($ProcessId -and $ProcessId -ne $PID) {
+            Stop-Process `
+                -Id $ProcessId `
+                -Force `
+                -ErrorAction SilentlyContinue
+        }
+    }
+}
+
+function Wait-HttpEndpoint {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Uri,
+
+        [int]$Attempts = 90
+    )
+
+    for ($Attempt = 1; $Attempt -le $Attempts; $Attempt++) {
+        try {
+            $Response = Invoke-WebRequest `
+                -Uri $Uri `
+                -UseBasicParsing `
+                -TimeoutSec 3
+
+            if ($Response.StatusCode -eq 200) {
+                return $true
+            }
+        }
+        catch {
+            Start-Sleep -Seconds 1
+        }
+    }
+
+    return $false
+}
+
+Write-Host ""
+Write-Host "=============================================="
+Write-Host "Starting CreatorOS..."
+Write-Host "=============================================="
+
+Write-Host "Stopping old services..."
+
+Stop-PortProcess -Port 3000
+Stop-PortProcess -Port 5173
+
+Start-Sleep -Seconds 2
+
+$ApiCommand = @"
+`$Host.UI.RawUI.WindowTitle = 'CreatorOS Backend API'
+Set-Location '$ApiPath'
+pnpm start:dev
+"@
+
+$WebCommand = @"
+`$Host.UI.RawUI.WindowTitle = 'CreatorOS Frontend'
+Set-Location '$WebPath'
+pnpm dev
+"@
+
+Write-Host "Starting Backend API..."
+
+Start-Process `
+    powershell.exe `
+    -ArgumentList @(
+        "-NoExit",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        $ApiCommand
+    )
+
+$BackendReady = Wait-HttpEndpoint `
+    -Uri "http://127.0.0.1:3000/api/v1/enterprise/health" `
+    -Attempts 120
+
+if (-not $BackendReady) {
+    throw "Backend API failed to start on port 3000."
+}
+
+Write-Host "Backend API is ready."
+
+Write-Host "Starting Frontend..."
+
+Start-Process `
+    powershell.exe `
+    -ArgumentList @(
+        "-NoExit",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        $WebCommand
+    )
+
+$FrontendReady = Wait-HttpEndpoint `
+    -Uri "http://127.0.0.1:5173" `
+    -Attempts 90
+
+if (-not $FrontendReady) {
+    throw "Frontend failed to start on port 5173."
+}
+
+$ProxyReady = Wait-HttpEndpoint `
+    -Uri "http://127.0.0.1:5173/api/v1/enterprise/health" `
+    -Attempts 30
+
+if (-not $ProxyReady) {
+    throw "Frontend API proxy failed."
+}
+
+$Dashboard = Invoke-RestMethod `
+    -Method Get `
+    -Uri "http://127.0.0.1:5173/api/v1/enterprise/dashboard"
+
+Write-Host ""
+Write-Host "=============================================="
+Write-Host "CreatorOS is operational."
+Write-Host "Frontend : http://127.0.0.1:5173"
+Write-Host "Backend  : http://127.0.0.1:3000"
+Write-Host "Projects : $($Dashboard.metrics.projects)"
+Write-Host "Scripts  : $($Dashboard.metrics.scripts)"
+Write-Host "Calendar : $($Dashboard.metrics.scheduledContent)"
+Write-Host "Prompts  : $($Dashboard.metrics.prompts)"
+Write-Host "=============================================="
+
+Start-Process "http://127.0.0.1:5173"

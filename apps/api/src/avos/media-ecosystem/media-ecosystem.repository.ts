@@ -1,0 +1,64 @@
+﻿import { Injectable } from '@nestjs/common';
+import { Prisma } from '../../generated/prisma/client';
+import { randomUUID } from 'node:crypto';
+
+import { PrismaService } from '../../modules/persistence/prisma.service';
+
+@Injectable()
+export class MediaEcosystemRepository {
+  constructor(
+    readonly prisma: PrismaService,
+  ) {}
+
+  id(prefix: string): string {
+    return `${prefix}_${randomUUID()}`;
+  }
+
+  async recordEvent(
+    eventType: string,
+    entityType: string,
+    entityId: string,
+    payload?: Prisma.InputJsonObject,
+  ) {
+    return this.prisma.mediaDomainEvent.create({
+      data: {
+        id: this.id('evt'),
+        eventType,
+        entityType,
+        entityId,
+        payload: payload ?? Prisma.JsonNull,
+      },
+    });
+  }
+
+  async counts() {
+    const [
+      projects,
+      channels,
+      channelFamilies,
+      ideas,
+      pendingApprovals,
+      events,
+    ] = await this.prisma.$transaction([
+      this.prisma.mediaProject.count(),
+      this.prisma.mediaChannel.count(),
+      this.prisma.mediaChannelFamily.count(),
+      this.prisma.mediaContentIdea.count(),
+      this.prisma.mediaHumanApproval.count({
+        where: { status: 'pending' },
+      }),
+      this.prisma.mediaDomainEvent.count(),
+    ]);
+
+    return {
+      projects,
+      channels,
+      channelFamilies,
+      ideas,
+      pendingApprovals,
+      events,
+    };
+  }
+}
+
+

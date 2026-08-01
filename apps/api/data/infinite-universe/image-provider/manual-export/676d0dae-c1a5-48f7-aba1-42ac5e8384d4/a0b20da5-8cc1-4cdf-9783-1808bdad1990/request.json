@@ -1,0 +1,24 @@
+{
+  "requestId": "a0b20da5-8cc1-4cdf-9783-1808bdad1990",
+  "worldId": "676d0dae-c1a5-48f7-aba1-42ac5e8384d4",
+  "bibleId": "e35d3e67-c449-494d-a0fa-c3986cd06da6",
+  "storyboardId": "e8cebfa9-ceec-40f0-a1cd-836d7028ba3e",
+  "providerId": "manual-export",
+  "category": "prop-reference",
+  "sourceEntityId": "9497c1a7-334a-4210-966a-2bbb751abd0f",
+  "sourceEntityName": "الحزام متعدد الأدوات",
+  "prompt": "رسوم متحركة سينمائية ثلاثية الأبعاد بألوان دافئة وشخصيات أصلية. visual accessory reference sheet for الحزام متعدد الأدوات. مالك العنصر رَام. المادة قماش متين مع أجزاء معدنية خفيفة.. المقياس حجم ثابت متناسب مع يد وجسم الشخصية.. الألوان لون أساسي #AAB4BE، لون ثانوي #E88C3A. front view. side view. three-quarter view. white studio background. same exact design in all views. no text",
+  "negativePrompt": "تغير الشكل، اختلاف اللون، اختلاف الحجم، أجزاء إضافية، تشوه، تحويل السلوك إلى جسم مادي، كتابة، شعار، علامة مائية, تغير هوية الشخصية, اختلاف الوجه, تغير العمر, تغير الملابس, اختلاف الألوان, تغير تصفيفة الشعر, اختلاف طول الشخصية, أطراف إضافية, أصابع مشوهة, ازدواج الشخصية, تغير مقياس البيئة, اختلاف العمارة, تغير تصميم الأدوات, كتابة, شعار, علامة مائية, عنف دموي, رعب قاس, أسلوب بصري مختلف",
+  "width": 1024,
+  "height": 1024,
+  "imageCount": 1,
+  "continuityKeys": [
+    "prop-الحزام متعدد الأدوات",
+    "classification-visual-accessory",
+    "owner-14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+  ],
+  "metadata": {
+    "ownerCharacterId": "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6",
+    "ownerCharacterName": "رَام"
+  }
+}

@@ -1,0 +1,185 @@
+﻿import { Injectable } from '@nestjs/common';
+
+import type { LivingCharacter } from '../../character-os/models/character-os.models';
+
+import type {
+  DialogueDelivery,
+  ScriptDialogueLine,
+} from '../models/cinematic-script.models';
+
+@Injectable()
+export class CharacterVoiceEngine {
+  createDialogue(
+    character: LivingCharacter,
+    lineNumber: number,
+    purpose: string,
+    storyThread: string,
+    visibleEmotion: string,
+    includeSubtext: boolean,
+  ): ScriptDialogueLine {
+    const style =
+      character.psychology.decisionStyle;
+
+    const activeGoal =
+      character.goals.find(
+        (goal) => goal.active,
+      )?.title ?? 'فهم ما يحدث';
+
+    const activeFear =
+      character.fears
+        .filter(
+          (fear) => !fear.resolved,
+        )
+        .sort(
+          (left, right) =>
+            right.intensity -
+            left.intensity,
+        )[0]?.name ?? 'الفشل';
+
+    return {
+      lineNumber,
+
+      characterId:
+        character.identity.characterId,
+
+      characterName:
+        character.identity.canonicalName,
+
+      dialogue:
+        this.buildDialogue(
+          character,
+          purpose,
+          storyThread,
+        ),
+
+      delivery:
+        this.delivery(
+          style,
+          visibleEmotion,
+        ),
+
+      visibleEmotion,
+
+      hiddenEmotion:
+        activeFear,
+
+      subtext:
+        includeSubtext
+          ? `تحاول الشخصية الاقتراب من هدف "${activeGoal}" دون إظهار خوفها من "${activeFear}".`
+          : '',
+
+      bodyLanguage:
+        this.bodyLanguage(
+          style,
+          visibleEmotion,
+        ),
+
+      pauseAfterSeconds:
+        style === 'analytical'
+          ? 1.2
+          : style === 'impulsive'
+            ? 0.3
+            : 0.8,
+
+      continuityReferences:
+        character.memories
+          .filter(
+            (memory) =>
+              memory.importance >= 60,
+          )
+          .slice(-2)
+          .map(
+            (memory) =>
+              memory.id,
+          ),
+    };
+  }
+
+  private buildDialogue(
+    character: LivingCharacter,
+    purpose: string,
+    storyThread: string,
+  ): string {
+    const name =
+      character.identity.canonicalName;
+
+    const style =
+      character.psychology.decisionStyle;
+
+    if (style === 'analytical') {
+      return `قبل أن نقرر، علينا أن نسأل: ما الدليل الذي يربط هذا بـ ${storyThread}؟`;
+    }
+
+    if (style === 'impulsive') {
+      return `لن نعرف ونحن واقفون هنا! هيا نجرّب، وسأصلح الأمر إذا حدث شيء... غالبًا.`;
+    }
+
+    if (style === 'collaborative') {
+      return `لا نحتاج إلى مواجهة هذا وحدنا. كل واحد منا رأى جزءًا مختلفًا، فلنجمع ما نعرفه.`;
+    }
+
+    if (style === 'emotional') {
+      return `قد لا أفهم كل شيء، لكنني أشعر أن تجاهل هذه الإشارة سيؤذي شخصًا ما.`;
+    }
+
+    if (style === 'cautious') {
+      return `يمكننا التقدم، لكن خطوة واحدة في كل مرة، ومن دون أن نخفي شيئًا عن بعضنا.`;
+    }
+
+    return `${name} ينظر إلى الآخرين ويقول: ربما لا تكون المسألة ${purpose} فقط، ربما هناك شيء لم نلاحظه بعد.`;
+  }
+
+  private delivery(
+    style: string,
+    emotion: string,
+  ): DialogueDelivery {
+    if (emotion.includes('خوف')) {
+      return 'worried';
+    }
+
+    if (emotion.includes('فضول')) {
+      return 'curious';
+    }
+
+    if (emotion.includes('مفاجأة')) {
+      return 'excited';
+    }
+
+    if (emotion.includes('تعاطف')) {
+      return 'emotional';
+    }
+
+    if (style === 'impulsive') {
+      return 'playful';
+    }
+
+    if (style === 'analytical') {
+      return 'serious';
+    }
+
+    return 'calm';
+  }
+
+  private bodyLanguage(
+    style: string,
+    emotion: string,
+  ): string {
+    if (style === 'analytical') {
+      return 'يثبت نظره على الدليل، ثم يرفع رأسه ببطء قبل الكلام.';
+    }
+
+    if (style === 'impulsive') {
+      return 'يتقدم نصف خطوة ويحرك يديه بسرعة قبل أن يكمل الآخرون كلامهم.';
+    }
+
+    if (style === 'collaborative') {
+      return 'ينظر إلى كل شخصية بالتتابع ويترك مساحة لهم للرد.';
+    }
+
+    if (emotion.includes('خوف')) {
+      return 'يضم يديه قرب جسده ويحاول إبقاء صوته ثابتًا.';
+    }
+
+    return 'يتنفس بهدوء ويحافظ على تواصل بصري واضح.';
+  }
+}

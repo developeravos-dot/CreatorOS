@@ -1,0 +1,37 @@
+{
+  "channels": [
+    {
+      "id": "8d7a21df-e659-4eda-b715-21391ed96b20",
+      "name": "CreatorOS TikTok",
+      "platform": "TikTok",
+      "category": "AI Media",
+      "status": "setup",
+      "createdAt": "2026-07-30T08:07:40.174Z"
+    },
+    {
+      "id": "1302ecec-9f0e-4fe5-9eb8-ead52c6102b2",
+      "name": "CreatorOS YouTube",
+      "platform": "YouTube",
+      "category": "AI Media",
+      "status": "setup",
+      "createdAt": "2026-07-30T08:07:28.866Z"
+    }
+  ],
+  "content": [
+    {
+      "id": "e9a461a9-6531-44f8-917b-cebf219fd4b6",
+      "title": "??? ????? ?? CreatorOS",
+      "platform": "Both",
+      "format": "Short Video",
+      "status": "idea",
+      "progress": 10,
+      "createdAt": "2026-07-30T08:07:54.166Z"
+    }
+  ],
+  "system": {
+    "api": "operational",
+    "scriptEngine": "ready",
+    "analysisEngine": "ready",
+    "productionEngine": "ready"
+  }
+}

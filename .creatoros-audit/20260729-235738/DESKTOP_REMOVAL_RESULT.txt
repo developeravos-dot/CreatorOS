@@ -1,0 +1,9 @@
+﻿RESULT=SUCCESS
+PROJECT=C:\Users\User\Desktop\CreatorOS
+MOVED_FROM=C:\Users\User\Desktop\CreatorOS\apps\desktop
+MOVED_TO=C:\Users\User\Desktop\CreatorOS\.creatoros-quarantine\apps-desktop-generic-20260729-235738
+API_MODIFIED=NO
+API_MODULES_DELETED=0
+LOCKFILE_UPDATED=YES
+DATE=2026-07-29 23:57:44
+EVIDENCE=package.json: @creatoros/desktop; UI marker: CreatorOS Enterprise Command Center; UI marker: Build anything from one command; UI marker: Project Builder; UI marker: AI Workspace

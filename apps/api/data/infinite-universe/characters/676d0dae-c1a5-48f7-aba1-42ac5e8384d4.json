@@ -1,0 +1,761 @@
+{
+  "worldId": "676d0dae-c1a5-48f7-aba1-42ac5e8384d4",
+  "version": 1,
+  "updatedAt": "2026-07-31T19:19:12.042Z",
+  "characters": [
+    {
+      "identity": {
+        "characterId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+        "worldId": "676d0dae-c1a5-48f7-aba1-42ac5e8384d4",
+        "canonicalName": "نُور",
+        "role": "protagonist",
+        "audienceTier": "kids",
+        "age": 10,
+        "apparentAge": 10,
+        "species": "human",
+        "genderIdentity": "female",
+        "biography": "طفلة فضولية تعيش في مدينة البدايات، وتعتقد أن كل لغز يحمل درسًا يمكن أن يساعد شخصًا آخر.",
+        "visualDescription": "شعر داكن قصير، حقيبة استكشاف، عدسة مضيئة وملابس دافئة ذات رموز نباتية.",
+        "originLocation": "مدينة البدايات",
+        "currentLocation": "مدينة البدايات",
+        "signatureElements": [
+          "العدسة المضيئة",
+          "الحقيبة النباتية",
+          "سؤالها المتكرر: ماذا لم نلاحظ بعد؟"
+        ]
+      },
+      "psychology": {
+        "personalityArchetype": "المستكشفة المتعاطفة",
+        "traits": [
+          {
+            "name": "curiosity",
+            "value": 60,
+            "stability": 80,
+            "visible": true
+          },
+          {
+            "name": "courage",
+            "value": 55,
+            "stability": 80,
+            "visible": true
+          },
+          {
+            "name": "empathy",
+            "value": 75,
+            "stability": 80,
+            "visible": true
+          },
+          {
+            "name": "discipline",
+            "value": 50,
+            "stability": 80,
+            "visible": true
+          },
+          {
+            "name": "trust",
+            "value": 65,
+            "stability": 80,
+            "visible": true
+          },
+          {
+            "name": "impulsivity",
+            "value": 40,
+            "stability": 80,
+            "visible": true
+          },
+          {
+            "name": "resilience",
+            "value": 60,
+            "stability": 80,
+            "visible": true
+          }
+        ],
+        "needs": [
+          {
+            "name": "belonging",
+            "urgency": 65,
+            "satisfaction": 55
+          },
+          {
+            "name": "safety",
+            "urgency": 80,
+            "satisfaction": 60
+          },
+          {
+            "name": "competence",
+            "urgency": 70,
+            "satisfaction": 45
+          },
+          {
+            "name": "meaning",
+            "urgency": 45,
+            "satisfaction": 40
+          }
+        ],
+        "attachmentStyle": "secure",
+        "decisionStyle": "collaborative",
+        "moralOrientation": "الصداقة",
+        "stressTolerance": 45,
+        "empathy": 78,
+        "selfAwareness": 35,
+        "adaptability": 70,
+        "emotionalState": {
+          "happiness": 65,
+          "sadness": 10,
+          "fear": 15,
+          "anger": 5,
+          "curiosity": 80,
+          "confidence": 55,
+          "guilt": 0,
+          "hope": 75,
+          "loneliness": 15,
+          "dominantEmotion": "curiosity",
+          "emotionalStability": 75,
+          "lastUpdatedAt": "2026-07-31T19:19:12.040Z"
+        }
+      },
+      "goals": [
+        {
+          "id": "13d5d85a-7568-4c5f-a6e6-2877f598ae37",
+          "title": "اكتشاف حقيقة الأرشيف المخفي",
+          "description": "يسعى لتحقيق الهدف: اكتشاف حقيقة الأرشيف المخفي.",
+          "priority": 90,
+          "progress": 0,
+          "active": true,
+          "hidden": false,
+          "longTerm": true
+        },
+        {
+          "id": "7655728d-3ccd-4131-bfd0-94cf37e89175",
+          "title": "حماية أصدقائها",
+          "description": "يسعى لتحقيق الهدف: حماية أصدقائها.",
+          "priority": 80,
+          "progress": 0,
+          "active": true,
+          "hidden": false,
+          "longTerm": false
+        },
+        {
+          "id": "2b030e22-8eff-4f0a-8ed0-078d78dfb657",
+          "title": "فهم تاريخ العالم",
+          "description": "يسعى لتحقيق الهدف: فهم تاريخ العالم.",
+          "priority": 70,
+          "progress": 0,
+          "active": true,
+          "hidden": false,
+          "longTerm": false
+        }
+      ],
+      "fears": [
+        {
+          "id": "0edbac0a-9d40-4ae9-af79-4d2374bc27ab",
+          "name": "فقدان ثقة الأصدقاء",
+          "intensity": 75,
+          "origin": "لم يُكشف بعد",
+          "copingStrategy": "يُكتشف تدريجيًا عبر التجارب",
+          "resolved": false
+        },
+        {
+          "id": "4d4901d6-cac0-418a-a2f1-1bad8343c380",
+          "name": "الضياع في الأماكن المجهولة",
+          "intensity": 67,
+          "origin": "لم يُكشف بعد",
+          "copingStrategy": "يُكتشف تدريجيًا عبر التجارب",
+          "resolved": false
+        }
+      ],
+      "secrets": [
+        "وجدت رمزًا غريبًا داخل حقيبتها ولا تعرف مصدره"
+      ],
+      "values": [
+        "الصداقة",
+        "الحقيقة",
+        "مساعدة الآخرين"
+      ],
+      "skills": [
+        "حل الألغاز",
+        "ملاحظة التفاصيل",
+        "تهدئة الآخرين"
+      ],
+      "weaknesses": [
+        "تتدخل أحيانًا في أسرار لا تخصها",
+        "تخشى أن تخذل أصدقاءها"
+      ],
+      "memories": [],
+      "relationships": [
+        {
+          "id": "e818d081-5426-4e4a-a551-44abfc22d36d",
+          "targetCharacterId": "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6",
+          "targetCharacterName": "رَام",
+          "type": "friendship",
+          "trust": 55,
+          "affection": 50,
+          "respect": 50,
+          "fear": 5,
+          "rivalry": 10,
+          "dependency": 20,
+          "sharedMemoryIds": [],
+          "unresolvedIssues": [],
+          "lastUpdatedAt": "2026-07-31T19:19:12.041Z"
+        },
+        {
+          "id": "7ee8eb60-578d-4aa9-81c2-77acab23ade8",
+          "targetCharacterId": "25395a20-0def-495d-9074-eedc2dba52c3",
+          "targetCharacterName": "سَاهِر",
+          "type": "rivalry",
+          "trust": 55,
+          "affection": 50,
+          "respect": 50,
+          "fear": 5,
+          "rivalry": 75,
+          "dependency": 20,
+          "sharedMemoryIds": [],
+          "unresolvedIssues": [],
+          "lastUpdatedAt": "2026-07-31T19:19:12.041Z"
+        }
+      ],
+      "localizations": [
+        {
+          "languageCode": "ar",
+          "localizedName": "نُور",
+          "voiceProfile": "protagonist:المستكشفة المتعاطفة:age-10:ar",
+          "speechStyle": "ودود ويشرك الآخرين في الحوار",
+          "culturalNotes": [
+            "تكييف الشخصية مع العربية دون تغيير هويتها الأساسية.",
+            "الحفاظ على الذاكرة والدوافع والعلاقات في جميع اللغات."
+          ],
+          "adaptationMode": "native-reproduction"
+        },
+        {
+          "languageCode": "en",
+          "localizedName": "نُور",
+          "voiceProfile": "protagonist:المستكشفة المتعاطفة:age-10:en",
+          "speechStyle": "ودود ويشرك الآخرين في الحوار",
+          "culturalNotes": [
+            "تكييف الشخصية مع English دون تغيير هويتها الأساسية.",
+            "الحفاظ على الذاكرة والدوافع والعلاقات في جميع اللغات."
+          ],
+          "adaptationMode": "native-reproduction"
+        },
+        {
+          "languageCode": "es",
+          "localizedName": "نُور",
+          "voiceProfile": "protagonist:المستكشفة المتعاطفة:age-10:es",
+          "speechStyle": "ودود ويشرك الآخرين في الحوار",
+          "culturalNotes": [
+            "تكييف الشخصية مع Español دون تغيير هويتها الأساسية.",
+            "الحفاظ على الذاكرة والدوافع والعلاقات في جميع اللغات."
+          ],
+          "adaptationMode": "cultural-adaptation"
+        }
+      ],
+      "continuity": {
+        "version": 1,
+        "totalExperiences": 0,
+        "majorPsychologicalChanges": 0,
+        "unresolvedInternalConflicts": [
+          "اكتشاف حقيقة الأرشيف المخفي مقابل فقدان ثقة الأصدقاء",
+          "الصداقة مقابل تتدخل أحيانًا في أسرار لا تخصها"
+        ],
+        "continuityScore": 100,
+        "lastUpdatedAt": "2026-07-31T19:19:12.040Z"
+      }
+    },
+    {
+      "identity": {
+        "characterId": "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6",
+        "worldId": "676d0dae-c1a5-48f7-aba1-42ac5e8384d4",
+        "canonicalName": "رَام",
+        "role": "friend",
+        "audienceTier": "kids",
+        "age": 11,
+        "apparentAge": 11,
+        "species": "human",
+        "genderIdentity": "male",
+        "biography": "صديق نور المخلص، يحب الاختراع لكنه يخفي خوفه من الفشل خلف الفكاهة والمبالغة في الثقة.",
+        "visualDescription": "شعر مجعد، نظارات قابلة للتعديل، حزام أدوات واختراعات صغيرة تتحرك حوله.",
+        "originLocation": "مدينة البدايات",
+        "currentLocation": "ورشة البنائين",
+        "signatureElements": [
+          "النظارات المتحركة",
+          "الحزام متعدد الأدوات",
+          "الضحكة عند التوتر"
+        ]
+      },
+      "psychology": {
+        "personalityArchetype": "المخترع المرح",
+        "traits": [
+          {
+            "name": "curiosity",
+            "value": 60,
+            "stability": 80,
+            "visible": true
+          },
+          {
+            "name": "courage",
+            "value": 55,
+            "stability": 80,
+            "visible": true
+          },
+          {
+            "name": "empathy",
+            "value": 75,
+            "stability": 80,
+            "visible": true
+          },
+          {
+            "name": "discipline",
+            "value": 50,
+            "stability": 80,
+            "visible": true
+          },
+          {
+            "name": "trust",
+            "value": 65,
+            "stability": 80,
+            "visible": true
+          },
+          {
+            "name": "impulsivity",
+            "value": 80,
+            "stability": 80,
+            "visible": true
+          },
+          {
+            "name": "resilience",
+            "value": 60,
+            "stability": 80,
+            "visible": true
+          }
+        ],
+        "needs": [
+          {
+            "name": "belonging",
+            "urgency": 65,
+            "satisfaction": 55
+          },
+          {
+            "name": "safety",
+            "urgency": 80,
+            "satisfaction": 60
+          },
+          {
+            "name": "competence",
+            "urgency": 70,
+            "satisfaction": 45
+          },
+          {
+            "name": "meaning",
+            "urgency": 45,
+            "satisfaction": 40
+          }
+        ],
+        "attachmentStyle": "anxious",
+        "decisionStyle": "impulsive",
+        "moralOrientation": "الابتكار",
+        "stressTolerance": 45,
+        "empathy": 78,
+        "selfAwareness": 35,
+        "adaptability": 70,
+        "emotionalState": {
+          "happiness": 65,
+          "sadness": 10,
+          "fear": 15,
+          "anger": 5,
+          "curiosity": 80,
+          "confidence": 55,
+          "guilt": 0,
+          "hope": 75,
+          "loneliness": 15,
+          "dominantEmotion": "curiosity",
+          "emotionalStability": 75,
+          "lastUpdatedAt": "2026-07-31T19:19:12.041Z"
+        }
+      },
+      "goals": [
+        {
+          "id": "72fcba33-cdaf-41e7-a4ad-9387c6a04561",
+          "title": "اختراع أداة تغيّر حياة المدينة",
+          "description": "يسعى لتحقيق الهدف: اختراع أداة تغيّر حياة المدينة.",
+          "priority": 90,
+          "progress": 0,
+          "active": true,
+          "hidden": false,
+          "longTerm": true
+        },
+        {
+          "id": "aa3d9576-e2c9-4c1a-839e-0d79bd1a4e30",
+          "title": "إثبات أنه مخترع حقيقي",
+          "description": "يسعى لتحقيق الهدف: إثبات أنه مخترع حقيقي.",
+          "priority": 80,
+          "progress": 0,
+          "active": true,
+          "hidden": false,
+          "longTerm": false
+        }
+      ],
+      "fears": [
+        {
+          "id": "5858c4fc-1454-4b56-9d86-00188b6bb22c",
+          "name": "السخرية من اختراعاته",
+          "intensity": 75,
+          "origin": "لم يُكشف بعد",
+          "copingStrategy": "يُكتشف تدريجيًا عبر التجارب",
+          "resolved": false
+        },
+        {
+          "id": "cad010b9-5a5a-4cc5-b1fc-97be02710135",
+          "name": "فقدان نور بسبب خطأ منه",
+          "intensity": 67,
+          "origin": "لم يُكشف بعد",
+          "copingStrategy": "يُكتشف تدريجيًا عبر التجارب",
+          "resolved": false
+        }
+      ],
+      "secrets": [
+        "أحد اختراعاته تسبب سابقًا في حادث لم يخبر أحدًا عنه"
+      ],
+      "values": [
+        "الابتكار",
+        "الوفاء",
+        "إثبات القدرة"
+      ],
+      "skills": [
+        "صناعة الأدوات",
+        "الإصلاح",
+        "الارتجال"
+      ],
+      "weaknesses": [
+        "يتسرع",
+        "يخفي أخطاءه"
+      ],
+      "memories": [],
+      "relationships": [
+        {
+          "id": "8f9d4aae-53d9-424f-970b-2e48897f99ee",
+          "targetCharacterId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+          "targetCharacterName": "نُور",
+          "type": "friendship",
+          "trust": 55,
+          "affection": 50,
+          "respect": 50,
+          "fear": 5,
+          "rivalry": 10,
+          "dependency": 20,
+          "sharedMemoryIds": [],
+          "unresolvedIssues": [],
+          "lastUpdatedAt": "2026-07-31T19:19:12.041Z"
+        },
+        {
+          "id": "788d0133-5768-4eb2-bdaf-6c6d44e8eaa0",
+          "targetCharacterId": "25395a20-0def-495d-9074-eedc2dba52c3",
+          "targetCharacterName": "سَاهِر",
+          "type": "rivalry",
+          "trust": 55,
+          "affection": 50,
+          "respect": 50,
+          "fear": 5,
+          "rivalry": 75,
+          "dependency": 20,
+          "sharedMemoryIds": [],
+          "unresolvedIssues": [],
+          "lastUpdatedAt": "2026-07-31T19:19:12.041Z"
+        }
+      ],
+      "localizations": [
+        {
+          "languageCode": "ar",
+          "localizedName": "رَام",
+          "voiceProfile": "friend:المخترع المرح:age-11:ar",
+          "speechStyle": "سريع وعفوي ومباشر",
+          "culturalNotes": [
+            "تكييف الشخصية مع العربية دون تغيير هويتها الأساسية.",
+            "الحفاظ على الذاكرة والدوافع والعلاقات في جميع اللغات."
+          ],
+          "adaptationMode": "native-reproduction"
+        },
+        {
+          "languageCode": "en",
+          "localizedName": "رَام",
+          "voiceProfile": "friend:المخترع المرح:age-11:en",
+          "speechStyle": "سريع وعفوي ومباشر",
+          "culturalNotes": [
+            "تكييف الشخصية مع English دون تغيير هويتها الأساسية.",
+            "الحفاظ على الذاكرة والدوافع والعلاقات في جميع اللغات."
+          ],
+          "adaptationMode": "native-reproduction"
+        },
+        {
+          "languageCode": "es",
+          "localizedName": "رَام",
+          "voiceProfile": "friend:المخترع المرح:age-11:es",
+          "speechStyle": "سريع وعفوي ومباشر",
+          "culturalNotes": [
+            "تكييف الشخصية مع Español دون تغيير هويتها الأساسية.",
+            "الحفاظ على الذاكرة والدوافع والعلاقات في جميع اللغات."
+          ],
+          "adaptationMode": "cultural-adaptation"
+        }
+      ],
+      "continuity": {
+        "version": 1,
+        "totalExperiences": 0,
+        "majorPsychologicalChanges": 0,
+        "unresolvedInternalConflicts": [
+          "اختراع أداة تغيّر حياة المدينة مقابل السخرية من اختراعاته",
+          "الابتكار مقابل يتسرع"
+        ],
+        "continuityScore": 100,
+        "lastUpdatedAt": "2026-07-31T19:19:12.041Z"
+      }
+    },
+    {
+      "identity": {
+        "characterId": "25395a20-0def-495d-9074-eedc2dba52c3",
+        "worldId": "676d0dae-c1a5-48f7-aba1-42ac5e8384d4",
+        "canonicalName": "سَاهِر",
+        "role": "rival",
+        "audienceTier": "kids",
+        "age": 12,
+        "apparentAge": 12,
+        "species": "human",
+        "genderIdentity": "male",
+        "biography": "طالب بارع من مجتمع الحراس، يعتقد أن الأسرار يجب أن تبقى محمية، ويرى فضول نور خطرًا على استقرار العالم.",
+        "visualDescription": "ملابس زرقاء داكنة، دفتر سجلات معدني وشارة حارس قديمة ورثها عن عائلته.",
+        "originLocation": "حي الحراس",
+        "currentLocation": "هيئة الذاكرة",
+        "signatureElements": [
+          "دفتر السجلات المعدني",
+          "شارة الحارس",
+          "الصمت قبل اتخاذ القرار"
+        ]
+      },
+      "psychology": {
+        "personalityArchetype": "الحارس المتردد",
+        "traits": [
+          {
+            "name": "curiosity",
+            "value": 60,
+            "stability": 80,
+            "visible": true
+          },
+          {
+            "name": "courage",
+            "value": 55,
+            "stability": 80,
+            "visible": true
+          },
+          {
+            "name": "empathy",
+            "value": 75,
+            "stability": 80,
+            "visible": true
+          },
+          {
+            "name": "discipline",
+            "value": 50,
+            "stability": 80,
+            "visible": true
+          },
+          {
+            "name": "trust",
+            "value": 65,
+            "stability": 80,
+            "visible": true
+          },
+          {
+            "name": "impulsivity",
+            "value": 40,
+            "stability": 80,
+            "visible": true
+          },
+          {
+            "name": "resilience",
+            "value": 60,
+            "stability": 80,
+            "visible": true
+          }
+        ],
+        "needs": [
+          {
+            "name": "belonging",
+            "urgency": 65,
+            "satisfaction": 55
+          },
+          {
+            "name": "safety",
+            "urgency": 80,
+            "satisfaction": 60
+          },
+          {
+            "name": "competence",
+            "urgency": 70,
+            "satisfaction": 45
+          },
+          {
+            "name": "meaning",
+            "urgency": 45,
+            "satisfaction": 40
+          }
+        ],
+        "attachmentStyle": "avoidant",
+        "decisionStyle": "analytical",
+        "moralOrientation": "الاستقرار",
+        "stressTolerance": 45,
+        "empathy": 78,
+        "selfAwareness": 35,
+        "adaptability": 70,
+        "emotionalState": {
+          "happiness": 65,
+          "sadness": 10,
+          "fear": 15,
+          "anger": 5,
+          "curiosity": 80,
+          "confidence": 55,
+          "guilt": 0,
+          "hope": 75,
+          "loneliness": 15,
+          "dominantEmotion": "curiosity",
+          "emotionalStability": 75,
+          "lastUpdatedAt": "2026-07-31T19:19:12.041Z"
+        }
+      },
+      "goals": [
+        {
+          "id": "361363a3-c3b9-4531-b641-5380c8f06fab",
+          "title": "منع فتح الأرشيف",
+          "description": "يسعى لتحقيق الهدف: منع فتح الأرشيف.",
+          "priority": 90,
+          "progress": 0,
+          "active": true,
+          "hidden": false,
+          "longTerm": true
+        },
+        {
+          "id": "e3329d40-0de0-4d4e-82c7-eebbc011e41d",
+          "title": "إثبات أهليته ليصبح حارسًا",
+          "description": "يسعى لتحقيق الهدف: إثبات أهليته ليصبح حارسًا.",
+          "priority": 80,
+          "progress": 0,
+          "active": true,
+          "hidden": false,
+          "longTerm": false
+        }
+      ],
+      "fears": [
+        {
+          "id": "8f13ff86-f62a-4aa8-b5ff-f0c6c0bf5315",
+          "name": "اكتشاف أن عائلته أخفت الحقيقة",
+          "intensity": 75,
+          "origin": "لم يُكشف بعد",
+          "copingStrategy": "يُكتشف تدريجيًا عبر التجارب",
+          "resolved": false
+        },
+        {
+          "id": "912031ab-21cc-45d7-948e-8d731cdb9a91",
+          "name": "فقدان السيطرة",
+          "intensity": 67,
+          "origin": "لم يُكشف بعد",
+          "copingStrategy": "يُكتشف تدريجيًا عبر التجارب",
+          "resolved": false
+        }
+      ],
+      "secrets": [
+        "يملك نصف خريطة تؤدي إلى الأرشيف المخفي"
+      ],
+      "values": [
+        "الاستقرار",
+        "الوفاء للعائلة",
+        "حماية الأسرار"
+      ],
+      "skills": [
+        "قراءة السجلات",
+        "التخطيط",
+        "كشف التناقضات"
+      ],
+      "weaknesses": [
+        "يصعب عليه الثقة",
+        "يرفض الاعتراف بالخوف"
+      ],
+      "memories": [],
+      "relationships": [
+        {
+          "id": "e5ee3701-d4ae-42fc-9f34-05ec7e6c3ee4",
+          "targetCharacterId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+          "targetCharacterName": "نُور",
+          "type": "rivalry",
+          "trust": 55,
+          "affection": 50,
+          "respect": 50,
+          "fear": 5,
+          "rivalry": 75,
+          "dependency": 20,
+          "sharedMemoryIds": [],
+          "unresolvedIssues": [],
+          "lastUpdatedAt": "2026-07-31T19:19:12.041Z"
+        },
+        {
+          "id": "ad84aaf4-4b22-4cb3-bb08-53b50dbd4783",
+          "targetCharacterId": "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6",
+          "targetCharacterName": "رَام",
+          "type": "rivalry",
+          "trust": 55,
+          "affection": 50,
+          "respect": 50,
+          "fear": 5,
+          "rivalry": 75,
+          "dependency": 20,
+          "sharedMemoryIds": [],
+          "unresolvedIssues": [],
+          "lastUpdatedAt": "2026-07-31T19:19:12.041Z"
+        }
+      ],
+      "localizations": [
+        {
+          "languageCode": "ar",
+          "localizedName": "سَاهِر",
+          "voiceProfile": "rival:الحارس المتردد:age-12:ar",
+          "speechStyle": "هادئ ودقيق ويطرح أسئلة قبل الحكم",
+          "culturalNotes": [
+            "تكييف الشخصية مع العربية دون تغيير هويتها الأساسية.",
+            "الحفاظ على الذاكرة والدوافع والعلاقات في جميع اللغات."
+          ],
+          "adaptationMode": "native-reproduction"
+        },
+        {
+          "languageCode": "en",
+          "localizedName": "سَاهِر",
+          "voiceProfile": "rival:الحارس المتردد:age-12:en",
+          "speechStyle": "هادئ ودقيق ويطرح أسئلة قبل الحكم",
+          "culturalNotes": [
+            "تكييف الشخصية مع English دون تغيير هويتها الأساسية.",
+            "الحفاظ على الذاكرة والدوافع والعلاقات في جميع اللغات."
+          ],
+          "adaptationMode": "native-reproduction"
+        },
+        {
+          "languageCode": "es",
+          "localizedName": "سَاهِر",
+          "voiceProfile": "rival:الحارس المتردد:age-12:es",
+          "speechStyle": "هادئ ودقيق ويطرح أسئلة قبل الحكم",
+          "culturalNotes": [
+            "تكييف الشخصية مع Español دون تغيير هويتها الأساسية.",
+            "الحفاظ على الذاكرة والدوافع والعلاقات في جميع اللغات."
+          ],
+          "adaptationMode": "cultural-adaptation"
+        }
+      ],
+      "continuity": {
+        "version": 1,
+        "totalExperiences": 0,
+        "majorPsychologicalChanges": 0,
+        "unresolvedInternalConflicts": [
+          "منع فتح الأرشيف مقابل اكتشاف أن عائلته أخفت الحقيقة",
+          "الاستقرار مقابل يصعب عليه الثقة"
+        ],
+        "continuityScore": 100,
+        "lastUpdatedAt": "2026-07-31T19:19:12.041Z"
+      }
+    }
+  ]
+}

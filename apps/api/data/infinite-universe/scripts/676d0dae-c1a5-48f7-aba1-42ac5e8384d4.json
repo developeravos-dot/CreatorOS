@@ -1,0 +1,2035 @@
+{
+  "worldId": "676d0dae-c1a5-48f7-aba1-42ac5e8384d4",
+  "version": 1,
+  "updatedAt": "2026-07-31T20:02:01.580Z",
+  "scripts": [
+    {
+      "scriptId": "b73f24b6-e679-4729-b7d4-369710424d8c",
+      "worldId": "676d0dae-c1a5-48f7-aba1-42ac5e8384d4",
+      "episodeId": "a4e63358-63db-4c8f-9b70-d049cc8148a5",
+      "episodeNumber": 1,
+      "title": "الحلقة 1: أثر موقع الأرشيف الحقيقي",
+      "logline": "نُور وسَاهِر ورَام يواجهون تطورًا جديدًا يكشف جانبًا غير متوقع من \"موقع الأرشيف الحقيقي\".",
+      "synopsis": "تبدأ الحلقة بإشارة مرتبطة بـ \"موقع الأرشيف الحقيقي\"، فتدخل نُور وسَاهِر ورَام في سلسلة قرارات تختبر الثقة والخوف والفضول. يتصاعد الضغط النفسي حول curiosity قبل ظهور نتيجة تفتح احتمالات جديدة للحلقات القادمة.",
+      "audienceTier": "kids",
+      "sourceLanguageCode": "ar",
+      "selectedCharacterIds": [
+        "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+        "25395a20-0def-495d-9074-eedc2dba52c3",
+        "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+      ],
+      "selectedCharacterNames": [
+        "نُور",
+        "سَاهِر",
+        "رَام"
+      ],
+      "scenes": [
+        {
+          "sceneNumber": 1,
+          "sourceSceneType": "opening-hook",
+          "heading": "مدينة البدايات — صباح",
+          "location": "مدينة البدايات",
+          "timeOfDay": "صباح",
+          "targetDurationSeconds": 80,
+          "dramaticPurpose": "فتح سؤال مباشر خلال الثواني الأولى.",
+          "psychologicalPurpose": "رفع الفضول مع الحفاظ على الاستمرارية النفسية للشخصيات.",
+          "openingVisual": "لقطة واسعة لـ مدينة البدايات. يتحرك عنصر بصري صغير في الخلفية قبل أن تلاحظه نُور، بينما يستمر الآخرون في نشاطهم الطبيعي.",
+          "actionBeats": [
+            {
+              "beatNumber": 1,
+              "action": "تظهر نُور وسَاهِر ورَام داخل مدينة البدايات بينما يلفت انتباههم تغير صغير غير معتاد.",
+              "purpose": "إدخال الشخصيات إلى الحدث بصريًا دون شرح مباشر.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "الانتقال من الأمان إلى الفضول.",
+              "visualPriority": 85
+            },
+            {
+              "beatNumber": 2,
+              "action": "تلاحظ الشخصية الرئيسية تفصيلًا لا يراه الآخرون فورًا، لكنها تتردد قبل الحديث عنه.",
+              "purpose": "إظهار التفكير النفسي قبل الحوار.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e"
+              ],
+              "emotionalMeaning": "الرغبة في المعرفة مقابل الخوف من الخطأ.",
+              "visualPriority": 95
+            },
+            {
+              "beatNumber": 3,
+              "action": "يختلف رد فعل الشخصيات تجاه الدليل، فيظهر التعارض بين الحذر والاندفاع والتعاون.",
+              "purpose": "فتح سؤال مباشر خلال الثواني الأولى.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "الفضول",
+              "visualPriority": 90
+            }
+          ],
+          "dialogue": [
+            {
+              "lineNumber": 1,
+              "characterId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+              "characterName": "نُور",
+              "dialogue": "لا نحتاج إلى مواجهة هذا وحدنا. كل واحد منا رأى جزءًا مختلفًا، فلنجمع ما نعرفه.",
+              "delivery": "curious",
+              "visibleEmotion": "الفضول",
+              "hiddenEmotion": "فقدان ثقة الأصدقاء",
+              "subtext": "تحاول الشخصية الاقتراب من هدف \"اكتشاف حقيقة الأرشيف المخفي\" دون إظهار خوفها من \"فقدان ثقة الأصدقاء\".",
+              "bodyLanguage": "ينظر إلى كل شخصية بالتتابع ويترك مساحة لهم للرد.",
+              "pauseAfterSeconds": 0.8,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 2,
+              "characterId": "25395a20-0def-495d-9074-eedc2dba52c3",
+              "characterName": "سَاهِر",
+              "dialogue": "قبل أن نقرر، علينا أن نسأل: ما الدليل الذي يربط هذا بـ موقع الأرشيف الحقيقي؟",
+              "delivery": "curious",
+              "visibleEmotion": "الفضول",
+              "hiddenEmotion": "اكتشاف أن عائلته أخفت الحقيقة",
+              "subtext": "تحاول الشخصية الاقتراب من هدف \"منع فتح الأرشيف\" دون إظهار خوفها من \"اكتشاف أن عائلته أخفت الحقيقة\".",
+              "bodyLanguage": "يثبت نظره على الدليل، ثم يرفع رأسه ببطء قبل الكلام.",
+              "pauseAfterSeconds": 1.2,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 3,
+              "characterId": "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6",
+              "characterName": "رَام",
+              "dialogue": "لن نعرف ونحن واقفون هنا! هيا نجرّب، وسأصلح الأمر إذا حدث شيء... غالبًا.",
+              "delivery": "curious",
+              "visibleEmotion": "الفضول",
+              "hiddenEmotion": "السخرية من اختراعاته",
+              "subtext": "تحاول الشخصية الاقتراب من هدف \"اختراع أداة تغيّر حياة المدينة\" دون إظهار خوفها من \"السخرية من اختراعاته\".",
+              "bodyLanguage": "يتقدم نصف خطوة ويحرك يديه بسرعة قبل أن يكمل الآخرون كلامهم.",
+              "pauseAfterSeconds": 0.3,
+              "continuityReferences": []
+            }
+          ],
+          "camera": [
+            {
+              "order": 1,
+              "shot": "establishing-wide",
+              "subject": "الموقع الكامل",
+              "movement": "حركة بطيئة إلى الداخل",
+              "framingPurpose": "تعريف المكان وإظهار الجو النفسي قبل ظهور الحوار.",
+              "durationSeconds": 8
+            },
+            {
+              "order": 2,
+              "shot": "medium",
+              "subject": "نُور",
+              "movement": "تتبع خفيف",
+              "framingPurpose": "ربط المشاهد بالشخصية المحورية.",
+              "durationSeconds": 9.6
+            }
+          ],
+          "lighting": {
+            "mood": "الفضول",
+            "source": "إضاءة طبيعية دافئة موزعة على المكان",
+            "intensity": 75,
+            "colorTemperature": "warm",
+            "psychologicalPurpose": "المحافظة على الأمان والانتماء البصري."
+          },
+          "sound": {
+            "ambience": [
+              "أصوات بيئية خفيفة مرتبطة بالموقع",
+              "حركة هواء ناعمة"
+            ],
+            "soundEffects": [
+              "حركة ملابس",
+              "خطوات خفيفة"
+            ],
+            "musicMood": "الفضول",
+            "musicIntensity": 38,
+            "silenceRequired": false
+          },
+          "sceneArc": {
+            "openingEmotion": "الهدوء والفضول",
+            "peakEmotion": "الفضول",
+            "closingEmotion": "فضول مستمر",
+            "curiosityStart": 32,
+            "curiosityEnd": 68,
+            "tensionStart": 35,
+            "tensionEnd": 45
+          },
+          "continuityReferences": [
+            "موقع الأرشيف الحقيقي"
+          ],
+          "futureSeeds": [],
+          "safetyAssessment": {
+            "suitable": true,
+            "audienceTier": "kids",
+            "findings": [],
+            "adjustments": [
+              "لا توجد تعديلات إلزامية."
+            ]
+          }
+        },
+        {
+          "sceneNumber": 2,
+          "sourceSceneType": "setup",
+          "heading": "المنطقة المتغيرة — صباح",
+          "location": "المنطقة المتغيرة",
+          "timeOfDay": "صباح",
+          "targetDurationSeconds": 80,
+          "dramaticPurpose": "إظهار الحالة الحالية للشخصيات قبل الصراع.",
+          "psychologicalPurpose": "رفع الأمان والارتباط مع الحفاظ على الاستمرارية النفسية للشخصيات.",
+          "openingVisual": "لقطة واسعة لـ المنطقة المتغيرة. يتحرك عنصر بصري صغير في الخلفية قبل أن تلاحظه نُور، بينما يستمر الآخرون في نشاطهم الطبيعي.",
+          "actionBeats": [
+            {
+              "beatNumber": 1,
+              "action": "تظهر نُور وسَاهِر ورَام داخل المنطقة المتغيرة بينما يلفت انتباههم تغير صغير غير معتاد.",
+              "purpose": "إدخال الشخصيات إلى الحدث بصريًا دون شرح مباشر.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "الانتقال من الأمان إلى الفضول.",
+              "visualPriority": 85
+            },
+            {
+              "beatNumber": 2,
+              "action": "تلاحظ الشخصية الرئيسية تفصيلًا لا يراه الآخرون فورًا، لكنها تتردد قبل الحديث عنه.",
+              "purpose": "إظهار التفكير النفسي قبل الحوار.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e"
+              ],
+              "emotionalMeaning": "الرغبة في المعرفة مقابل الخوف من الخطأ.",
+              "visualPriority": 95
+            },
+            {
+              "beatNumber": 3,
+              "action": "يختلف رد فعل الشخصيات تجاه الدليل، فيظهر التعارض بين الحذر والاندفاع والتعاون.",
+              "purpose": "إظهار الحالة الحالية للشخصيات قبل الصراع.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "الأمان والارتباط",
+              "visualPriority": 90
+            }
+          ],
+          "dialogue": [
+            {
+              "lineNumber": 1,
+              "characterId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+              "characterName": "نُور",
+              "dialogue": "لا نحتاج إلى مواجهة هذا وحدنا. كل واحد منا رأى جزءًا مختلفًا، فلنجمع ما نعرفه.",
+              "delivery": "calm",
+              "visibleEmotion": "الأمان والارتباط",
+              "hiddenEmotion": "فقدان ثقة الأصدقاء",
+              "subtext": "تحاول الشخصية الاقتراب من هدف \"اكتشاف حقيقة الأرشيف المخفي\" دون إظهار خوفها من \"فقدان ثقة الأصدقاء\".",
+              "bodyLanguage": "ينظر إلى كل شخصية بالتتابع ويترك مساحة لهم للرد.",
+              "pauseAfterSeconds": 0.8,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 2,
+              "characterId": "25395a20-0def-495d-9074-eedc2dba52c3",
+              "characterName": "سَاهِر",
+              "dialogue": "قبل أن نقرر، علينا أن نسأل: ما الدليل الذي يربط هذا بـ موقع الأرشيف الحقيقي؟",
+              "delivery": "serious",
+              "visibleEmotion": "الأمان والارتباط",
+              "hiddenEmotion": "اكتشاف أن عائلته أخفت الحقيقة",
+              "subtext": "تحاول الشخصية الاقتراب من هدف \"منع فتح الأرشيف\" دون إظهار خوفها من \"اكتشاف أن عائلته أخفت الحقيقة\".",
+              "bodyLanguage": "يثبت نظره على الدليل، ثم يرفع رأسه ببطء قبل الكلام.",
+              "pauseAfterSeconds": 1.2,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 3,
+              "characterId": "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6",
+              "characterName": "رَام",
+              "dialogue": "لن نعرف ونحن واقفون هنا! هيا نجرّب، وسأصلح الأمر إذا حدث شيء... غالبًا.",
+              "delivery": "playful",
+              "visibleEmotion": "الأمان والارتباط",
+              "hiddenEmotion": "السخرية من اختراعاته",
+              "subtext": "تحاول الشخصية الاقتراب من هدف \"اختراع أداة تغيّر حياة المدينة\" دون إظهار خوفها من \"السخرية من اختراعاته\".",
+              "bodyLanguage": "يتقدم نصف خطوة ويحرك يديه بسرعة قبل أن يكمل الآخرون كلامهم.",
+              "pauseAfterSeconds": 0.3,
+              "continuityReferences": []
+            }
+          ],
+          "camera": [
+            {
+              "order": 1,
+              "shot": "establishing-wide",
+              "subject": "الموقع الكامل",
+              "movement": "حركة بطيئة إلى الداخل",
+              "framingPurpose": "تعريف المكان وإظهار الجو النفسي قبل ظهور الحوار.",
+              "durationSeconds": 8
+            },
+            {
+              "order": 2,
+              "shot": "medium",
+              "subject": "نُور",
+              "movement": "تتبع خفيف",
+              "framingPurpose": "ربط المشاهد بالشخصية المحورية.",
+              "durationSeconds": 9.6
+            }
+          ],
+          "lighting": {
+            "mood": "الأمان والارتباط",
+            "source": "إضاءة طبيعية دافئة موزعة على المكان",
+            "intensity": 75,
+            "colorTemperature": "warm",
+            "psychologicalPurpose": "المحافظة على الأمان والانتماء البصري."
+          },
+          "sound": {
+            "ambience": [
+              "أصوات بيئية خفيفة مرتبطة بالموقع",
+              "حركة هواء ناعمة"
+            ],
+            "soundEffects": [
+              "حركة ملابس",
+              "خطوات خفيفة"
+            ],
+            "musicMood": "الأمان والارتباط",
+            "musicIntensity": 38,
+            "silenceRequired": false
+          },
+          "sceneArc": {
+            "openingEmotion": "استمرار أثر المشهد السابق",
+            "peakEmotion": "الأمان والارتباط",
+            "closingEmotion": "فضول مستمر",
+            "curiosityStart": 45,
+            "curiosityEnd": 55,
+            "tensionStart": 43,
+            "tensionEnd": 37
+          },
+          "continuityReferences": [
+            "موقع الأرشيف الحقيقي"
+          ],
+          "futureSeeds": [],
+          "safetyAssessment": {
+            "suitable": true,
+            "audienceTier": "kids",
+            "findings": [],
+            "adjustments": [
+              "لا توجد تعديلات إلزامية."
+            ]
+          }
+        },
+        {
+          "sceneNumber": 3,
+          "sourceSceneType": "discovery",
+          "heading": "الأرشيف المخفي — بعد الظهر",
+          "location": "الأرشيف المخفي",
+          "timeOfDay": "بعد الظهر",
+          "targetDurationSeconds": 80,
+          "dramaticPurpose": "ربط الشخصيات بخيط القصة المختار.",
+          "psychologicalPurpose": "رفع الاكتشاف مع الحفاظ على الاستمرارية النفسية للشخصيات.",
+          "openingVisual": "لقطة واسعة لـ الأرشيف المخفي. يتحرك عنصر بصري صغير في الخلفية قبل أن تلاحظه نُور، بينما يستمر الآخرون في نشاطهم الطبيعي.",
+          "actionBeats": [
+            {
+              "beatNumber": 1,
+              "action": "تظهر نُور وسَاهِر ورَام داخل الأرشيف المخفي بينما يلفت انتباههم تغير صغير غير معتاد.",
+              "purpose": "إدخال الشخصيات إلى الحدث بصريًا دون شرح مباشر.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "الانتقال من الأمان إلى الفضول.",
+              "visualPriority": 85
+            },
+            {
+              "beatNumber": 2,
+              "action": "تلاحظ الشخصية الرئيسية تفصيلًا لا يراه الآخرون فورًا، لكنها تتردد قبل الحديث عنه.",
+              "purpose": "إظهار التفكير النفسي قبل الحوار.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e"
+              ],
+              "emotionalMeaning": "الرغبة في المعرفة مقابل الخوف من الخطأ.",
+              "visualPriority": 95
+            },
+            {
+              "beatNumber": 3,
+              "action": "يختلف رد فعل الشخصيات تجاه الدليل، فيظهر التعارض بين الحذر والاندفاع والتعاون.",
+              "purpose": "ربط الشخصيات بخيط القصة المختار.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "الاكتشاف",
+              "visualPriority": 90
+            }
+          ],
+          "dialogue": [
+            {
+              "lineNumber": 1,
+              "characterId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+              "characterName": "نُور",
+              "dialogue": "لا نحتاج إلى مواجهة هذا وحدنا. كل واحد منا رأى جزءًا مختلفًا، فلنجمع ما نعرفه.",
+              "delivery": "calm",
+              "visibleEmotion": "الاكتشاف",
+              "hiddenEmotion": "فقدان ثقة الأصدقاء",
+              "subtext": "تحاول الشخصية الاقتراب من هدف \"اكتشاف حقيقة الأرشيف المخفي\" دون إظهار خوفها من \"فقدان ثقة الأصدقاء\".",
+              "bodyLanguage": "ينظر إلى كل شخصية بالتتابع ويترك مساحة لهم للرد.",
+              "pauseAfterSeconds": 0.8,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 2,
+              "characterId": "25395a20-0def-495d-9074-eedc2dba52c3",
+              "characterName": "سَاهِر",
+              "dialogue": "قبل أن نقرر، علينا أن نسأل: ما الدليل الذي يربط هذا بـ موقع الأرشيف الحقيقي؟",
+              "delivery": "serious",
+              "visibleEmotion": "الاكتشاف",
+              "hiddenEmotion": "اكتشاف أن عائلته أخفت الحقيقة",
+              "subtext": "تحاول الشخصية الاقتراب من هدف \"منع فتح الأرشيف\" دون إظهار خوفها من \"اكتشاف أن عائلته أخفت الحقيقة\".",
+              "bodyLanguage": "يثبت نظره على الدليل، ثم يرفع رأسه ببطء قبل الكلام.",
+              "pauseAfterSeconds": 1.2,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 3,
+              "characterId": "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6",
+              "characterName": "رَام",
+              "dialogue": "لن نعرف ونحن واقفون هنا! هيا نجرّب، وسأصلح الأمر إذا حدث شيء... غالبًا.",
+              "delivery": "playful",
+              "visibleEmotion": "الاكتشاف",
+              "hiddenEmotion": "السخرية من اختراعاته",
+              "subtext": "تحاول الشخصية الاقتراب من هدف \"اختراع أداة تغيّر حياة المدينة\" دون إظهار خوفها من \"السخرية من اختراعاته\".",
+              "bodyLanguage": "يتقدم نصف خطوة ويحرك يديه بسرعة قبل أن يكمل الآخرون كلامهم.",
+              "pauseAfterSeconds": 0.3,
+              "continuityReferences": []
+            }
+          ],
+          "camera": [
+            {
+              "order": 1,
+              "shot": "establishing-wide",
+              "subject": "الموقع الكامل",
+              "movement": "حركة بطيئة إلى الداخل",
+              "framingPurpose": "تعريف المكان وإظهار الجو النفسي قبل ظهور الحوار.",
+              "durationSeconds": 8
+            },
+            {
+              "order": 2,
+              "shot": "medium",
+              "subject": "نُور",
+              "movement": "تتبع خفيف",
+              "framingPurpose": "ربط المشاهد بالشخصية المحورية.",
+              "durationSeconds": 9.6
+            },
+            {
+              "order": 3,
+              "shot": "insert",
+              "subject": "الدليل أو العنصر المكتشف",
+              "movement": "قطع مباشر ثم تركيز بصري",
+              "framingPurpose": "توجيه الانتباه إلى المعلومة الجديدة دون شرح زائد.",
+              "durationSeconds": 5
+            }
+          ],
+          "lighting": {
+            "mood": "غموض قابل للاكتشاف",
+            "source": "إضاءة جانبية مع مصدر ضوء صغير صادر من الدليل",
+            "intensity": 58,
+            "colorTemperature": "mixed",
+            "psychologicalPurpose": "الجمع بين الأمان البصري والإحساس بوجود حقيقة مخفية."
+          },
+          "sound": {
+            "ambience": [
+              "أصوات بيئية خفيفة مرتبطة بالموقع",
+              "حركة هواء ناعمة"
+            ],
+            "soundEffects": [
+              "طنين خافت",
+              "نقرة ميكانيكية دقيقة"
+            ],
+            "musicMood": "الاكتشاف",
+            "musicIntensity": 38,
+            "silenceRequired": false
+          },
+          "sceneArc": {
+            "openingEmotion": "استمرار أثر المشهد السابق",
+            "peakEmotion": "الاكتشاف",
+            "closingEmotion": "فضول مستمر",
+            "curiosityStart": 35,
+            "curiosityEnd": 65,
+            "tensionStart": 32,
+            "tensionEnd": 48
+          },
+          "continuityReferences": [
+            "موقع الأرشيف الحقيقي"
+          ],
+          "futureSeeds": [],
+          "safetyAssessment": {
+            "suitable": true,
+            "audienceTier": "kids",
+            "findings": [],
+            "adjustments": [
+              "لا توجد تعديلات إلزامية."
+            ]
+          }
+        },
+        {
+          "sceneNumber": 4,
+          "sourceSceneType": "conflict",
+          "heading": "مدينة البدايات — بعد الظهر",
+          "location": "مدينة البدايات",
+          "timeOfDay": "بعد الظهر",
+          "targetDurationSeconds": 80,
+          "dramaticPurpose": "إظهار التعارض بين الأهداف والخوف والعلاقات.",
+          "psychologicalPurpose": "رفع التوتر مع الحفاظ على الاستمرارية النفسية للشخصيات.",
+          "openingVisual": "لقطة واسعة لـ مدينة البدايات. يتحرك عنصر بصري صغير في الخلفية قبل أن تلاحظه نُور، بينما يستمر الآخرون في نشاطهم الطبيعي.",
+          "actionBeats": [
+            {
+              "beatNumber": 1,
+              "action": "تظهر نُور وسَاهِر ورَام داخل مدينة البدايات بينما يلفت انتباههم تغير صغير غير معتاد.",
+              "purpose": "إدخال الشخصيات إلى الحدث بصريًا دون شرح مباشر.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "الانتقال من الأمان إلى الفضول.",
+              "visualPriority": 85
+            },
+            {
+              "beatNumber": 2,
+              "action": "تلاحظ الشخصية الرئيسية تفصيلًا لا يراه الآخرون فورًا، لكنها تتردد قبل الحديث عنه.",
+              "purpose": "إظهار التفكير النفسي قبل الحوار.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e"
+              ],
+              "emotionalMeaning": "الرغبة في المعرفة مقابل الخوف من الخطأ.",
+              "visualPriority": 95
+            },
+            {
+              "beatNumber": 3,
+              "action": "يختلف رد فعل الشخصيات تجاه الدليل، فيظهر التعارض بين الحذر والاندفاع والتعاون.",
+              "purpose": "إظهار التعارض بين الأهداف والخوف والعلاقات.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "التوتر",
+              "visualPriority": 90
+            }
+          ],
+          "dialogue": [
+            {
+              "lineNumber": 1,
+              "characterId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+              "characterName": "نُور",
+              "dialogue": "لا نحتاج إلى مواجهة هذا وحدنا. كل واحد منا رأى جزءًا مختلفًا، فلنجمع ما نعرفه.",
+              "delivery": "calm",
+              "visibleEmotion": "التوتر",
+              "hiddenEmotion": "فقدان ثقة الأصدقاء",
+              "subtext": "تحاول الشخصية الاقتراب من هدف \"اكتشاف حقيقة الأرشيف المخفي\" دون إظهار خوفها من \"فقدان ثقة الأصدقاء\".",
+              "bodyLanguage": "ينظر إلى كل شخصية بالتتابع ويترك مساحة لهم للرد.",
+              "pauseAfterSeconds": 0.8,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 2,
+              "characterId": "25395a20-0def-495d-9074-eedc2dba52c3",
+              "characterName": "سَاهِر",
+              "dialogue": "قبل أن نقرر، علينا أن نسأل: ما الدليل الذي يربط هذا بـ موقع الأرشيف الحقيقي؟",
+              "delivery": "serious",
+              "visibleEmotion": "التوتر",
+              "hiddenEmotion": "اكتشاف أن عائلته أخفت الحقيقة",
+              "subtext": "تحاول الشخصية الاقتراب من هدف \"منع فتح الأرشيف\" دون إظهار خوفها من \"اكتشاف أن عائلته أخفت الحقيقة\".",
+              "bodyLanguage": "يثبت نظره على الدليل، ثم يرفع رأسه ببطء قبل الكلام.",
+              "pauseAfterSeconds": 1.2,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 3,
+              "characterId": "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6",
+              "characterName": "رَام",
+              "dialogue": "لن نعرف ونحن واقفون هنا! هيا نجرّب، وسأصلح الأمر إذا حدث شيء... غالبًا.",
+              "delivery": "playful",
+              "visibleEmotion": "التوتر",
+              "hiddenEmotion": "السخرية من اختراعاته",
+              "subtext": "تحاول الشخصية الاقتراب من هدف \"اختراع أداة تغيّر حياة المدينة\" دون إظهار خوفها من \"السخرية من اختراعاته\".",
+              "bodyLanguage": "يتقدم نصف خطوة ويحرك يديه بسرعة قبل أن يكمل الآخرون كلامهم.",
+              "pauseAfterSeconds": 0.3,
+              "continuityReferences": []
+            }
+          ],
+          "camera": [
+            {
+              "order": 1,
+              "shot": "establishing-wide",
+              "subject": "الموقع الكامل",
+              "movement": "حركة بطيئة إلى الداخل",
+              "framingPurpose": "تعريف المكان وإظهار الجو النفسي قبل ظهور الحوار.",
+              "durationSeconds": 8
+            },
+            {
+              "order": 2,
+              "shot": "medium",
+              "subject": "نُور",
+              "movement": "تتبع خفيف",
+              "framingPurpose": "ربط المشاهد بالشخصية المحورية.",
+              "durationSeconds": 9.6
+            }
+          ],
+          "lighting": {
+            "mood": "توتر عاطفي معتدل",
+            "source": "إضاءة علوية ناعمة مع ظلال خفيفة على الوجوه",
+            "intensity": 62,
+            "colorTemperature": "neutral",
+            "psychologicalPurpose": "إظهار جدية القرار دون جعل المشهد مخيفًا للأطفال."
+          },
+          "sound": {
+            "ambience": [
+              "أصوات بيئية خفيفة مرتبطة بالموقع",
+              "حركة هواء ناعمة"
+            ],
+            "soundEffects": [
+              "حركة ملابس",
+              "خطوات خفيفة"
+            ],
+            "musicMood": "التوتر",
+            "musicIntensity": 65,
+            "silenceRequired": false
+          },
+          "sceneArc": {
+            "openingEmotion": "استمرار أثر المشهد السابق",
+            "peakEmotion": "التوتر",
+            "closingEmotion": "توتر غير محسوم",
+            "curiosityStart": 45,
+            "curiosityEnd": 55,
+            "tensionStart": 22,
+            "tensionEnd": 58
+          },
+          "continuityReferences": [
+            "موقع الأرشيف الحقيقي"
+          ],
+          "futureSeeds": [],
+          "safetyAssessment": {
+            "suitable": true,
+            "audienceTier": "kids",
+            "findings": [],
+            "adjustments": [
+              "يجب إنهاء المشهد بإشارة واضحة إلى إمكانية الحوار أو الإصلاح."
+            ]
+          }
+        },
+        {
+          "sceneNumber": 5,
+          "sourceSceneType": "decision",
+          "heading": "المنطقة المتغيرة — بعد الظهر",
+          "location": "المنطقة المتغيرة",
+          "timeOfDay": "بعد الظهر",
+          "targetDurationSeconds": 80,
+          "dramaticPurpose": "إجبار الشخصية الرئيسية على اختيار متوافق مع تاريخها النفسي.",
+          "psychologicalPurpose": "رفع التعاطف مع الحفاظ على الاستمرارية النفسية للشخصيات.",
+          "openingVisual": "لقطة واسعة لـ المنطقة المتغيرة. يتحرك عنصر بصري صغير في الخلفية قبل أن تلاحظه نُور، بينما يستمر الآخرون في نشاطهم الطبيعي.",
+          "actionBeats": [
+            {
+              "beatNumber": 1,
+              "action": "تظهر نُور وسَاهِر ورَام داخل المنطقة المتغيرة بينما يلفت انتباههم تغير صغير غير معتاد.",
+              "purpose": "إدخال الشخصيات إلى الحدث بصريًا دون شرح مباشر.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "الانتقال من الأمان إلى الفضول.",
+              "visualPriority": 85
+            },
+            {
+              "beatNumber": 2,
+              "action": "تلاحظ الشخصية الرئيسية تفصيلًا لا يراه الآخرون فورًا، لكنها تتردد قبل الحديث عنه.",
+              "purpose": "إظهار التفكير النفسي قبل الحوار.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e"
+              ],
+              "emotionalMeaning": "الرغبة في المعرفة مقابل الخوف من الخطأ.",
+              "visualPriority": 95
+            },
+            {
+              "beatNumber": 3,
+              "action": "يختلف رد فعل الشخصيات تجاه الدليل، فيظهر التعارض بين الحذر والاندفاع والتعاون.",
+              "purpose": "إجبار الشخصية الرئيسية على اختيار متوافق مع تاريخها النفسي.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "التعاطف",
+              "visualPriority": 90
+            }
+          ],
+          "dialogue": [
+            {
+              "lineNumber": 1,
+              "characterId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+              "characterName": "نُور",
+              "dialogue": "لا نحتاج إلى مواجهة هذا وحدنا. كل واحد منا رأى جزءًا مختلفًا، فلنجمع ما نعرفه.",
+              "delivery": "emotional",
+              "visibleEmotion": "التعاطف",
+              "hiddenEmotion": "فقدان ثقة الأصدقاء",
+              "subtext": "تحاول الشخصية الاقتراب من هدف \"اكتشاف حقيقة الأرشيف المخفي\" دون إظهار خوفها من \"فقدان ثقة الأصدقاء\".",
+              "bodyLanguage": "ينظر إلى كل شخصية بالتتابع ويترك مساحة لهم للرد.",
+              "pauseAfterSeconds": 0.8,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 2,
+              "characterId": "25395a20-0def-495d-9074-eedc2dba52c3",
+              "characterName": "سَاهِر",
+              "dialogue": "قبل أن نقرر، علينا أن نسأل: ما الدليل الذي يربط هذا بـ موقع الأرشيف الحقيقي؟",
+              "delivery": "emotional",
+              "visibleEmotion": "التعاطف",
+              "hiddenEmotion": "اكتشاف أن عائلته أخفت الحقيقة",
+              "subtext": "تحاول الشخصية الاقتراب من هدف \"منع فتح الأرشيف\" دون إظهار خوفها من \"اكتشاف أن عائلته أخفت الحقيقة\".",
+              "bodyLanguage": "يثبت نظره على الدليل، ثم يرفع رأسه ببطء قبل الكلام.",
+              "pauseAfterSeconds": 1.2,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 3,
+              "characterId": "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6",
+              "characterName": "رَام",
+              "dialogue": "لن نعرف ونحن واقفون هنا! هيا نجرّب، وسأصلح الأمر إذا حدث شيء... غالبًا.",
+              "delivery": "emotional",
+              "visibleEmotion": "التعاطف",
+              "hiddenEmotion": "السخرية من اختراعاته",
+              "subtext": "تحاول الشخصية الاقتراب من هدف \"اختراع أداة تغيّر حياة المدينة\" دون إظهار خوفها من \"السخرية من اختراعاته\".",
+              "bodyLanguage": "يتقدم نصف خطوة ويحرك يديه بسرعة قبل أن يكمل الآخرون كلامهم.",
+              "pauseAfterSeconds": 0.3,
+              "continuityReferences": []
+            }
+          ],
+          "camera": [
+            {
+              "order": 1,
+              "shot": "establishing-wide",
+              "subject": "الموقع الكامل",
+              "movement": "حركة بطيئة إلى الداخل",
+              "framingPurpose": "تعريف المكان وإظهار الجو النفسي قبل ظهور الحوار.",
+              "durationSeconds": 8
+            },
+            {
+              "order": 2,
+              "shot": "medium",
+              "subject": "نُور",
+              "movement": "تتبع خفيف",
+              "framingPurpose": "ربط المشاهد بالشخصية المحورية.",
+              "durationSeconds": 9.6
+            },
+            {
+              "order": 3,
+              "shot": "close-up",
+              "subject": "نُور",
+              "movement": "ثابت مع اقتراب طفيف",
+              "framingPurpose": "إظهار التردد أو التحول النفسي قبل القرار.",
+              "durationSeconds": 6
+            }
+          ],
+          "lighting": {
+            "mood": "توتر عاطفي معتدل",
+            "source": "إضاءة علوية ناعمة مع ظلال خفيفة على الوجوه",
+            "intensity": 62,
+            "colorTemperature": "neutral",
+            "psychologicalPurpose": "إظهار جدية القرار دون جعل المشهد مخيفًا للأطفال."
+          },
+          "sound": {
+            "ambience": [
+              "أصوات بيئية خفيفة مرتبطة بالموقع",
+              "حركة هواء ناعمة"
+            ],
+            "soundEffects": [
+              "حركة ملابس",
+              "خطوات خفيفة"
+            ],
+            "musicMood": "التعاطف",
+            "musicIntensity": 38,
+            "silenceRequired": true,
+            "silencePurpose": "منح القرار أو الاكتشاف وزنًا نفسيًا قبل الحوار التالي."
+          },
+          "sceneArc": {
+            "openingEmotion": "استمرار أثر المشهد السابق",
+            "peakEmotion": "التعاطف",
+            "closingEmotion": "فضول مستمر",
+            "curiosityStart": 46,
+            "curiosityEnd": 54,
+            "tensionStart": 28,
+            "tensionEnd": 52
+          },
+          "continuityReferences": [
+            "موقع الأرشيف الحقيقي"
+          ],
+          "futureSeeds": [],
+          "safetyAssessment": {
+            "suitable": true,
+            "audienceTier": "kids",
+            "findings": [],
+            "adjustments": [
+              "لا توجد تعديلات إلزامية."
+            ]
+          }
+        },
+        {
+          "sceneNumber": 6,
+          "sourceSceneType": "reversal",
+          "heading": "الأرشيف المخفي — الغروب",
+          "location": "الأرشيف المخفي",
+          "timeOfDay": "الغروب",
+          "targetDurationSeconds": 80,
+          "dramaticPurpose": "تغيير فهم الجمهور دون كسر منطق العالم.",
+          "psychologicalPurpose": "رفع المفاجأة مع الحفاظ على الاستمرارية النفسية للشخصيات.",
+          "openingVisual": "لقطة واسعة لـ الأرشيف المخفي. يتحرك عنصر بصري صغير في الخلفية قبل أن تلاحظه نُور، بينما يستمر الآخرون في نشاطهم الطبيعي.",
+          "actionBeats": [
+            {
+              "beatNumber": 1,
+              "action": "تظهر نُور وسَاهِر ورَام داخل الأرشيف المخفي بينما يلفت انتباههم تغير صغير غير معتاد.",
+              "purpose": "إدخال الشخصيات إلى الحدث بصريًا دون شرح مباشر.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "الانتقال من الأمان إلى الفضول.",
+              "visualPriority": 85
+            },
+            {
+              "beatNumber": 2,
+              "action": "تلاحظ الشخصية الرئيسية تفصيلًا لا يراه الآخرون فورًا، لكنها تتردد قبل الحديث عنه.",
+              "purpose": "إظهار التفكير النفسي قبل الحوار.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e"
+              ],
+              "emotionalMeaning": "الرغبة في المعرفة مقابل الخوف من الخطأ.",
+              "visualPriority": 95
+            },
+            {
+              "beatNumber": 3,
+              "action": "يختلف رد فعل الشخصيات تجاه الدليل، فيظهر التعارض بين الحذر والاندفاع والتعاون.",
+              "purpose": "تغيير فهم الجمهور دون كسر منطق العالم.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "المفاجأة",
+              "visualPriority": 90
+            }
+          ],
+          "dialogue": [
+            {
+              "lineNumber": 1,
+              "characterId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+              "characterName": "نُور",
+              "dialogue": "لا نحتاج إلى مواجهة هذا وحدنا. كل واحد منا رأى جزءًا مختلفًا، فلنجمع ما نعرفه.",
+              "delivery": "excited",
+              "visibleEmotion": "المفاجأة",
+              "hiddenEmotion": "فقدان ثقة الأصدقاء",
+              "subtext": "تحاول الشخصية الاقتراب من هدف \"اكتشاف حقيقة الأرشيف المخفي\" دون إظهار خوفها من \"فقدان ثقة الأصدقاء\".",
+              "bodyLanguage": "ينظر إلى كل شخصية بالتتابع ويترك مساحة لهم للرد.",
+              "pauseAfterSeconds": 0.8,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 2,
+              "characterId": "25395a20-0def-495d-9074-eedc2dba52c3",
+              "characterName": "سَاهِر",
+              "dialogue": "قبل أن نقرر، علينا أن نسأل: ما الدليل الذي يربط هذا بـ موقع الأرشيف الحقيقي؟",
+              "delivery": "excited",
+              "visibleEmotion": "المفاجأة",
+              "hiddenEmotion": "اكتشاف أن عائلته أخفت الحقيقة",
+              "subtext": "تحاول الشخصية الاقتراب من هدف \"منع فتح الأرشيف\" دون إظهار خوفها من \"اكتشاف أن عائلته أخفت الحقيقة\".",
+              "bodyLanguage": "يثبت نظره على الدليل، ثم يرفع رأسه ببطء قبل الكلام.",
+              "pauseAfterSeconds": 1.2,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 3,
+              "characterId": "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6",
+              "characterName": "رَام",
+              "dialogue": "لن نعرف ونحن واقفون هنا! هيا نجرّب، وسأصلح الأمر إذا حدث شيء... غالبًا.",
+              "delivery": "excited",
+              "visibleEmotion": "المفاجأة",
+              "hiddenEmotion": "السخرية من اختراعاته",
+              "subtext": "تحاول الشخصية الاقتراب من هدف \"اختراع أداة تغيّر حياة المدينة\" دون إظهار خوفها من \"السخرية من اختراعاته\".",
+              "bodyLanguage": "يتقدم نصف خطوة ويحرك يديه بسرعة قبل أن يكمل الآخرون كلامهم.",
+              "pauseAfterSeconds": 0.3,
+              "continuityReferences": []
+            }
+          ],
+          "camera": [
+            {
+              "order": 1,
+              "shot": "establishing-wide",
+              "subject": "الموقع الكامل",
+              "movement": "حركة بطيئة إلى الداخل",
+              "framingPurpose": "تعريف المكان وإظهار الجو النفسي قبل ظهور الحوار.",
+              "durationSeconds": 8
+            },
+            {
+              "order": 2,
+              "shot": "medium",
+              "subject": "نُور",
+              "movement": "تتبع خفيف",
+              "framingPurpose": "ربط المشاهد بالشخصية المحورية.",
+              "durationSeconds": 9.6
+            },
+            {
+              "order": 3,
+              "shot": "insert",
+              "subject": "الدليل أو العنصر المكتشف",
+              "movement": "قطع مباشر ثم تركيز بصري",
+              "framingPurpose": "توجيه الانتباه إلى المعلومة الجديدة دون شرح زائد.",
+              "durationSeconds": 5
+            }
+          ],
+          "lighting": {
+            "mood": "غموض قابل للاكتشاف",
+            "source": "إضاءة جانبية مع مصدر ضوء صغير صادر من الدليل",
+            "intensity": 58,
+            "colorTemperature": "mixed",
+            "psychologicalPurpose": "الجمع بين الأمان البصري والإحساس بوجود حقيقة مخفية."
+          },
+          "sound": {
+            "ambience": [
+              "أصوات بيئية خفيفة مرتبطة بالموقع",
+              "حركة هواء ناعمة"
+            ],
+            "soundEffects": [
+              "حركة ملابس",
+              "خطوات خفيفة"
+            ],
+            "musicMood": "المفاجأة",
+            "musicIntensity": 72,
+            "silenceRequired": true,
+            "silencePurpose": "منح القرار أو الاكتشاف وزنًا نفسيًا قبل الحوار التالي."
+          },
+          "sceneArc": {
+            "openingEmotion": "استمرار أثر المشهد السابق",
+            "peakEmotion": "المفاجأة",
+            "closingEmotion": "دهشة وأسئلة",
+            "curiosityStart": 30,
+            "curiosityEnd": 70,
+            "tensionStart": 28,
+            "tensionEnd": 52
+          },
+          "continuityReferences": [
+            "موقع الأرشيف الحقيقي"
+          ],
+          "futureSeeds": [],
+          "safetyAssessment": {
+            "suitable": true,
+            "audienceTier": "kids",
+            "findings": [],
+            "adjustments": [
+              "لا توجد تعديلات إلزامية."
+            ]
+          }
+        }
+      ],
+      "psychologicalArc": {
+        "openingState": "فضول آمن داخل عالم مألوف",
+        "centralConflict": "التقدم نحو \"موقع الأرشيف الحقيقي\" مقابل الخوف من نتائجه.",
+        "emotionalTurningPoint": "تكتشف الشخصيات أن حماية الصداقة والحقيقة تحتاج إلى قرار مشترك.",
+        "closingState": "ارتياح مؤقت مع سؤال غير مغلق",
+        "primaryAudienceEmotion": "curiosity",
+        "secondaryAudienceEmotion": "التعاطف",
+        "ethicalHook": "هل يجب كشف الحقيقة حتى عندما قد تؤذي شخصًا نحبه؟",
+        "unresolvedQuestion": "ما الحقيقة الكاملة وراء موقع الأرشيف الحقيقي؟"
+      },
+      "quality": {
+        "dialogueConsistency": 90,
+        "psychologicalContinuity": 95,
+        "ageSuitability": 100,
+        "sceneProgression": 92,
+        "repetitionRisk": 83,
+        "totalScore": 86.57,
+        "warnings": [
+          "يوجد تشابه مرتفع في الحوار بين بعض الشخصيات."
+        ]
+      },
+      "localizationVersions": [
+        {
+          "languageCode": "ar",
+          "adaptationMode": "native-reproduction",
+          "status": "source-ready",
+          "title": "الحلقة 1: أثر موقع الأرشيف الحقيقي",
+          "logline": "نُور وسَاهِر ورَام يواجهون تطورًا جديدًا يكشف جانبًا غير متوقع من \"موقع الأرشيف الحقيقي\".",
+          "culturalInstructions": [
+            "الحفاظ على هوية الشخصيات الأساسية.",
+            "تكييف التعبيرات والفكاهة دون تغيير الحدث.",
+            "منع الترجمة الحرفية للنكات أو العبارات العاطفية."
+          ],
+          "voiceInstructions": [
+            "الحفاظ على العمر الظاهري للشخصية.",
+            "الحفاظ على الإيقاع النفسي وأسلوب اتخاذ القرار.",
+            "إنتاج الأداء وفق نمط native-reproduction."
+          ]
+        },
+        {
+          "languageCode": "en",
+          "adaptationMode": "native-reproduction",
+          "status": "localization-planned",
+          "title": "الحلقة 1: أثر موقع الأرشيف الحقيقي",
+          "logline": "نُور وسَاهِر ورَام يواجهون تطورًا جديدًا يكشف جانبًا غير متوقع من \"موقع الأرشيف الحقيقي\".",
+          "culturalInstructions": [
+            "الحفاظ على هوية الشخصيات الأساسية.",
+            "تكييف التعبيرات والفكاهة دون تغيير الحدث.",
+            "منع الترجمة الحرفية للنكات أو العبارات العاطفية."
+          ],
+          "voiceInstructions": [
+            "الحفاظ على العمر الظاهري للشخصية.",
+            "الحفاظ على الإيقاع النفسي وأسلوب اتخاذ القرار.",
+            "إنتاج الأداء وفق نمط native-reproduction."
+          ]
+        },
+        {
+          "languageCode": "es",
+          "adaptationMode": "cultural-adaptation",
+          "status": "localization-planned",
+          "title": "الحلقة 1: أثر موقع الأرشيف الحقيقي",
+          "logline": "نُور وسَاهِر ورَام يواجهون تطورًا جديدًا يكشف جانبًا غير متوقع من \"موقع الأرشيف الحقيقي\".",
+          "culturalInstructions": [
+            "الحفاظ على هوية الشخصيات الأساسية.",
+            "تكييف التعبيرات والفكاهة دون تغيير الحدث.",
+            "منع الترجمة الحرفية للنكات أو العبارات العاطفية."
+          ],
+          "voiceInstructions": [
+            "الحفاظ على العمر الظاهري للشخصية.",
+            "الحفاظ على الإيقاع النفسي وأسلوب اتخاذ القرار.",
+            "إنتاج الأداء وفق نمط cultural-adaptation."
+          ]
+        }
+      ],
+      "productionReadiness": {
+        "screenplayReady": true,
+        "storyboardReady": true,
+        "voiceGenerationReady": true,
+        "animationPromptReady": true,
+        "localizationReady": true
+      },
+      "status": "draft",
+      "createdAt": "2026-07-31T19:49:23.159Z"
+    },
+    {
+      "scriptId": "9e3161aa-34af-400d-9911-7cb35883188a",
+      "worldId": "676d0dae-c1a5-48f7-aba1-42ac5e8384d4",
+      "episodeId": "a4e63358-63db-4c8f-9b70-d049cc8148a5",
+      "episodeNumber": 1,
+      "title": "الحلقة 1: أثر موقع الأرشيف الحقيقي",
+      "logline": "نُور وسَاهِر ورَام يواجهون تطورًا جديدًا يكشف جانبًا غير متوقع من \"موقع الأرشيف الحقيقي\".",
+      "synopsis": "تبدأ الحلقة بإشارة مرتبطة بـ \"موقع الأرشيف الحقيقي\"، فتدخل نُور وسَاهِر ورَام في سلسلة قرارات تختبر الثقة والخوف والفضول. يتصاعد الضغط النفسي حول curiosity قبل ظهور نتيجة تفتح احتمالات جديدة للحلقات القادمة.",
+      "audienceTier": "kids",
+      "sourceLanguageCode": "ar",
+      "selectedCharacterIds": [
+        "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+        "25395a20-0def-495d-9074-eedc2dba52c3",
+        "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+      ],
+      "selectedCharacterNames": [
+        "نُور",
+        "سَاهِر",
+        "رَام"
+      ],
+      "scenes": [
+        {
+          "sceneNumber": 1,
+          "sourceSceneType": "opening-hook",
+          "heading": "مدينة البدايات — صباح",
+          "location": "مدينة البدايات",
+          "timeOfDay": "صباح",
+          "targetDurationSeconds": 80,
+          "dramaticPurpose": "فتح سؤال مباشر خلال الثواني الأولى.",
+          "psychologicalPurpose": "رفع الفضول مع الحفاظ على الاستمرارية النفسية للشخصيات.",
+          "openingVisual": "لقطة جوية لمدينة البدايات في الصباح. يظهر وميض أخضر قصير خلف مبنى بعيد، ثم نقترب من نُور عندما تتوقف عن السير.",
+          "actionBeats": [
+            {
+              "beatNumber": 1,
+              "action": "تتحرك الحياة طبيعيًا في مدينة البدايات قبل أن يظهر وميض سريع خلف أحد الأبنية.",
+              "purpose": "فتح سؤال بصري فوري.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "الانتقال من الأمان إلى الفضول.",
+              "visualPriority": 95
+            },
+            {
+              "beatNumber": 2,
+              "action": "نُور تتوقف وحدها وتتابع مصدر الوميض بعينيها.",
+              "purpose": "ربط الاكتشاف بالشخصية الرئيسية.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e"
+              ],
+              "emotionalMeaning": "الشعور بأن شيئًا مهمًا بدأ.",
+              "visualPriority": 100
+            },
+            {
+              "beatNumber": 3,
+              "action": "نُور وسَاهِر ورَام يقتربون من العلامة التي ظهرت على الجدار.",
+              "purpose": "جمع الشخصيات داخل الحدث.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "فضول جماعي.",
+              "visualPriority": 88
+            }
+          ],
+          "dialogue": [
+            {
+              "lineNumber": 1,
+              "characterId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+              "characterName": "نُور",
+              "dialogue": "انتظروا... هل رأيتم الوميض قرب الطريق؟ ظهر للحظة ثم اختفى.",
+              "delivery": "calm",
+              "visibleEmotion": "الفضول",
+              "hiddenEmotion": "فقدان ثقة الأصدقاء",
+              "subtext": "يتصرف بما ينسجم مع هدف \"اكتشاف حقيقة الأرشيف المخفي\" بينما يبقى خوف \"فقدان ثقة الأصدقاء\" حاضرًا في الخلفية.",
+              "bodyLanguage": "ينظر إلى كل شخصية بالتتابع ويترك مساحة واضحة للرد.",
+              "pauseAfterSeconds": 0.75,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 2,
+              "characterId": "25395a20-0def-495d-9074-eedc2dba52c3",
+              "characterName": "سَاهِر",
+              "dialogue": "ذلك الضوء تكرر ثلاث مرات بالترتيب نفسه. لا يبدو عشوائيًا.",
+              "delivery": "serious",
+              "visibleEmotion": "الفضول",
+              "hiddenEmotion": "اكتشاف أن عائلته أخفت الحقيقة",
+              "subtext": "يتصرف بما ينسجم مع هدف \"منع فتح الأرشيف\" بينما يبقى خوف \"اكتشاف أن عائلته أخفت الحقيقة\" حاضرًا في الخلفية.",
+              "bodyLanguage": "يميل برأسه نحو الدليل ويتتبع تفاصيله بعينيه قبل الكلام.",
+              "pauseAfterSeconds": 1.1,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 3,
+              "characterId": "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6",
+              "characterName": "رَام",
+              "dialogue": "رأيتموه، أليس كذلك؟ ممتاز! كنت أخشى أن تكون نظارتي قد تعطلت من جديد.",
+              "delivery": "playful",
+              "visibleEmotion": "الفضول",
+              "hiddenEmotion": "السخرية من اختراعاته",
+              "subtext": "يتصرف بما ينسجم مع هدف \"اختراع أداة تغيّر حياة المدينة\" بينما يبقى خوف \"السخرية من اختراعاته\" حاضرًا في الخلفية.",
+              "bodyLanguage": "يحرك يديه بسرعة ويقترب من العنصر قبل أن يتراجع قليلًا.",
+              "pauseAfterSeconds": 0.35,
+              "continuityReferences": []
+            }
+          ],
+          "camera": [
+            {
+              "order": 1,
+              "shot": "establishing-wide",
+              "subject": "الموقع الكامل",
+              "movement": "حركة بطيئة إلى الداخل",
+              "framingPurpose": "تعريف المكان وإظهار الجو النفسي قبل ظهور الحوار.",
+              "durationSeconds": 8
+            },
+            {
+              "order": 2,
+              "shot": "medium",
+              "subject": "نُور",
+              "movement": "تتبع خفيف",
+              "framingPurpose": "ربط المشاهد بالشخصية المحورية.",
+              "durationSeconds": 9.6
+            }
+          ],
+          "lighting": {
+            "mood": "الفضول",
+            "source": "إضاءة طبيعية دافئة موزعة على المكان",
+            "intensity": 75,
+            "colorTemperature": "warm",
+            "psychologicalPurpose": "المحافظة على الأمان والانتماء البصري."
+          },
+          "sound": {
+            "ambience": [
+              "أصوات بيئية خفيفة مرتبطة بالموقع",
+              "حركة هواء ناعمة"
+            ],
+            "soundEffects": [
+              "حركة ملابس",
+              "خطوات خفيفة"
+            ],
+            "musicMood": "الفضول",
+            "musicIntensity": 38,
+            "silenceRequired": false
+          },
+          "sceneArc": {
+            "openingEmotion": "الهدوء والفضول",
+            "peakEmotion": "الفضول",
+            "closingEmotion": "فضول مستمر",
+            "curiosityStart": 32,
+            "curiosityEnd": 68,
+            "tensionStart": 35,
+            "tensionEnd": 45
+          },
+          "continuityReferences": [
+            "موقع الأرشيف الحقيقي"
+          ],
+          "futureSeeds": [],
+          "safetyAssessment": {
+            "suitable": true,
+            "audienceTier": "kids",
+            "findings": [],
+            "adjustments": [
+              "لا توجد تعديلات إلزامية."
+            ]
+          }
+        },
+        {
+          "sceneNumber": 2,
+          "sourceSceneType": "setup",
+          "heading": "المنطقة المتغيرة — صباح",
+          "location": "المنطقة المتغيرة",
+          "timeOfDay": "صباح",
+          "targetDurationSeconds": 80,
+          "dramaticPurpose": "إظهار الحالة الحالية للشخصيات قبل الصراع.",
+          "psychologicalPurpose": "رفع الأمان والارتباط مع الحفاظ على الاستمرارية النفسية للشخصيات.",
+          "openingVisual": "لقطة واسعة لـ المنطقة المتغيرة قبل انتقال التركيز إلى نُور.",
+          "actionBeats": [
+            {
+              "beatNumber": 1,
+              "action": "نُور وسَاهِر ورَام يدخلون المنطقة المتغيرة بينما يتغير الجو المحيط بهم.",
+              "purpose": "بدء المشهد.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "setup",
+              "visualPriority": 85
+            },
+            {
+              "beatNumber": 2,
+              "action": "نُور تلاحظ تفصيلًا جديدًا.",
+              "purpose": "تحريك الحدث.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e"
+              ],
+              "emotionalMeaning": "فضول",
+              "visualPriority": 90
+            },
+            {
+              "beatNumber": 3,
+              "action": "تتفاعل الشخصيات مع الحدث بطرق مختلفة.",
+              "purpose": "إظهار اختلاف الشخصيات.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "تباين نفسي",
+              "visualPriority": 85
+            }
+          ],
+          "dialogue": [
+            {
+              "lineNumber": 1,
+              "characterId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+              "characterName": "نُور",
+              "dialogue": "قبل أن نذهب إلى أي مكان، لنتفق على شيء: لا أحد يخفي ما يجده.",
+              "delivery": "calm",
+              "visibleEmotion": "الأمان والارتباط",
+              "hiddenEmotion": "فقدان ثقة الأصدقاء",
+              "subtext": "يتصرف بما ينسجم مع هدف \"اكتشاف حقيقة الأرشيف المخفي\" بينما يبقى خوف \"فقدان ثقة الأصدقاء\" حاضرًا في الخلفية.",
+              "bodyLanguage": "ينظر إلى كل شخصية بالتتابع ويترك مساحة واضحة للرد.",
+              "pauseAfterSeconds": 0.75,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 2,
+              "characterId": "25395a20-0def-495d-9074-eedc2dba52c3",
+              "characterName": "سَاهِر",
+              "dialogue": "الخريطة القديمة لا تذكر هذا الممر، ومع ذلك آثار الأقدام تتجه نحوه.",
+              "delivery": "serious",
+              "visibleEmotion": "الأمان والارتباط",
+              "hiddenEmotion": "اكتشاف أن عائلته أخفت الحقيقة",
+              "subtext": "يتصرف بما ينسجم مع هدف \"منع فتح الأرشيف\" بينما يبقى خوف \"اكتشاف أن عائلته أخفت الحقيقة\" حاضرًا في الخلفية.",
+              "bodyLanguage": "يميل برأسه نحو الدليل ويتتبع تفاصيله بعينيه قبل الكلام.",
+              "pauseAfterSeconds": 1.1,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 3,
+              "characterId": "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6",
+              "characterName": "رَام",
+              "dialogue": "أحضرت الأدوات المناسبة... وبعض الأدوات التي لا أعرف فائدتها بعد.",
+              "delivery": "playful",
+              "visibleEmotion": "الأمان والارتباط",
+              "hiddenEmotion": "السخرية من اختراعاته",
+              "subtext": "يتصرف بما ينسجم مع هدف \"اختراع أداة تغيّر حياة المدينة\" بينما يبقى خوف \"السخرية من اختراعاته\" حاضرًا في الخلفية.",
+              "bodyLanguage": "يحرك يديه بسرعة ويقترب من العنصر قبل أن يتراجع قليلًا.",
+              "pauseAfterSeconds": 0.35,
+              "continuityReferences": []
+            }
+          ],
+          "camera": [
+            {
+              "order": 1,
+              "shot": "establishing-wide",
+              "subject": "الموقع الكامل",
+              "movement": "حركة بطيئة إلى الداخل",
+              "framingPurpose": "تعريف المكان وإظهار الجو النفسي قبل ظهور الحوار.",
+              "durationSeconds": 8
+            },
+            {
+              "order": 2,
+              "shot": "medium",
+              "subject": "نُور",
+              "movement": "تتبع خفيف",
+              "framingPurpose": "ربط المشاهد بالشخصية المحورية.",
+              "durationSeconds": 9.6
+            }
+          ],
+          "lighting": {
+            "mood": "الأمان والارتباط",
+            "source": "إضاءة طبيعية دافئة موزعة على المكان",
+            "intensity": 75,
+            "colorTemperature": "warm",
+            "psychologicalPurpose": "المحافظة على الأمان والانتماء البصري."
+          },
+          "sound": {
+            "ambience": [
+              "أصوات بيئية خفيفة مرتبطة بالموقع",
+              "حركة هواء ناعمة"
+            ],
+            "soundEffects": [
+              "حركة ملابس",
+              "خطوات خفيفة"
+            ],
+            "musicMood": "الأمان والارتباط",
+            "musicIntensity": 38,
+            "silenceRequired": false
+          },
+          "sceneArc": {
+            "openingEmotion": "استمرار أثر المشهد السابق",
+            "peakEmotion": "الأمان والارتباط",
+            "closingEmotion": "فضول مستمر",
+            "curiosityStart": 45,
+            "curiosityEnd": 55,
+            "tensionStart": 43,
+            "tensionEnd": 37
+          },
+          "continuityReferences": [
+            "موقع الأرشيف الحقيقي"
+          ],
+          "futureSeeds": [],
+          "safetyAssessment": {
+            "suitable": true,
+            "audienceTier": "kids",
+            "findings": [],
+            "adjustments": [
+              "لا توجد تعديلات إلزامية."
+            ]
+          }
+        },
+        {
+          "sceneNumber": 3,
+          "sourceSceneType": "discovery",
+          "heading": "الأرشيف المخفي — بعد الظهر",
+          "location": "الأرشيف المخفي",
+          "timeOfDay": "بعد الظهر",
+          "targetDurationSeconds": 80,
+          "dramaticPurpose": "ربط الشخصيات بخيط القصة المختار.",
+          "psychologicalPurpose": "رفع الاكتشاف مع الحفاظ على الاستمرارية النفسية للشخصيات.",
+          "openingVisual": "داخل الأرشيف المخفي، يمر الضوء فوق نقش قديم فيبدأ الرمز بالتوهج أمام نُور.",
+          "actionBeats": [
+            {
+              "beatNumber": 1,
+              "action": "تنفتح فجوة ضوئية صغيرة داخل جدار الأرشيف المخفي.",
+              "purpose": "إظهار الدليل الجديد بصريًا.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "دهشة آمنة.",
+              "visualPriority": 100
+            },
+            {
+              "beatNumber": 2,
+              "action": "نُور تقارن الرمز الظاهر بعلامة تحملها معها.",
+              "purpose": "ربط الاكتشاف بخيط سابق.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e"
+              ],
+              "emotionalMeaning": "إحساس بالارتباط والقدر.",
+              "visualPriority": 98
+            },
+            {
+              "beatNumber": 3,
+              "action": "نُور وسَاهِر ورَام يلاحظون أن النقش يتغير عند اقترابهم.",
+              "purpose": "تصعيد الغموض.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "اكتشاف متحرك.",
+              "visualPriority": 92
+            }
+          ],
+          "dialogue": [
+            {
+              "lineNumber": 1,
+              "characterId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+              "characterName": "نُور",
+              "dialogue": "هذا الرمز يشبه العلامة الموجودة في حقيبتي، لكنه ليس مطابقًا تمامًا.",
+              "delivery": "curious",
+              "visibleEmotion": "الاكتشاف",
+              "hiddenEmotion": "فقدان ثقة الأصدقاء",
+              "subtext": "يتصرف بما ينسجم مع هدف \"اكتشاف حقيقة الأرشيف المخفي\" بينما يبقى خوف \"فقدان ثقة الأصدقاء\" حاضرًا في الخلفية.",
+              "bodyLanguage": "ينظر إلى كل شخصية بالتتابع ويترك مساحة واضحة للرد.",
+              "pauseAfterSeconds": 0.75,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 2,
+              "characterId": "25395a20-0def-495d-9074-eedc2dba52c3",
+              "characterName": "سَاهِر",
+              "dialogue": "النقش أحدث من الجدار نفسه. شخص ما أضافه بعد إغلاق المكان.",
+              "delivery": "curious",
+              "visibleEmotion": "الاكتشاف",
+              "hiddenEmotion": "اكتشاف أن عائلته أخفت الحقيقة",
+              "subtext": "يتصرف بما ينسجم مع هدف \"منع فتح الأرشيف\" بينما يبقى خوف \"اكتشاف أن عائلته أخفت الحقيقة\" حاضرًا في الخلفية.",
+              "bodyLanguage": "يميل برأسه نحو الدليل ويتتبع تفاصيله بعينيه قبل الكلام.",
+              "pauseAfterSeconds": 1.1,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 3,
+              "characterId": "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6",
+              "characterName": "رَام",
+              "dialogue": "وجدت فتحة صغيرة! جهاز القياس يقول إنها آمنة... أو أنه لا يعمل.",
+              "delivery": "curious",
+              "visibleEmotion": "الاكتشاف",
+              "hiddenEmotion": "السخرية من اختراعاته",
+              "subtext": "يتصرف بما ينسجم مع هدف \"اختراع أداة تغيّر حياة المدينة\" بينما يبقى خوف \"السخرية من اختراعاته\" حاضرًا في الخلفية.",
+              "bodyLanguage": "يحرك يديه بسرعة ويقترب من العنصر قبل أن يتراجع قليلًا.",
+              "pauseAfterSeconds": 0.35,
+              "continuityReferences": []
+            }
+          ],
+          "camera": [
+            {
+              "order": 1,
+              "shot": "establishing-wide",
+              "subject": "الموقع الكامل",
+              "movement": "حركة بطيئة إلى الداخل",
+              "framingPurpose": "تعريف المكان وإظهار الجو النفسي قبل ظهور الحوار.",
+              "durationSeconds": 8
+            },
+            {
+              "order": 2,
+              "shot": "medium",
+              "subject": "نُور",
+              "movement": "تتبع خفيف",
+              "framingPurpose": "ربط المشاهد بالشخصية المحورية.",
+              "durationSeconds": 9.6
+            },
+            {
+              "order": 3,
+              "shot": "insert",
+              "subject": "الدليل أو العنصر المكتشف",
+              "movement": "قطع مباشر ثم تركيز بصري",
+              "framingPurpose": "توجيه الانتباه إلى المعلومة الجديدة دون شرح زائد.",
+              "durationSeconds": 5
+            }
+          ],
+          "lighting": {
+            "mood": "غموض قابل للاكتشاف",
+            "source": "إضاءة جانبية مع مصدر ضوء صغير صادر من الدليل",
+            "intensity": 58,
+            "colorTemperature": "mixed",
+            "psychologicalPurpose": "الجمع بين الأمان البصري والإحساس بوجود حقيقة مخفية."
+          },
+          "sound": {
+            "ambience": [
+              "أصوات بيئية خفيفة مرتبطة بالموقع",
+              "حركة هواء ناعمة"
+            ],
+            "soundEffects": [
+              "طنين خافت",
+              "نقرة ميكانيكية دقيقة"
+            ],
+            "musicMood": "الاكتشاف",
+            "musicIntensity": 38,
+            "silenceRequired": false
+          },
+          "sceneArc": {
+            "openingEmotion": "استمرار أثر المشهد السابق",
+            "peakEmotion": "الاكتشاف",
+            "closingEmotion": "فضول متصاعد",
+            "curiosityStart": 35,
+            "curiosityEnd": 65,
+            "tensionStart": 32,
+            "tensionEnd": 48
+          },
+          "continuityReferences": [
+            "موقع الأرشيف الحقيقي"
+          ],
+          "futureSeeds": [],
+          "safetyAssessment": {
+            "suitable": true,
+            "audienceTier": "kids",
+            "findings": [],
+            "adjustments": [
+              "لا توجد تعديلات إلزامية."
+            ]
+          }
+        },
+        {
+          "sceneNumber": 4,
+          "sourceSceneType": "conflict",
+          "heading": "مدينة البدايات — بعد الظهر",
+          "location": "مدينة البدايات",
+          "timeOfDay": "بعد الظهر",
+          "targetDurationSeconds": 80,
+          "dramaticPurpose": "إظهار التعارض بين الأهداف والخوف والعلاقات.",
+          "psychologicalPurpose": "رفع التوتر مع الحفاظ على الاستمرارية النفسية للشخصيات.",
+          "openingVisual": "تتوقف الشخصيات أمام مدخل ضيق، ويقف ساهر بين الباب والآخرين بينما تخفت الموسيقى.",
+          "actionBeats": [
+            {
+              "beatNumber": 1,
+              "action": "سَاهِر يقف بين الآخرين وبين المدخل.",
+              "purpose": "تجسيد الخلاف بصريًا.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "حماية مقابل فضول.",
+              "visualPriority": 95
+            },
+            {
+              "beatNumber": 2,
+              "action": "نُور تخفض يدها بعيدًا عن الباب وتختار الحوار.",
+              "purpose": "الحفاظ على سلامة الأطفال وإظهار ضبط النفس.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e"
+              ],
+              "emotionalMeaning": "التوتر مع إمكانية الإصلاح.",
+              "visualPriority": 90
+            },
+            {
+              "beatNumber": 3,
+              "action": "رَام يحاول تخفيف التوتر لكنه يكشف معلومة جديدة بالخطأ.",
+              "purpose": "تحويل الخلاف إلى تقدم سردي.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "مفاجأة خفيفة.",
+              "visualPriority": 88
+            }
+          ],
+          "dialogue": [
+            {
+              "lineNumber": 1,
+              "characterId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+              "characterName": "نُور",
+              "dialogue": "ساهر، أعرف أنك تريد حماية المكان، لكن إخفاء الحقيقة لن يجعلنا أكثر أمانًا.",
+              "delivery": "serious",
+              "visibleEmotion": "التوتر",
+              "hiddenEmotion": "فقدان ثقة الأصدقاء",
+              "subtext": "يدافع عن موقفه علنًا، لكنه يخشى أن يؤدي الخلاف إلى \"فقدان ثقة الأصدقاء\".",
+              "bodyLanguage": "يشد كتفيه ويحافظ على مسافة واضحة بينه وبين الدليل.",
+              "pauseAfterSeconds": 0.75,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 2,
+              "characterId": "25395a20-0def-495d-9074-eedc2dba52c3",
+              "characterName": "سَاهِر",
+              "dialogue": "نور، الفضول وحده ليس دليلًا كافيًا لفتح باب حُظر منذ سنوات.",
+              "delivery": "serious",
+              "visibleEmotion": "التوتر",
+              "hiddenEmotion": "اكتشاف أن عائلته أخفت الحقيقة",
+              "subtext": "يدافع عن موقفه علنًا، لكنه يخشى أن يؤدي الخلاف إلى \"اكتشاف أن عائلته أخفت الحقيقة\".",
+              "bodyLanguage": "يشد كتفيه ويحافظ على مسافة واضحة بينه وبين الدليل.",
+              "pauseAfterSeconds": 1.1,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 3,
+              "characterId": "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6",
+              "characterName": "رَام",
+              "dialogue": "أنا لا أتصرف بلا تفكير! أنا فقط أفكر بسرعة أكثر من الجهاز.",
+              "delivery": "excited",
+              "visibleEmotion": "التوتر",
+              "hiddenEmotion": "السخرية من اختراعاته",
+              "subtext": "يدافع عن موقفه علنًا، لكنه يخشى أن يؤدي الخلاف إلى \"السخرية من اختراعاته\".",
+              "bodyLanguage": "يتقدم خطوة ثم يتوقف عندما يلاحظ رد فعل الآخرين.",
+              "pauseAfterSeconds": 0.35,
+              "continuityReferences": []
+            }
+          ],
+          "camera": [
+            {
+              "order": 1,
+              "shot": "establishing-wide",
+              "subject": "الموقع الكامل",
+              "movement": "حركة بطيئة إلى الداخل",
+              "framingPurpose": "تعريف المكان وإظهار الجو النفسي قبل ظهور الحوار.",
+              "durationSeconds": 8
+            },
+            {
+              "order": 2,
+              "shot": "medium",
+              "subject": "نُور",
+              "movement": "تتبع خفيف",
+              "framingPurpose": "ربط المشاهد بالشخصية المحورية.",
+              "durationSeconds": 9.6
+            }
+          ],
+          "lighting": {
+            "mood": "توتر عاطفي معتدل",
+            "source": "إضاءة علوية ناعمة مع ظلال خفيفة على الوجوه",
+            "intensity": 62,
+            "colorTemperature": "neutral",
+            "psychologicalPurpose": "إظهار جدية القرار دون جعل المشهد مخيفًا للأطفال."
+          },
+          "sound": {
+            "ambience": [
+              "أصوات بيئية خفيفة مرتبطة بالموقع",
+              "حركة هواء ناعمة"
+            ],
+            "soundEffects": [
+              "حركة ملابس",
+              "خطوات خفيفة"
+            ],
+            "musicMood": "التوتر",
+            "musicIntensity": 65,
+            "silenceRequired": false
+          },
+          "sceneArc": {
+            "openingEmotion": "استمرار أثر المشهد السابق",
+            "peakEmotion": "التوتر",
+            "closingEmotion": "توتر قابل للحوار",
+            "curiosityStart": 45,
+            "curiosityEnd": 55,
+            "tensionStart": 22,
+            "tensionEnd": 58
+          },
+          "continuityReferences": [
+            "موقع الأرشيف الحقيقي"
+          ],
+          "futureSeeds": [],
+          "safetyAssessment": {
+            "suitable": true,
+            "audienceTier": "kids",
+            "findings": [],
+            "adjustments": [
+              "يجب إنهاء المشهد بإشارة واضحة إلى إمكانية الحوار أو الإصلاح."
+            ]
+          }
+        },
+        {
+          "sceneNumber": 5,
+          "sourceSceneType": "decision",
+          "heading": "المنطقة المتغيرة — بعد الظهر",
+          "location": "المنطقة المتغيرة",
+          "timeOfDay": "بعد الظهر",
+          "targetDurationSeconds": 80,
+          "dramaticPurpose": "إجبار الشخصية الرئيسية على اختيار متوافق مع تاريخها النفسي.",
+          "psychologicalPurpose": "رفع التعاطف مع الحفاظ على الاستمرارية النفسية للشخصيات.",
+          "openingVisual": "تنعكس أضواء متقطعة على وجوه الشخصيات بينما ينخفض صوت الجهاز تدريجيًا.",
+          "actionBeats": [
+            {
+              "beatNumber": 1,
+              "action": "يبدأ الضوء داخل المنطقة المتغيرة بالضعف، مما يجعل الوقت محدودًا.",
+              "purpose": "خلق ضغط قرار واضح.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "الاختيار تحت ضغط معتدل.",
+              "visualPriority": 96
+            },
+            {
+              "beatNumber": 2,
+              "action": "نُور تنظر إلى كل صديق قبل أن تعلن قرارها.",
+              "purpose": "إظهار أن العلاقة جزء من القرار.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e"
+              ],
+              "emotionalMeaning": "تعاطف ومسؤولية.",
+              "visualPriority": 100
+            },
+            {
+              "beatNumber": 3,
+              "action": "تضع الشخصيات قواعد مشتركة قبل التقدم.",
+              "purpose": "تحويل الخلاف إلى تعاون.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "استعادة الثقة.",
+              "visualPriority": 92
+            }
+          ],
+          "dialogue": [
+            {
+              "lineNumber": 1,
+              "characterId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+              "characterName": "نُور",
+              "dialogue": "لن أفتح الباب وحدي. إما أن ندخل باتفاق واضح، أو نعود جميعًا.",
+              "delivery": "emotional",
+              "visibleEmotion": "التعاطف",
+              "hiddenEmotion": "فقدان ثقة الأصدقاء",
+              "subtext": "يحاول الوصول إلى \"اكتشاف حقيقة الأرشيف المخفي\" دون الاعتراف بمدى تأثير \"فقدان ثقة الأصدقاء\" على اختياره.",
+              "bodyLanguage": "يأخذ نفسًا عميقًا وينظر إلى الآخرين قبل تثبيت موقفه.",
+              "pauseAfterSeconds": 1.4,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 2,
+              "characterId": "25395a20-0def-495d-9074-eedc2dba52c3",
+              "characterName": "سَاهِر",
+              "dialogue": "هناك خيار ثالث: نثبت الباب ونفحص الآلية من الخارج أولًا.",
+              "delivery": "serious",
+              "visibleEmotion": "التعاطف",
+              "hiddenEmotion": "اكتشاف أن عائلته أخفت الحقيقة",
+              "subtext": "يحاول الوصول إلى \"منع فتح الأرشيف\" دون الاعتراف بمدى تأثير \"اكتشاف أن عائلته أخفت الحقيقة\" على اختياره.",
+              "bodyLanguage": "يأخذ نفسًا عميقًا وينظر إلى الآخرين قبل تثبيت موقفه.",
+              "pauseAfterSeconds": 1.4,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 3,
+              "characterId": "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6",
+              "characterName": "رَام",
+              "dialogue": "حسنًا، لن أضغط أي زر. سأحمل الجهاز فقط... بعيدًا عن الأزرار.",
+              "delivery": "emotional",
+              "visibleEmotion": "التعاطف",
+              "hiddenEmotion": "السخرية من اختراعاته",
+              "subtext": "يحاول الوصول إلى \"اختراع أداة تغيّر حياة المدينة\" دون الاعتراف بمدى تأثير \"السخرية من اختراعاته\" على اختياره.",
+              "bodyLanguage": "يأخذ نفسًا عميقًا وينظر إلى الآخرين قبل تثبيت موقفه.",
+              "pauseAfterSeconds": 1.4,
+              "continuityReferences": []
+            }
+          ],
+          "camera": [
+            {
+              "order": 1,
+              "shot": "establishing-wide",
+              "subject": "الموقع الكامل",
+              "movement": "حركة بطيئة إلى الداخل",
+              "framingPurpose": "تعريف المكان وإظهار الجو النفسي قبل ظهور الحوار.",
+              "durationSeconds": 8
+            },
+            {
+              "order": 2,
+              "shot": "medium",
+              "subject": "نُور",
+              "movement": "تتبع خفيف",
+              "framingPurpose": "ربط المشاهد بالشخصية المحورية.",
+              "durationSeconds": 9.6
+            },
+            {
+              "order": 3,
+              "shot": "close-up",
+              "subject": "نُور",
+              "movement": "ثابت مع اقتراب طفيف",
+              "framingPurpose": "إظهار التردد أو التحول النفسي قبل القرار.",
+              "durationSeconds": 6
+            }
+          ],
+          "lighting": {
+            "mood": "توتر عاطفي معتدل",
+            "source": "إضاءة علوية ناعمة مع ظلال خفيفة على الوجوه",
+            "intensity": 62,
+            "colorTemperature": "neutral",
+            "psychologicalPurpose": "إظهار جدية القرار دون جعل المشهد مخيفًا للأطفال."
+          },
+          "sound": {
+            "ambience": [
+              "أصوات بيئية خفيفة مرتبطة بالموقع",
+              "حركة هواء ناعمة"
+            ],
+            "soundEffects": [
+              "حركة ملابس",
+              "خطوات خفيفة"
+            ],
+            "musicMood": "التعاطف",
+            "musicIntensity": 38,
+            "silenceRequired": true,
+            "silencePurpose": "منح القرار أو الاكتشاف وزنًا نفسيًا قبل الحوار التالي."
+          },
+          "sceneArc": {
+            "openingEmotion": "استمرار أثر المشهد السابق",
+            "peakEmotion": "التعاطف",
+            "closingEmotion": "ثقة حذرة",
+            "curiosityStart": 46,
+            "curiosityEnd": 54,
+            "tensionStart": 28,
+            "tensionEnd": 52
+          },
+          "continuityReferences": [
+            "موقع الأرشيف الحقيقي"
+          ],
+          "futureSeeds": [],
+          "safetyAssessment": {
+            "suitable": true,
+            "audienceTier": "kids",
+            "findings": [],
+            "adjustments": [
+              "لا توجد تعديلات إلزامية."
+            ]
+          }
+        },
+        {
+          "sceneNumber": 6,
+          "sourceSceneType": "reversal",
+          "heading": "الأرشيف المخفي — الغروب",
+          "location": "الأرشيف المخفي",
+          "timeOfDay": "الغروب",
+          "targetDurationSeconds": 80,
+          "dramaticPurpose": "تغيير فهم الجمهور دون كسر منطق العالم.",
+          "psychologicalPurpose": "رفع المفاجأة مع الحفاظ على الاستمرارية النفسية للشخصيات.",
+          "openingVisual": "لقطة قريبة لمؤشر الجهاز وهو يغير اتجاهه ببطء من الجدار إلى الأرض.",
+          "actionBeats": [
+            {
+              "beatNumber": 1,
+              "action": "يتوقف الجهاز فجأة ثم يدور مؤشره نحو أرضية الأرشيف المخفي.",
+              "purpose": "قلب فهم الشخصيات للحدث.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "مفاجأة منطقية.",
+              "visualPriority": 100
+            },
+            {
+              "beatNumber": 2,
+              "action": "سَاهِر يعيد قراءة الأسهم ويكتشف أنها معكوسة.",
+              "purpose": "إسناد المفاجأة إلى تحليل الشخصية.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e"
+              ],
+              "emotionalMeaning": "إعادة تقييم الحقيقة.",
+              "visualPriority": 95
+            },
+            {
+              "beatNumber": 3,
+              "action": "يهتز جزء صغير من الأرض ويظهر ضوء من الأسفل.",
+              "purpose": "فتح سؤال للحلقة التالية.",
+              "participatingCharacterIds": [
+                "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+                "25395a20-0def-495d-9074-eedc2dba52c3",
+                "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6"
+              ],
+              "emotionalMeaning": "دهشة وفضول.",
+              "visualPriority": 100
+            }
+          ],
+          "dialogue": [
+            {
+              "lineNumber": 1,
+              "characterId": "a98c1034-11e5-4098-9cc5-b8606b5c517e",
+              "characterName": "نُور",
+              "dialogue": "هذا ليس مدخل الأرشيف... إنه تحذير أرسله شخص كان يحاول حمايتنا.",
+              "delivery": "excited",
+              "visibleEmotion": "المفاجأة",
+              "hiddenEmotion": "فقدان ثقة الأصدقاء",
+              "subtext": "المعلومة الجديدة تهدد فهمه السابق لنفسه وللعالم.",
+              "bodyLanguage": "يتجمد للحظة، ثم يلتفت بسرعة نحو مصدر الدليل الجديد.",
+              "pauseAfterSeconds": 1.4,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 2,
+              "characterId": "25395a20-0def-495d-9074-eedc2dba52c3",
+              "characterName": "سَاهِر",
+              "dialogue": "توقفوا. اتجاه الأسهم معكوس. نحن نقرأ الرسالة من الجهة الخطأ.",
+              "delivery": "excited",
+              "visibleEmotion": "المفاجأة",
+              "hiddenEmotion": "اكتشاف أن عائلته أخفت الحقيقة",
+              "subtext": "المعلومة الجديدة تهدد فهمه السابق لنفسه وللعالم.",
+              "bodyLanguage": "يتجمد للحظة، ثم يلتفت بسرعة نحو مصدر الدليل الجديد.",
+              "pauseAfterSeconds": 1.4,
+              "continuityReferences": []
+            },
+            {
+              "lineNumber": 3,
+              "characterId": "14aaa097-f20c-4af6-8cd1-66f5bb9d28b6",
+              "characterName": "رَام",
+              "dialogue": "الجهاز لا يشير إلى الباب... إنه يشير إلى أسفلنا!",
+              "delivery": "excited",
+              "visibleEmotion": "المفاجأة",
+              "hiddenEmotion": "السخرية من اختراعاته",
+              "subtext": "المعلومة الجديدة تهدد فهمه السابق لنفسه وللعالم.",
+              "bodyLanguage": "يتجمد للحظة، ثم يلتفت بسرعة نحو مصدر الدليل الجديد.",
+              "pauseAfterSeconds": 1.4,
+              "continuityReferences": []
+            }
+          ],
+          "camera": [
+            {
+              "order": 1,
+              "shot": "establishing-wide",
+              "subject": "الموقع الكامل",
+              "movement": "حركة بطيئة إلى الداخل",
+              "framingPurpose": "تعريف المكان وإظهار الجو النفسي قبل ظهور الحوار.",
+              "durationSeconds": 8
+            },
+            {
+              "order": 2,
+              "shot": "medium",
+              "subject": "نُور",
+              "movement": "تتبع خفيف",
+              "framingPurpose": "ربط المشاهد بالشخصية المحورية.",
+              "durationSeconds": 9.6
+            },
+            {
+              "order": 3,
+              "shot": "insert",
+              "subject": "الدليل أو العنصر المكتشف",
+              "movement": "قطع مباشر ثم تركيز بصري",
+              "framingPurpose": "توجيه الانتباه إلى المعلومة الجديدة دون شرح زائد.",
+              "durationSeconds": 5
+            }
+          ],
+          "lighting": {
+            "mood": "غموض قابل للاكتشاف",
+            "source": "إضاءة جانبية مع مصدر ضوء صغير صادر من الدليل",
+            "intensity": 58,
+            "colorTemperature": "mixed",
+            "psychologicalPurpose": "الجمع بين الأمان البصري والإحساس بوجود حقيقة مخفية."
+          },
+          "sound": {
+            "ambience": [
+              "أصوات بيئية خفيفة مرتبطة بالموقع",
+              "حركة هواء ناعمة"
+            ],
+            "soundEffects": [
+              "حركة ملابس",
+              "خطوات خفيفة"
+            ],
+            "musicMood": "المفاجأة",
+            "musicIntensity": 72,
+            "silenceRequired": true,
+            "silencePurpose": "منح القرار أو الاكتشاف وزنًا نفسيًا قبل الحوار التالي."
+          },
+          "sceneArc": {
+            "openingEmotion": "استمرار أثر المشهد السابق",
+            "peakEmotion": "المفاجأة",
+            "closingEmotion": "دهشة وأسئلة جديدة",
+            "curiosityStart": 30,
+            "curiosityEnd": 70,
+            "tensionStart": 28,
+            "tensionEnd": 52
+          },
+          "continuityReferences": [
+            "موقع الأرشيف الحقيقي"
+          ],
+          "futureSeeds": [],
+          "safetyAssessment": {
+            "suitable": true,
+            "audienceTier": "kids",
+            "findings": [],
+            "adjustments": [
+              "لا توجد تعديلات إلزامية."
+            ]
+          }
+        }
+      ],
+      "psychologicalArc": {
+        "openingState": "فضول آمن داخل عالم مألوف",
+        "centralConflict": "التقدم نحو \"موقع الأرشيف الحقيقي\" مقابل الخوف من نتائجه.",
+        "emotionalTurningPoint": "تكتشف الشخصيات أن حماية الصداقة والحقيقة تحتاج إلى قرار مشترك.",
+        "closingState": "ارتياح مؤقت مع سؤال غير مغلق",
+        "primaryAudienceEmotion": "curiosity",
+        "secondaryAudienceEmotion": "التعاطف",
+        "ethicalHook": "هل يجب كشف الحقيقة حتى عندما قد تؤذي شخصًا نحبه؟",
+        "unresolvedQuestion": "ما الحقيقة الكاملة وراء موقع الأرشيف الحقيقي؟"
+      },
+      "quality": {
+        "dialogueConsistency": 100,
+        "psychologicalContinuity": 96,
+        "ageSuitability": 100,
+        "sceneProgression": 100,
+        "repetitionRisk": 0,
+        "totalScore": 99.04,
+        "warnings": [
+          "الحوار متنوع ومتوافق نفسيًا ولا توجد مخاطر جودة حرجة."
+        ]
+      },
+      "localizationVersions": [
+        {
+          "languageCode": "ar",
+          "adaptationMode": "native-reproduction",
+          "status": "source-ready",
+          "title": "الحلقة 1: أثر موقع الأرشيف الحقيقي",
+          "logline": "نُور وسَاهِر ورَام يواجهون تطورًا جديدًا يكشف جانبًا غير متوقع من \"موقع الأرشيف الحقيقي\".",
+          "culturalInstructions": [
+            "الحفاظ على هوية الشخصيات الأساسية.",
+            "تكييف التعبيرات والفكاهة دون تغيير الحدث.",
+            "منع الترجمة الحرفية للنكات أو العبارات العاطفية."
+          ],
+          "voiceInstructions": [
+            "الحفاظ على العمر الظاهري للشخصية.",
+            "الحفاظ على الإيقاع النفسي وأسلوب اتخاذ القرار.",
+            "إنتاج الأداء وفق نمط native-reproduction."
+          ]
+        },
+        {
+          "languageCode": "en",
+          "adaptationMode": "native-reproduction",
+          "status": "localization-planned",
+          "title": "الحلقة 1: أثر موقع الأرشيف الحقيقي",
+          "logline": "نُور وسَاهِر ورَام يواجهون تطورًا جديدًا يكشف جانبًا غير متوقع من \"موقع الأرشيف الحقيقي\".",
+          "culturalInstructions": [
+            "الحفاظ على هوية الشخصيات الأساسية.",
+            "تكييف التعبيرات والفكاهة دون تغيير الحدث.",
+            "منع الترجمة الحرفية للنكات أو العبارات العاطفية."
+          ],
+          "voiceInstructions": [
+            "الحفاظ على العمر الظاهري للشخصية.",
+            "الحفاظ على الإيقاع النفسي وأسلوب اتخاذ القرار.",
+            "إنتاج الأداء وفق نمط native-reproduction."
+          ]
+        },
+        {
+          "languageCode": "es",
+          "adaptationMode": "cultural-adaptation",
+          "status": "localization-planned",
+          "title": "الحلقة 1: أثر موقع الأرشيف الحقيقي",
+          "logline": "نُور وسَاهِر ورَام يواجهون تطورًا جديدًا يكشف جانبًا غير متوقع من \"موقع الأرشيف الحقيقي\".",
+          "culturalInstructions": [
+            "الحفاظ على هوية الشخصيات الأساسية.",
+            "تكييف التعبيرات والفكاهة دون تغيير الحدث.",
+            "منع الترجمة الحرفية للنكات أو العبارات العاطفية."
+          ],
+          "voiceInstructions": [
+            "الحفاظ على العمر الظاهري للشخصية.",
+            "الحفاظ على الإيقاع النفسي وأسلوب اتخاذ القرار.",
+            "إنتاج الأداء وفق نمط cultural-adaptation."
+          ]
+        }
+      ],
+      "productionReadiness": {
+        "screenplayReady": true,
+        "storyboardReady": true,
+        "voiceGenerationReady": true,
+        "animationPromptReady": true,
+        "localizationReady": true
+      },
+      "status": "draft",
+      "createdAt": "2026-07-31T20:02:01.579Z"
+    }
+  ]
+}

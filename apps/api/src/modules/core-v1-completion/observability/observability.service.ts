@@ -1,0 +1,232 @@
+﻿import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '../../persistence/prisma.service';
+import { ObsAlertStatus, ObsHealthStatus } from '../../../generated/prisma/enums';
+import {
+  CreateAlertRuleDto,
+  QueryTelemetryDto,
+  RecordHealthDto,
+  RecordLogDto,
+  RecordMetricDto,
+  RecordTraceDto,
+  TransitionAlertDto,
+  UpdateAlertRuleDto,
+} from './dto/observability.dto';
+
+@Injectable()
+export class ObservabilityService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  private audit(action: string, resourceType: string, resourceId?: string, payload?: object) {
+    return this.prisma.auditLog.create({
+      data: {
+        eventType: `observability.${action}`,
+        actorType: 'SYSTEM',
+        resourceType,
+        resourceId,
+        action,
+        payload: payload ?? undefined,
+      },
+    });
+  }
+
+  async dashboard() {
+    const since = new Date(Date.now() - 60 * 60 * 1000);
+    const [
+      metricsLastHour,
+      errorLogsLastHour,
+      unhealthyServices,
+      openAlerts,
+      criticalOpenAlerts,
+      traceSpansLastHour,
+      activeRules,
+    ] = await Promise.all([
+      this.prisma.obsMetric.count({ where: { observedAt: { gte: since } } }),
+      this.prisma.obsLogEntry.count({ where: { occurredAt: { gte: since }, level: { in: ['ERROR', 'FATAL'] } } }),
+      this.prisma.obsHealthCheck.count({ where: { checkedAt: { gte: since }, status: { in: [ObsHealthStatus.DEGRADED, ObsHealthStatus.DOWN] } } }),
+      this.prisma.obsAlertEvent.count({ where: { status: { in: [ObsAlertStatus.OPEN, ObsAlertStatus.ACKNOWLEDGED] } } }),
+      this.prisma.obsAlertEvent.count({ where: { status: { in: [ObsAlertStatus.OPEN, ObsAlertStatus.ACKNOWLEDGED] }, severity: 'CRITICAL' } }),
+      this.prisma.obsTraceSpan.count({ where: { startedAt: { gte: since } } }),
+      this.prisma.obsAlertRule.count({ where: { enabled: true } }),
+    ]);
+    return {
+      windowMinutes: 60,
+      metricsLastHour,
+      errorLogsLastHour,
+      unhealthyServices,
+      openAlerts,
+      criticalOpenAlerts,
+      traceSpansLastHour,
+      activeRules,
+    };
+  }
+
+  recordMetric(input: RecordMetricDto) {
+    return this.prisma.obsMetric.create({
+      data: {
+        metricKey: input.metricKey,
+        service: input.service,
+        kind: input.kind,
+        value: input.value,
+        unit: input.unit,
+        labels: (input.labels ?? {}) as never,
+        observedAt: input.observedAt ? new Date(input.observedAt) : new Date(),
+      },
+    });
+  }
+
+  listMetrics(query: QueryTelemetryDto) {
+    return this.prisma.obsMetric.findMany({
+      where: {
+        service: query.service,
+        metricKey: query.metricKey,
+      },
+      orderBy: { observedAt: 'desc' },
+      take: query.limit ?? 100,
+    });
+  }
+
+  recordHealth(input: RecordHealthDto) {
+    return this.prisma.obsHealthCheck.create({
+      data: {
+        service: input.service,
+        status: input.status,
+        latencyMs: input.latencyMs,
+        message: input.message,
+        details: (input.details ?? {}) as never,
+        checkedAt: input.checkedAt ? new Date(input.checkedAt) : new Date(),
+      },
+    });
+  }
+
+  listHealth(query: QueryTelemetryDto) {
+    return this.prisma.obsHealthCheck.findMany({
+      where: { service: query.service },
+      orderBy: { checkedAt: 'desc' },
+      take: query.limit ?? 100,
+    });
+  }
+
+  recordLog(input: RecordLogDto) {
+    return this.prisma.obsLogEntry.create({
+      data: {
+        service: input.service,
+        level: input.level,
+        message: input.message,
+        traceId: input.traceId,
+        spanId: input.spanId,
+        context: (input.context ?? {}) as never,
+        occurredAt: input.occurredAt ? new Date(input.occurredAt) : new Date(),
+      },
+    });
+  }
+
+  listLogs(query: QueryTelemetryDto) {
+    return this.prisma.obsLogEntry.findMany({
+      where: { service: query.service, traceId: query.traceId },
+      orderBy: { occurredAt: 'desc' },
+      take: query.limit ?? 100,
+    });
+  }
+
+  recordTrace(input: RecordTraceDto) {
+    return this.prisma.obsTraceSpan.upsert({
+      where: { spanId: input.spanId },
+      update: {
+        parentSpanId: input.parentSpanId,
+        status: input.status,
+        durationMs: input.durationMs,
+        endedAt: input.endedAt ? new Date(input.endedAt) : undefined,
+        attributes: (input.attributes ?? {}) as never,
+      },
+      create: {
+        traceId: input.traceId,
+        spanId: input.spanId,
+        parentSpanId: input.parentSpanId,
+        service: input.service,
+        operation: input.operation,
+        status: input.status ?? 'OK',
+        durationMs: input.durationMs,
+        startedAt: input.startedAt ? new Date(input.startedAt) : new Date(),
+        endedAt: input.endedAt ? new Date(input.endedAt) : undefined,
+        attributes: (input.attributes ?? {}) as never,
+      },
+    });
+  }
+
+  listTraces(query: QueryTelemetryDto) {
+    return this.prisma.obsTraceSpan.findMany({
+      where: { service: query.service, traceId: query.traceId },
+      orderBy: { startedAt: 'desc' },
+      take: query.limit ?? 100,
+    });
+  }
+
+  listAlertRules() {
+    return this.prisma.obsAlertRule.findMany({ orderBy: { ruleKey: 'asc' } });
+  }
+
+  async createAlertRule(input: CreateAlertRuleDto) {
+    try {
+      const row = await this.prisma.obsAlertRule.create({
+        data: {
+          ...input,
+          enabled: input.enabled ?? true,
+          evaluationWindowMinutes: input.evaluationWindowMinutes ?? 5,
+          labels: (input.labels ?? {}) as never,
+        },
+      });
+      await this.audit('alert-rule.created', 'ObsAlertRule', row.id, { ruleKey: row.ruleKey });
+      return row;
+    } catch (error) {
+      if ((error as { code?: string }).code === 'P2002') {
+        throw new ConflictException('Alert rule key already exists.');
+      }
+      throw error;
+    }
+  }
+
+  async updateAlertRule(id: string, input: UpdateAlertRuleDto) {
+    const found = await this.prisma.obsAlertRule.findUnique({ where: { id } });
+    if (!found) throw new NotFoundException('Alert rule not found.');
+    const row = await this.prisma.obsAlertRule.update({
+      where: { id },
+      data: {
+        ...input,
+        labels:
+          input.labels === undefined
+            ? undefined
+            : (input.labels as never),
+      },
+    });
+    await this.audit('alert-rule.updated', 'ObsAlertRule', id, { enabled: row.enabled });
+    return row;
+  }
+
+  listAlerts() {
+    return this.prisma.obsAlertEvent.findMany({
+      include: { rule: true },
+      orderBy: { triggeredAt: 'desc' },
+    });
+  }
+
+  async transitionAlert(id: string, input: TransitionAlertDto) {
+    const found = await this.prisma.obsAlertEvent.findUnique({ where: { id } });
+    if (!found) throw new NotFoundException('Alert event not found.');
+
+    const isTerminal =
+      input.status === ObsAlertStatus.RESOLVED ||
+      input.status === ObsAlertStatus.CLOSED;
+
+    const row = await this.prisma.obsAlertEvent.update({
+      where: { id },
+      data: {
+        status: input.status,
+        note: input.note,
+        resolvedAt: isTerminal ? new Date() : undefined,
+      },
+    });
+    await this.audit('alert.transitioned', 'ObsAlertEvent', id, { status: row.status });
+    return row;
+  }
+}
+

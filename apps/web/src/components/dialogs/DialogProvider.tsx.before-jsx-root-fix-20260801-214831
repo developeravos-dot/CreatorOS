@@ -1,0 +1,50 @@
+import React from "react";
+import {
+    PropsWithChildren,
+    useCallback,
+    useMemo,
+    useState,
+} from "react";
+
+import {
+    DialogContext,
+} from "./DialogContext";
+
+export default function DialogProvider({
+
+    children,
+
+}: PropsWithChildren){
+
+    const [opened,setOpened]=useState(false);
+
+    const open=useCallback(()=>{
+
+        setOpened(true);
+
+    },[]);
+
+    const close=useCallback(()=>{
+
+        setOpened(false);
+
+    },[]);
+
+    const value=useMemo(()=>({
+
+        open,
+        close,
+
+    }),[open,close]);
+
+    return(
+
+        <DialogContext.Provider value={value}>
+
+            {children}
+
+        </DialogContext.Provider>
+
+    );
+
+}

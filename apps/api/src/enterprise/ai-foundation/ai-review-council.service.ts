@@ -1,0 +1,109 @@
+﻿import { Injectable } from '@nestjs/common';
+import { AiSemanticCriticService } from './ai-semantic-critic.service';
+import { AiSemanticOriginalityCriticService } from './ai-semantic-originality-critic.service';
+import { AiDomainExpertService } from './ai-domain-expert.service';
+import { AiSafetyCriticService } from './ai-safety-critic.service';
+import { AiJudgeService } from './ai-judge.service';
+
+export interface AiReviewCouncilInput {
+  taskType: string;
+  request: string;
+  content: string;
+  semanticValidation: {
+    passed: boolean;
+    confidence?: number;
+    everyItemSatisfiesCoreRequirement?: boolean;
+    structureValid?: boolean;
+    languageValid?: boolean;
+    missingRequirements?: string[];
+    reasons?: string[];
+  };
+  originalityEvaluation: {
+    passed: boolean;
+    originalityPassed: boolean;
+    safetyPassed: boolean;
+    originalityScore: number;
+    duplicationScore: number;
+    distinctItemCount: number;
+    detectedItemCount: number;
+    genericContentDetected: boolean;
+    duplicatedPairs?: Array<{
+      firstItem: number;
+      secondItem: number;
+      similarity: number;
+    }>;
+    genericItems?: number[];
+    riskFlags?: string[];
+    warnings?: string[];
+    reasons?: string[];
+  };
+  generationAttempt: number;
+  maximumGenerationAttempts: number;
+}
+
+@Injectable()
+export class AiReviewCouncilService {
+  constructor(
+    private readonly semanticCritic:
+      AiSemanticCriticService,
+    private readonly semanticOriginalityCritic:
+      AiSemanticOriginalityCriticService,
+    private readonly domainExpert:
+      AiDomainExpertService,
+    private readonly safetyCritic:
+      AiSafetyCriticService,
+    private readonly judge:
+      AiJudgeService,
+  ) {}
+
+  async review(input: AiReviewCouncilInput) {
+    const semantic =
+      this.semanticCritic.review({
+        semanticValidation:
+          input.semanticValidation,
+      });
+
+    const semanticOriginality =
+      await this.semanticOriginalityCritic.review({
+        request: input.request,
+        content: input.content,
+        originalityEvaluation:
+          input.originalityEvaluation,
+      });
+
+    const domain =
+      this.domainExpert.review({
+        taskType: input.taskType,
+        request: input.request,
+        content: input.content,
+      });
+
+    const safety =
+      this.safetyCritic.review({
+        originalityEvaluation:
+          input.originalityEvaluation,
+      });
+
+    const judge =
+      this.judge.decide({
+        semantic,
+        originality:
+          semanticOriginality,
+        domain,
+        safety,
+        generationAttempt:
+          input.generationAttempt,
+        maximumGenerationAttempts:
+          input.maximumGenerationAttempts,
+      });
+
+    return {
+      semantic,
+      semanticOriginality,
+      domain,
+      safety,
+      judge,
+    };
+  }
+}
+

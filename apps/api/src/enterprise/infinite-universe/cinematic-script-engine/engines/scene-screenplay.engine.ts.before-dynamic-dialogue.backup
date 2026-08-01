@@ -1,0 +1,319 @@
+﻿import { Injectable } from '@nestjs/common';
+
+import type { LivingCharacter } from '../../character-os/models/character-os.models';
+
+import type {
+  EndlessEpisode,
+  EpisodeScene,
+} from '../../episode-engine/models/episode-engine.models';
+
+import { CharacterVoiceEngine } from './character-voice.engine';
+import { ScriptAudienceSafetyEngine } from './script-audience-safety.engine';
+import { VisualDirectionEngine } from './visual-direction.engine';
+
+import type {
+  CinematicSceneScript,
+  ScriptActionBeat,
+} from '../models/cinematic-script.models';
+
+@Injectable()
+export class SceneScreenplayEngine {
+  constructor(
+    private readonly voice:
+      CharacterVoiceEngine,
+
+    private readonly visual:
+      VisualDirectionEngine,
+
+    private readonly safety:
+      ScriptAudienceSafetyEngine,
+  ) {}
+
+  create(
+    episode: EndlessEpisode,
+    sourceScene: EpisodeScene,
+    characters: LivingCharacter[],
+    includeCamera: boolean,
+    includeLighting: boolean,
+    includeSound: boolean,
+    includeSubtext: boolean,
+  ): CinematicSceneScript {
+    const cast =
+      sourceScene.participatingCharacterIds
+        .map(
+          (characterId) =>
+            characters.find(
+              (character) =>
+                character.identity
+                  .characterId ===
+                characterId,
+            ),
+        )
+        .filter(
+          (
+            character,
+          ): character is LivingCharacter =>
+            Boolean(character),
+        );
+
+    const dialogue =
+      cast.map(
+        (character, index) =>
+          this.voice.createDialogue(
+            character,
+            index + 1,
+            sourceScene.purpose,
+            episode.sourceStoryThread,
+            sourceScene.emotionalTarget,
+            includeSubtext,
+          ),
+      );
+
+    const actions =
+      this.actions(
+        sourceScene,
+        cast,
+      );
+
+    const safetyAssessment =
+      this.safety.assess(
+        episode.audienceTier,
+        dialogue.map(
+          (line) =>
+            line.dialogue,
+        ),
+        sourceScene.type,
+      );
+
+    return {
+      sceneNumber:
+        sourceScene.sceneNumber,
+
+      sourceSceneType:
+        sourceScene.type,
+
+      heading:
+        `${sourceScene.location} — ${this.timeOfDay(sourceScene.sceneNumber)}`,
+
+      location:
+        sourceScene.location,
+
+      timeOfDay:
+        this.timeOfDay(
+          sourceScene.sceneNumber,
+        ),
+
+      targetDurationSeconds:
+        sourceScene.estimatedDurationSeconds,
+
+      dramaticPurpose:
+        sourceScene.purpose,
+
+      psychologicalPurpose:
+        `رفع ${sourceScene.emotionalTarget} مع الحفاظ على الاستمرارية النفسية للشخصيات.`,
+
+      openingVisual:
+        this.openingVisual(
+          sourceScene,
+          cast.map(
+            (character) =>
+              character.identity
+                .canonicalName,
+          ),
+        ),
+
+      actionBeats:
+        actions,
+
+      dialogue,
+
+      camera:
+        includeCamera
+          ? this.visual.camera(
+              sourceScene.type,
+              cast.map(
+                (character) =>
+                  character.identity
+                    .canonicalName,
+              ),
+              sourceScene.estimatedDurationSeconds,
+            )
+          : [],
+
+      lighting:
+        includeLighting
+          ? this.visual.lighting(
+              sourceScene.type,
+              sourceScene.emotionalTarget,
+            )
+          : {
+              mood: 'unspecified',
+              source: 'unspecified',
+              intensity: 50,
+              colorTemperature: 'neutral',
+              psychologicalPurpose:
+                'لم يتم طلب تخطيط الإضاءة.',
+            },
+
+      sound:
+        includeSound
+          ? this.visual.sound(
+              sourceScene.type,
+              sourceScene.emotionalTarget,
+            )
+          : {
+              ambience: [],
+              soundEffects: [],
+              musicMood: 'unspecified',
+              musicIntensity: 0,
+              silenceRequired: false,
+            },
+
+      sceneArc: {
+        openingEmotion:
+          sourceScene.sceneNumber === 1
+            ? 'الهدوء والفضول'
+            : 'استمرار أثر المشهد السابق',
+
+        peakEmotion:
+          sourceScene.emotionalTarget,
+
+        closingEmotion:
+          sourceScene.type ===
+          'conflict'
+            ? 'توتر غير محسوم'
+            : sourceScene.type ===
+                'reversal'
+              ? 'دهشة وأسئلة'
+              : 'فضول مستمر',
+
+        curiosityStart:
+          Math.max(
+            0,
+            50 -
+            sourceScene.curiosityDelta,
+          ),
+
+        curiosityEnd:
+          Math.min(
+            100,
+            50 +
+            sourceScene.curiosityDelta,
+          ),
+
+        tensionStart:
+          Math.max(
+            0,
+            40 -
+            sourceScene.tensionDelta,
+          ),
+
+        tensionEnd:
+          Math.min(
+            100,
+            40 +
+            sourceScene.tensionDelta,
+          ),
+      },
+
+      continuityReferences:
+        sourceScene.continuityReferences,
+
+      futureSeeds:
+        sourceScene.futureSeeds,
+
+      safetyAssessment,
+    };
+  }
+
+  private actions(
+    scene: EpisodeScene,
+    cast: LivingCharacter[],
+  ): ScriptActionBeat[] {
+    const ids =
+      cast.map(
+        (character) =>
+          character.identity.characterId,
+      );
+
+    return [
+      {
+        beatNumber: 1,
+
+        action:
+          `تظهر ${cast.map(
+            (character) =>
+              character.identity.canonicalName,
+          ).join(' و')} داخل ${scene.location} بينما يلفت انتباههم تغير صغير غير معتاد.`,
+
+        purpose:
+          'إدخال الشخصيات إلى الحدث بصريًا دون شرح مباشر.',
+
+        participatingCharacterIds:
+          ids,
+
+        emotionalMeaning:
+          'الانتقال من الأمان إلى الفضول.',
+
+        visualPriority: 85,
+      },
+
+      {
+        beatNumber: 2,
+
+        action:
+          'تلاحظ الشخصية الرئيسية تفصيلًا لا يراه الآخرون فورًا، لكنها تتردد قبل الحديث عنه.',
+
+        purpose:
+          'إظهار التفكير النفسي قبل الحوار.',
+
+        participatingCharacterIds:
+          ids.slice(0, 1),
+
+        emotionalMeaning:
+          'الرغبة في المعرفة مقابل الخوف من الخطأ.',
+
+        visualPriority: 95,
+      },
+
+      {
+        beatNumber: 3,
+
+        action:
+          'يختلف رد فعل الشخصيات تجاه الدليل، فيظهر التعارض بين الحذر والاندفاع والتعاون.',
+
+        purpose:
+          scene.purpose,
+
+        participatingCharacterIds:
+          ids,
+
+        emotionalMeaning:
+          scene.emotionalTarget,
+
+        visualPriority: 90,
+      },
+    ];
+  }
+
+  private openingVisual(
+    scene: EpisodeScene,
+    names: string[],
+  ): string {
+    return `لقطة واسعة لـ ${scene.location}. يتحرك عنصر بصري صغير في الخلفية قبل أن تلاحظه ${names[0] ?? 'الشخصية الرئيسية'}، بينما يستمر الآخرون في نشاطهم الطبيعي.`;
+  }
+
+  private timeOfDay(
+    sceneNumber: number,
+  ): string {
+    if (sceneNumber <= 2) {
+      return 'صباح';
+    }
+
+    if (sceneNumber <= 5) {
+      return 'بعد الظهر';
+    }
+
+    return 'الغروب';
+  }
+}

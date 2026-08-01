@@ -1,0 +1,445 @@
+﻿import { Injectable } from '@nestjs/common';
+import { randomUUID } from 'node:crypto';
+
+import type {
+  StoryboardPackage,
+} from '../../storyboard-engine/models/storyboard.models';
+
+import type {
+  VisualReferenceBible,
+} from '../../visual-reference-bible/models/visual-reference-bible.models';
+
+import type {
+  ImageAssetCategory,
+  ImageGenerationRequest,
+  ImageProviderId,
+} from '../models/image-provider.models';
+
+@Injectable()
+export class ImageGenerationRequestBuilder {
+  build(
+    worldId: string,
+    bible: VisualReferenceBible,
+    storyboard: StoryboardPackage | null,
+    providerId: ImageProviderId,
+    categories: ImageAssetCategory[],
+    width: number,
+    height: number,
+    imageCount: number,
+  ): ImageGenerationRequest[] {
+    const requests:
+      ImageGenerationRequest[] = [];
+
+    if (
+      categories.includes(
+        'character-reference',
+      )
+    ) {
+      for (
+        const reference of
+        bible.characterReferences
+      ) {
+        requests.push({
+          requestId: randomUUID(),
+          worldId,
+          bibleId:
+            bible.bibleId,
+
+          storyboardId:
+            storyboard?.storyboardId,
+
+          providerId,
+
+          category:
+            'character-reference',
+
+          sourceEntityId:
+            reference.characterId,
+
+          sourceEntityName:
+            reference.characterName,
+
+          sourceEntityType:
+            'character',
+
+          prompt:
+            reference.canonicalPrompt,
+
+          negativePrompt: [
+            reference.negativeIdentityPrompt,
+            bible.globalNegativePrompt,
+          ].join(', '),
+
+          width,
+          height,
+          imageCount,
+
+          continuityKeys: [
+            ...reference.continuityKeys,
+          ],
+
+          identityLockPrompt:
+            reference.identityLockPrompt,
+
+          metadata: {
+            characterId:
+              reference.characterId,
+
+            characterName:
+              reference.characterName,
+
+            role:
+              reference.role,
+
+            audienceTier:
+              reference.audienceTier,
+
+            referenceId:
+              reference.referenceId,
+          },
+        });
+      }
+    }
+
+    if (
+      categories.includes(
+        'character-expression',
+      )
+    ) {
+      for (
+        const reference of
+        bible.characterReferences
+      ) {
+        for (
+          const expression of
+          reference.expressions
+        ) {
+          requests.push({
+            requestId: randomUUID(),
+            worldId,
+            bibleId:
+              bible.bibleId,
+
+            storyboardId:
+              storyboard?.storyboardId,
+
+            providerId,
+
+            category:
+              'character-expression',
+
+            sourceEntityId:
+              expression.expressionId,
+
+            sourceEntityName:
+              `${reference.characterName} - ${expression.name}`,
+
+            sourceEntityType:
+              'character',
+
+            prompt:
+              expression.imagePrompt,
+
+            negativePrompt: [
+              expression.negativePrompt,
+              reference.negativeIdentityPrompt,
+              bible.globalNegativePrompt,
+            ].join(', '),
+
+            width,
+            height,
+            imageCount,
+
+            continuityKeys: [
+              ...reference.continuityKeys,
+              `expression-${expression.expressionId}`,
+            ],
+
+            identityLockPrompt:
+              reference.identityLockPrompt,
+
+            metadata: {
+              characterId:
+                reference.characterId,
+
+              characterName:
+                reference.characterName,
+
+              expression:
+                expression.name,
+
+              intensity:
+                expression.intensity,
+            },
+          });
+        }
+      }
+    }
+
+    if (
+      categories.includes(
+        'character-pose',
+      )
+    ) {
+      for (
+        const reference of
+        bible.characterReferences
+      ) {
+        for (
+          const pose of
+          reference.poses
+        ) {
+          requests.push({
+            requestId: randomUUID(),
+            worldId,
+            bibleId:
+              bible.bibleId,
+
+            storyboardId:
+              storyboard?.storyboardId,
+
+            providerId,
+
+            category:
+              'character-pose',
+
+            sourceEntityId:
+              pose.poseId,
+
+            sourceEntityName:
+              `${reference.characterName} - ${pose.name}`,
+
+            sourceEntityType:
+              'character',
+
+            prompt:
+              pose.imagePrompt,
+
+            negativePrompt: [
+              pose.negativePrompt,
+              reference.negativeIdentityPrompt,
+              bible.globalNegativePrompt,
+            ].join(', '),
+
+            width,
+            height,
+            imageCount,
+
+            continuityKeys: [
+              ...reference.continuityKeys,
+              `pose-${pose.poseId}`,
+            ],
+
+            identityLockPrompt:
+              reference.identityLockPrompt,
+
+            metadata: {
+              characterId:
+                reference.characterId,
+
+              characterName:
+                reference.characterName,
+
+              pose:
+                pose.name,
+            },
+          });
+        }
+      }
+    }
+
+    if (
+      categories.includes(
+        'environment-reference',
+      )
+    ) {
+      for (
+        const reference of
+        bible.environmentReferences
+      ) {
+        requests.push({
+          requestId: randomUUID(),
+          worldId,
+          bibleId:
+            bible.bibleId,
+
+          storyboardId:
+            storyboard?.storyboardId,
+
+          providerId,
+
+          category:
+            'environment-reference',
+
+          sourceEntityId:
+            reference.referenceId,
+
+          sourceEntityName:
+            reference.locationName,
+
+          sourceEntityType:
+            'environment',
+
+          prompt:
+            reference.canonicalPrompt,
+
+          negativePrompt: [
+            reference.negativePrompt,
+            bible.globalNegativePrompt,
+          ].join(', '),
+
+          width,
+          height,
+          imageCount,
+
+          continuityKeys: [
+            ...reference.continuityKeys,
+          ],
+
+          metadata: {
+            locationType:
+              reference.locationType,
+
+            emotionalTone:
+              reference.emotionalTone,
+          },
+        });
+      }
+    }
+
+    if (
+      categories.includes(
+        'prop-reference',
+      )
+    ) {
+      for (
+        const reference of
+        bible.propReferences
+      ) {
+        requests.push({
+          requestId: randomUUID(),
+          worldId,
+          bibleId:
+            bible.bibleId,
+
+          storyboardId:
+            storyboard?.storyboardId,
+
+          providerId,
+
+          category:
+            'prop-reference',
+
+          sourceEntityId:
+            reference.referenceId,
+
+          sourceEntityName:
+            reference.propName,
+
+          sourceEntityType:
+            'prop',
+
+          prompt:
+            reference.canonicalPrompt,
+
+          negativePrompt: [
+            reference.negativePrompt,
+            bible.globalNegativePrompt,
+          ].join(', '),
+
+          width,
+          height,
+          imageCount,
+
+          continuityKeys: [
+            ...reference.continuityKeys,
+          ],
+
+          metadata: {
+            ownerCharacterId:
+              reference.ownerCharacterId ??
+              '',
+
+            ownerCharacterName:
+              reference.ownerCharacterName ??
+              '',
+          },
+        });
+      }
+    }
+
+    if (
+      categories.includes(
+        'storyboard-frame',
+      ) &&
+      storyboard
+    ) {
+      for (
+        const scene of
+        storyboard.scenes
+      ) {
+        for (
+          const frame of
+          scene.frames
+        ) {
+          requests.push({
+            requestId: randomUUID(),
+            worldId,
+            bibleId:
+              bible.bibleId,
+
+            storyboardId:
+              storyboard.storyboardId,
+
+            providerId,
+
+            category:
+              'storyboard-frame',
+
+            sourceEntityId:
+              `${scene.sceneNumber}-${frame.frameNumber}`,
+
+            sourceEntityName:
+              frame.title,
+
+            sourceEntityType:
+              'storyboard-frame',
+
+            prompt: [
+              frame.imagePrompt,
+              ...bible.globalIdentityRules,
+            ].join('. '),
+
+            negativePrompt: [
+              frame.negativePrompt,
+              bible.globalNegativePrompt,
+            ].join(', '),
+
+            width,
+            height,
+            imageCount,
+
+            continuityKeys: [
+              ...frame.continuityKeys,
+            ],
+
+            metadata: {
+              sceneNumber:
+                scene.sceneNumber,
+
+              frameNumber:
+                frame.frameNumber,
+
+              location:
+                scene.location,
+            },
+          });
+        }
+      }
+    }
+
+    return requests;
+  }
+}
+
+

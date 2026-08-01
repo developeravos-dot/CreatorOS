@@ -1,0 +1,1084 @@
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import {
+  enterpriseApi,
+  type EnterpriseCalendarItem,
+  type EnterpriseDashboard,
+  type EnterprisePlatform,
+  type EnterpriseProject,
+  type EnterprisePrompt,
+  type EnterpriseScript,
+  type ProjectStatus,
+  type ScriptStatus,
+} from "./enterprise-api";
+import DashboardPage from "./pages/DashboardPage";
+import ProjectsPage from "./pages/ProjectsPage";
+import ScriptsPage from "./pages/ScriptsPage";
+import CalendarPage from "./pages/CalendarPage";
+import PromptsPage from "./pages/PromptsPage";
+import {
+  CreateProjectDialog,
+  CreatePromptDialog,
+  CreateScriptDialog,
+  ScheduleContentDialog,
+  type CreateProjectValues,
+  type CreatePromptValues,
+  type CreateScriptValues,
+  type ScheduleContentValues,
+} from "./dialogs";
+import {
+  DeleteProjectDialog,
+  EditScriptDialog,
+  UpdateProjectStatusDialog,
+  UpdateScriptStatusDialog,
+  type EditScriptValues,
+  type UpdateProjectStatusValues,
+  type UpdateScriptStatusValues,
+} from "./dialogs";
+
+type View =
+  | "dashboard"
+  | "projects"
+  | "scripts"
+  | "calendar"
+  | "prompts";
+
+const emptyDashboard: EnterpriseDashboard = {
+  projects: [],
+  scripts: [],
+  calendar: [],
+  prompts: [],
+  metrics: {
+    projects: 0,
+    activeProjects: 0,
+    scripts: 0,
+    scheduledContent: 0,
+    prompts: 0,
+  },
+  system: {
+    projectEngine: "loading",
+    scriptEngine: "loading",
+    calendarEngine: "loading",
+    promptEngine: "loading",
+    storage: "loading",
+  },
+};
+
+const statusLabels: Record<ProjectStatus, string> = {
+  planning: "تخطيط",
+  active: "نشط",
+  paused: "متوقف مؤقتًا",
+  completed: "مكتمل",
+};
+
+const scriptStatusLabels: Record<ScriptStatus, string> = {
+  draft: "مسودة",
+  review: "مراجعة",
+  approved: "معتمد",
+  production: "إنتاج",
+};
+
+const platformLabels: Record<EnterprisePlatform, string> = {
+  YouTube: "YouTube",
+  TikTok: "TikTok",
+  Both: "YouTube + TikTok",
+};
+
+function App() {
+  const [view, setView] = useState<View>("dashboard");
+  const [dashboard, setDashboard] =
+    useState<EnterpriseDashboard>(emptyDashboard);
+  const [connected, setConnected] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const [
+    selectedProjectForStatus,
+    setSelectedProjectForStatus,
+  ] = useState<EnterpriseProject | null>(null);
+
+  const [
+    selectedProjectForDelete,
+    setSelectedProjectForDelete,
+  ] = useState<EnterpriseProject | null>(null);
+
+  const [
+    selectedScriptForStatus,
+    setSelectedScriptForStatus,
+  ] = useState<EnterpriseScript | null>(null);
+
+  const [
+    selectedScriptForEdit,
+    setSelectedScriptForEdit,
+  ] = useState<EnterpriseScript | null>(null);
+
+  const [createProjectDialogOpen, setCreateProjectDialogOpen] =
+    useState(false);
+
+  const [createScriptDialogOpen, setCreateScriptDialogOpen] =
+    useState(false);
+
+  const [scheduleContentDialogOpen, setScheduleContentDialogOpen] =
+    useState(false);
+
+  const [createPromptDialogOpen, setCreatePromptDialogOpen] =
+    useState(false);
+
+  const loadDashboard = useCallback(async () => {
+    setLoading(true);
+    setError("");
+
+    try {
+      const [health, data] = await Promise.all([
+        enterpriseApi.health(),
+        enterpriseApi.dashboard(),
+      ]);
+
+      setConnected(
+        Boolean(health.success) &&
+          health.status === "operational",
+      );
+      setDashboard(data);
+    } catch (currentError) {
+      setConnected(false);
+      setError(
+        currentError instanceof Error
+          ? currentError.message
+          : "تعذر الاتصال بالخادم.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadDashboard();
+  }, [loadDashboard]);
+
+  const runAction = async (
+    action: () => Promise<unknown>,
+    successMessage: string,
+  ) => {
+    setBusy(true);
+    setError("");
+    setMessage("");
+
+    try {
+      await action();
+      setMessage(successMessage);
+      await loadDashboard();
+    } catch (currentError) {
+      setError(
+        currentError instanceof Error
+          ? currentError.message
+          : "حدث خطأ غير متوقع.",
+      );
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const createProject = async () => {
+    setError("");
+    setCreateProjectDialogOpen(true);
+  };
+
+  const submitCreateProject = async (
+    values: CreateProjectValues,
+  ) => {
+    setCreateProjectDialogOpen(false);
+
+    await runAction(
+      () =>
+        enterpriseApi.createProject({
+          name: values.name,
+          description: values.description,
+          platform: values.platform,
+        }),
+      "تم إنشاء المشروع بنجاح.",
+    );
+  };
+  const createScript = async () => {
+    if (dashboard.projects.length === 0) {
+      setError("أنشئ مشروعًا أولًا قبل إضافة السكربت.");
+      return;
+    }
+
+    setError("");
+    setCreateScriptDialogOpen(true);
+  };
+
+  const submitCreateScript = async (
+    values: CreateScriptValues,
+  ) => {
+    setCreateScriptDialogOpen(false);
+
+    await runAction(
+      () =>
+        enterpriseApi.createScript({
+          projectId: values.projectId,
+          title: values.title,
+          content: values.content,
+        }),
+      "تم إنشاء السكربت بنجاح.",
+    );
+  };
+  const scheduleContent = async () => {
+    if (dashboard.projects.length === 0) {
+      setError("أنشئ مشروعًا أولًا قبل جدولة المحتوى.");
+      return;
+    }
+
+    setError("");
+    setScheduleContentDialogOpen(true);
+  };
+
+  const submitScheduleContent = async (
+    values: ScheduleContentValues,
+  ) => {
+    if (
+      !values.scheduledAt ||
+      Number.isNaN(Date.parse(values.scheduledAt))
+    ) {
+      setError("موعد النشر غير صالح.");
+      return;
+    }
+
+    setScheduleContentDialogOpen(false);
+
+    await runAction(
+      () =>
+        enterpriseApi.scheduleContent({
+          projectId: values.projectId,
+          title: values.title,
+          scheduledAt: new Date(
+            values.scheduledAt,
+          ).toISOString(),
+          platform: values.platform,
+        }),
+      "تمت جدولة المحتوى بنجاح.",
+    );
+  };
+  const createPrompt = async () => {
+    setError("");
+    setCreatePromptDialogOpen(true);
+  };
+
+  const submitCreatePrompt = async (
+    values: CreatePromptValues,
+  ) => {
+    setCreatePromptDialogOpen(false);
+
+    await runAction(
+      () =>
+        enterpriseApi.createPrompt({
+          name: values.name,
+          purpose: values.purpose,
+          prompt: values.prompt,
+        }),
+      "تم حفظ القالب الذكي بنجاح.",
+    );
+  };
+  const changeProjectStatus = async (
+    project: EnterpriseProject,
+  ) => {
+    setError("");
+    setSelectedProjectForStatus(project);
+  };
+
+  const submitProjectStatus = async (
+    values: UpdateProjectStatusValues,
+  ) => {
+    const project = selectedProjectForStatus;
+
+    if (!project) {
+      return;
+    }
+
+    setSelectedProjectForStatus(null);
+
+    await runAction(
+      () =>
+        enterpriseApi.updateProjectStatus(
+          project.id,
+          values.status,
+        ),
+      "تم تحديث حالة المشروع.",
+    );
+  };
+  const deleteProject = async (
+    project: EnterpriseProject,
+  ) => {
+    setError("");
+    setSelectedProjectForDelete(project);
+  };
+
+  const confirmDeleteProject = async () => {
+    const project = selectedProjectForDelete;
+
+    if (!project) {
+      return;
+    }
+
+    setSelectedProjectForDelete(null);
+
+    await runAction(
+      () => enterpriseApi.deleteProject(project.id),
+      "تم حذف المشروع.",
+    );
+  };
+  const changeScriptStatus = async (
+    script: EnterpriseScript,
+  ) => {
+    setError("");
+    setSelectedScriptForStatus(script);
+  };
+
+  const submitScriptStatus = async (
+    values: UpdateScriptStatusValues,
+  ) => {
+    const script = selectedScriptForStatus;
+
+    if (!script) {
+      return;
+    }
+
+    setSelectedScriptForStatus(null);
+
+    await runAction(
+      () =>
+        enterpriseApi.updateScript(script.id, {
+          status: values.status,
+        }),
+      "تم تحديث حالة السكربت.",
+    );
+  };
+  const editScript = async (
+    script: EnterpriseScript,
+  ) => {
+    setError("");
+    setSelectedScriptForEdit(script);
+  };
+
+  const submitEditScript = async (
+    values: EditScriptValues,
+  ) => {
+    const script = selectedScriptForEdit;
+
+    if (!script) {
+      return;
+    }
+
+    setSelectedScriptForEdit(null);
+
+    await runAction(
+      () =>
+        enterpriseApi.updateScript(script.id, {
+          title: values.title,
+          content: values.content,
+        }),
+      "تم حفظ تعديلات السكربت.",
+    );
+  };
+  const currentTitle = useMemo(() => {
+    const titles: Record<View, string> = {
+      dashboard: "مركز قيادة المحتوى",
+      projects: "إدارة المشاريع",
+      scripts: "محرر السكربتات",
+      calendar: "تقويم المحتوى",
+      prompts: "مكتبة القوالب الذكية",
+    };
+
+    return titles[view];
+  }, [view]);
+
+  return (
+    <div style={styles.app} dir="rtl">
+      <aside style={styles.sidebar}>
+        <div style={styles.brand}>
+          <div style={styles.logo}>C</div>
+          <div>
+            <strong style={styles.brandName}>CreatorOS</strong>
+            <div style={styles.brandSubtitle}>
+              AI MEDIA OPERATING SYSTEM
+            </div>
+          </div>
+        </div>
+
+        <nav style={styles.nav}>
+          <NavButton
+            active={view === "dashboard"}
+            icon="⌂"
+            label="لوحة التحكم"
+            onClick={() => setView("dashboard")}
+          />
+          <NavButton
+            active={view === "projects"}
+            icon="▦"
+            label="المشاريع"
+            onClick={() => setView("projects")}
+          />
+          <NavButton
+            active={view === "scripts"}
+            icon="✎"
+            label="محرر السكربت"
+            onClick={() => setView("scripts")}
+          />
+          <NavButton
+            active={view === "calendar"}
+            icon="▣"
+            label="تقويم المحتوى"
+            onClick={() => setView("calendar")}
+          />
+          <NavButton
+            active={view === "prompts"}
+            icon="✦"
+            label="القوالب الذكية"
+            onClick={() => setView("prompts")}
+          />
+        </nav>
+
+        <div style={styles.connectionBox}>
+          <div
+            style={{
+              ...styles.connectionDot,
+              background: connected ? "#42e8a1" : "#ff5f74",
+            }}
+          />
+          <div>
+            <strong>
+              {connected
+                ? "Backend API متصل"
+                : "Backend API غير متصل"}
+            </strong>
+            <div style={styles.mutedSmall}>
+              البيانات محفوظة في الخادم
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main style={styles.main}>
+        <header style={styles.header}>
+          <div>
+            <div style={styles.eyebrow}>
+              CREATOROS ENTERPRISE
+            </div>
+            <h1 style={styles.title}>{currentTitle}</h1>
+            <p style={styles.subtitle}>
+              منظومة تشغيل وإدارة وإنتاج المحتوى بالذكاء
+              الاصطناعي.
+            </p>
+          </div>
+
+          <button
+            style={styles.refreshButton}
+            disabled={loading || busy}
+            onClick={() => void loadDashboard()}
+          >
+            ↻ تحديث البيانات
+          </button>
+        </header>
+
+        {message && (
+          <div style={styles.successMessage}>{message}</div>
+        )}
+
+        {error && (
+          <div style={styles.errorMessage}>{error}</div>
+        )}
+
+        {loading ? (
+          <div style={styles.loading}>
+            جارٍ تحميل CreatorOS Enterprise...
+          </div>
+        ) : (
+          <>
+            {view === "dashboard" && (
+              <DashboardPage
+                dashboard={dashboard}
+                connected={connected}
+                busy={busy}
+                onCreateProject={createProject}
+                onCreateScript={createScript}
+                onSchedule={scheduleContent}
+                onCreatePrompt={createPrompt}
+              />
+            )}
+
+            {view === "projects" && (
+              <ProjectsPage
+                projects={dashboard.projects}
+                busy={busy}
+                onCreate={createProject}
+                onStatus={changeProjectStatus}
+                onDelete={deleteProject}
+              />
+            )}
+
+            {view === "scripts" && (
+              <ScriptsPage
+                scripts={dashboard.scripts}
+                projects={dashboard.projects}
+                busy={busy}
+                onCreate={createScript}
+                onEdit={editScript}
+                onStatus={changeScriptStatus}
+              />
+            )}
+
+            {view === "calendar" && (
+              <CalendarPage
+                items={dashboard.calendar}
+                projects={dashboard.projects}
+                busy={busy}
+                onCreate={scheduleContent}
+              />
+            )}
+
+            {view === "prompts" && (
+              <PromptsPage
+                prompts={dashboard.prompts}
+                busy={busy}
+                onCreate={createPrompt}
+              />
+            )}
+          </>
+        )}      </main>
+
+      <UpdateProjectStatusDialog
+        open={selectedProjectForStatus !== null}
+        busy={busy}
+        error={error}
+        project={selectedProjectForStatus}
+        onClose={() =>
+          setSelectedProjectForStatus(null)
+        }
+        onSubmit={submitProjectStatus}
+      />
+
+      <DeleteProjectDialog
+        open={selectedProjectForDelete !== null}
+        busy={busy}
+        error={error}
+        project={selectedProjectForDelete}
+        onClose={() =>
+          setSelectedProjectForDelete(null)
+        }
+        onConfirm={confirmDeleteProject}
+      />
+
+      <UpdateScriptStatusDialog
+        open={selectedScriptForStatus !== null}
+        busy={busy}
+        error={error}
+        script={selectedScriptForStatus}
+        onClose={() =>
+          setSelectedScriptForStatus(null)
+        }
+        onSubmit={submitScriptStatus}
+      />
+
+      <EditScriptDialog
+        open={selectedScriptForEdit !== null}
+        busy={busy}
+        error={error}
+        script={selectedScriptForEdit}
+        onClose={() =>
+          setSelectedScriptForEdit(null)
+        }
+        onSubmit={submitEditScript}
+      />
+      <CreateProjectDialog
+        open={createProjectDialogOpen}
+        busy={busy}
+        error={error}
+        onClose={() =>
+          setCreateProjectDialogOpen(false)
+        }
+        onSubmit={submitCreateProject}
+      />
+
+      <CreateScriptDialog
+        open={createScriptDialogOpen}
+        busy={busy}
+        error={error}
+        projects={dashboard.projects}
+        onClose={() =>
+          setCreateScriptDialogOpen(false)
+        }
+        onSubmit={submitCreateScript}
+      />
+
+      <ScheduleContentDialog
+        open={scheduleContentDialogOpen}
+        busy={busy}
+        error={error}
+        projects={dashboard.projects}
+        onClose={() =>
+          setScheduleContentDialogOpen(false)
+        }
+        onSubmit={submitScheduleContent}
+      />
+
+      <CreatePromptDialog
+        open={createPromptDialogOpen}
+        busy={busy}
+        error={error}
+        onClose={() =>
+          setCreatePromptDialogOpen(false)
+        }
+        onSubmit={submitCreatePrompt}
+      />
+    </div>
+  );
+}
+
+const styles: Record<string, React.CSSProperties> = {
+  app: {
+    minHeight: "100vh",
+    display: "flex",
+    background:
+      "radial-gradient(circle at top right, #172039 0%, #090d17 42%, #05070d 100%)",
+    color: "#f4f7ff",
+    fontFamily:
+      '"Segoe UI", Tahoma, Arial, sans-serif',
+  },
+  sidebar: {
+    width: 270,
+    minHeight: "100vh",
+    padding: "28px 20px",
+    boxSizing: "border-box",
+    background: "rgba(6, 9, 17, 0.94)",
+    borderLeft: "1px solid rgba(255,255,255,0.08)",
+    position: "sticky",
+    top: 0,
+    alignSelf: "flex-start",
+  },
+  brand: {
+    display: "flex",
+    alignItems: "center",
+    gap: 14,
+    marginBottom: 38,
+  },
+  logo: {
+    width: 48,
+    height: 48,
+    borderRadius: 15,
+    display: "grid",
+    placeItems: "center",
+    background:
+      "linear-gradient(135deg, #7c5cff, #3cc7ff)",
+    fontSize: 24,
+    fontWeight: 800,
+    boxShadow: "0 12px 34px rgba(73,115,255,0.35)",
+  },
+  brandName: {
+    display: "block",
+    fontSize: 21,
+  },
+  brandSubtitle: {
+    marginTop: 4,
+    color: "#7f8ca8",
+    fontSize: 9,
+    letterSpacing: 1.4,
+  },
+  nav: {
+    display: "grid",
+    gap: 8,
+  },
+  navButton: {
+    width: "100%",
+    border: 0,
+    borderRadius: 13,
+    padding: "13px 14px",
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    background: "transparent",
+    color: "#9aa7c2",
+    cursor: "pointer",
+    textAlign: "right",
+    fontSize: 14,
+  },
+  navButtonActive: {
+    color: "#ffffff",
+    background:
+      "linear-gradient(90deg, rgba(93,77,255,0.24), rgba(51,186,255,0.08))",
+    border: "1px solid rgba(105,114,255,0.28)",
+  },
+  navIcon: {
+    width: 25,
+    fontSize: 18,
+    textAlign: "center",
+  },
+  connectionBox: {
+    marginTop: 40,
+    padding: 15,
+    display: "flex",
+    gap: 10,
+    alignItems: "center",
+    borderRadius: 14,
+    background: "rgba(255,255,255,0.035)",
+    border: "1px solid rgba(255,255,255,0.07)",
+    fontSize: 12,
+  },
+  connectionDot: {
+    width: 10,
+    height: 10,
+    borderRadius: "50%",
+    boxShadow: "0 0 14px currentColor",
+  },
+  main: {
+    flex: 1,
+    minWidth: 0,
+    padding: "34px",
+    boxSizing: "border-box",
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 20,
+    marginBottom: 26,
+  },
+  eyebrow: {
+    color: "#7e8ca8",
+    fontSize: 10,
+    letterSpacing: 2,
+    fontWeight: 700,
+  },
+  title: {
+    fontSize: 31,
+    margin: "8px 0 7px",
+  },
+  subtitle: {
+    margin: 0,
+    color: "#8e9bb6",
+    fontSize: 14,
+  },
+  refreshButton: {
+    border: "1px solid rgba(255,255,255,0.12)",
+    borderRadius: 12,
+    padding: "11px 17px",
+    background: "rgba(255,255,255,0.045)",
+    color: "#ffffff",
+    cursor: "pointer",
+  },
+  primaryButton: {
+    border: 0,
+    borderRadius: 12,
+    padding: "12px 18px",
+    background:
+      "linear-gradient(135deg, #7359ff, #3eb9ff)",
+    color: "#ffffff",
+    fontWeight: 700,
+    cursor: "pointer",
+  },
+  primarySmallButton: {
+    border: 0,
+    borderRadius: 10,
+    padding: "9px 13px",
+    background:
+      "linear-gradient(135deg, #7359ff, #3eb9ff)",
+    color: "#ffffff",
+    cursor: "pointer",
+  },
+  secondaryButton: {
+    border: "1px solid rgba(255,255,255,0.13)",
+    borderRadius: 10,
+    padding: "9px 13px",
+    background: "rgba(255,255,255,0.04)",
+    color: "#dfe6f7",
+    cursor: "pointer",
+  },
+  dangerButton: {
+    border: "1px solid rgba(255,93,115,0.27)",
+    borderRadius: 10,
+    padding: "9px 13px",
+    background: "rgba(255,93,115,0.09)",
+    color: "#ff7d91",
+    cursor: "pointer",
+  },
+  metricsGrid: {
+    display: "grid",
+    gridTemplateColumns:
+      "repeat(auto-fit, minmax(190px, 1fr))",
+    gap: 16,
+    marginBottom: 18,
+  },
+  metricCard: {
+    padding: 20,
+    borderRadius: 17,
+    background:
+      "linear-gradient(145deg, rgba(25,33,55,0.92), rgba(12,17,30,0.94))",
+    border: "1px solid rgba(255,255,255,0.08)",
+    boxShadow: "0 20px 45px rgba(0,0,0,0.18)",
+  },
+  metricIcon: {
+    width: 37,
+    height: 37,
+    borderRadius: 11,
+    display: "grid",
+    placeItems: "center",
+    background: "rgba(100,91,255,0.18)",
+    color: "#a99cff",
+    marginBottom: 14,
+  },
+  metricValue: {
+    fontSize: 29,
+    fontWeight: 800,
+  },
+  metricLabel: {
+    fontWeight: 700,
+    marginTop: 3,
+  },
+  metricNote: {
+    color: "#77849e",
+    fontSize: 11,
+    marginTop: 8,
+  },
+  twoColumns: {
+    display: "grid",
+    gridTemplateColumns:
+      "minmax(0, 1.7fr) minmax(280px, 1fr)",
+    gap: 18,
+    marginBottom: 18,
+  },
+  panel: {
+    padding: 22,
+    borderRadius: 18,
+    background: "rgba(13,18,31,0.88)",
+    border: "1px solid rgba(255,255,255,0.075)",
+    boxShadow: "0 20px 50px rgba(0,0,0,0.16)",
+    marginBottom: 18,
+  },
+  panelHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    gap: 20,
+    alignItems: "center",
+    marginBottom: 19,
+  },
+  panelTitle: {
+    margin: "7px 0 0",
+    fontSize: 20,
+  },
+  actionsGrid: {
+    display: "grid",
+    gridTemplateColumns:
+      "repeat(auto-fit, minmax(230px, 1fr))",
+    gap: 10,
+  },
+  actionButton: {
+    border: "1px solid rgba(255,255,255,0.08)",
+    borderRadius: 13,
+    padding: 14,
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    textAlign: "right",
+    background: "rgba(255,255,255,0.025)",
+    color: "#ffffff",
+    cursor: "pointer",
+  },
+  actionIcon: {
+    width: 37,
+    height: 37,
+    borderRadius: 10,
+    display: "grid",
+    placeItems: "center",
+    background: "rgba(88,107,255,0.15)",
+    color: "#9ca8ff",
+    fontSize: 19,
+  },
+  actionTitle: {
+    display: "block",
+  },
+  actionDescription: {
+    display: "block",
+    marginTop: 4,
+    color: "#78859f",
+    fontSize: 11,
+  },
+  systemRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    padding: "13px 0",
+    borderBottom: "1px solid rgba(255,255,255,0.06)",
+    color: "#aeb8cd",
+    fontSize: 13,
+  },
+  systemValue: {
+    color: "#4ce4a6",
+  },
+  workspaceGrid: {
+    display: "grid",
+    gridTemplateColumns:
+      "repeat(auto-fit, minmax(280px, 1fr))",
+    gap: 22,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    color: "#cfd7e9",
+    marginBottom: 12,
+  },
+  compactItem: {
+    display: "flex",
+    gap: 10,
+    alignItems: "center",
+    padding: "11px 0",
+    borderBottom: "1px solid rgba(255,255,255,0.05)",
+    fontSize: 13,
+  },
+  compactDot: {
+    width: 8,
+    height: 8,
+    borderRadius: "50%",
+    background: "#745eff",
+  },
+  mutedSmall: {
+    color: "#77849d",
+    fontSize: 10,
+    marginTop: 4,
+  },
+  cardsGrid: {
+    display: "grid",
+    gridTemplateColumns:
+      "repeat(auto-fill, minmax(270px, 1fr))",
+    gap: 15,
+  },
+  itemCard: {
+    padding: 18,
+    borderRadius: 15,
+    background: "rgba(255,255,255,0.028)",
+    border: "1px solid rgba(255,255,255,0.075)",
+  },
+  cardTop: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 14,
+  },
+  badge: {
+    padding: "5px 9px",
+    borderRadius: 999,
+    background: "rgba(83,215,163,0.12)",
+    color: "#58dfa8",
+    fontSize: 10,
+    fontWeight: 700,
+  },
+  platform: {
+    color: "#7f8ca6",
+    fontSize: 10,
+  },
+  itemTitle: {
+    margin: "0 0 8px",
+    fontSize: 17,
+  },
+  itemDescription: {
+    color: "#8793ac",
+    lineHeight: 1.7,
+    fontSize: 12,
+    minHeight: 20,
+  },
+  cardFooter: {
+    display: "flex",
+    gap: 8,
+    flexWrap: "wrap",
+    marginTop: 16,
+  },
+  list: {
+    display: "grid",
+    gap: 12,
+  },
+  scriptCard: {
+    padding: 18,
+    borderRadius: 15,
+    background: "rgba(255,255,255,0.028)",
+    border: "1px solid rgba(255,255,255,0.075)",
+  },
+  scriptPreview: {
+    whiteSpace: "pre-wrap",
+    color: "#929db5",
+    lineHeight: 1.8,
+    fontSize: 12,
+    maxHeight: 110,
+    overflow: "hidden",
+  },
+  calendarCard: {
+    padding: 15,
+    borderRadius: 14,
+    display: "flex",
+    gap: 15,
+    alignItems: "center",
+    background: "rgba(255,255,255,0.028)",
+    border: "1px solid rgba(255,255,255,0.075)",
+  },
+  calendarDate: {
+    minWidth: 74,
+    padding: 10,
+    borderRadius: 12,
+    display: "grid",
+    gap: 4,
+    textAlign: "center",
+    background: "rgba(101,87,255,0.13)",
+    color: "#bbb4ff",
+    fontSize: 11,
+  },
+  promptText: {
+    padding: 12,
+    marginTop: 13,
+    marginBottom: 14,
+    borderRadius: 11,
+    background: "rgba(0,0,0,0.2)",
+    color: "#b6c0d6",
+    fontSize: 11,
+    lineHeight: 1.8,
+    whiteSpace: "pre-wrap",
+  },
+  emptyState: {
+    minHeight: 180,
+    display: "grid",
+    placeItems: "center",
+    alignContent: "center",
+    gap: 13,
+    color: "#74819b",
+    textAlign: "center",
+  },
+  emptyIcon: {
+    fontSize: 35,
+    color: "#5f6b86",
+  },
+  successMessage: {
+    padding: 13,
+    marginBottom: 16,
+    borderRadius: 12,
+    background: "rgba(56,214,151,0.1)",
+    border: "1px solid rgba(56,214,151,0.25)",
+    color: "#58dfa8",
+  },
+  errorMessage: {
+    padding: 13,
+    marginBottom: 16,
+    borderRadius: 12,
+    background: "rgba(255,85,111,0.09)",
+    border: "1px solid rgba(255,85,111,0.24)",
+    color: "#ff8397",
+  },
+  loading: {
+    minHeight: 400,
+    display: "grid",
+    placeItems: "center",
+    color: "#8f9bb4",
+  },
+};
+
+export default App;

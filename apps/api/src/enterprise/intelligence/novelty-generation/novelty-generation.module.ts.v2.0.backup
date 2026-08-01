@@ -1,0 +1,45 @@
+﻿import { Module } from '@nestjs/common';
+import { IdeaMutationEngine } from './engines/idea-mutation.engine';
+import { IdeaRecombinationEngine } from './engines/idea-recombination.engine';
+import { NoveltyOpportunityFinderEngine } from './engines/novelty-opportunity-finder.engine';
+import { OriginalityEvaluatorEngine } from './engines/originality-evaluator.engine';
+import { ProtectabilityPredictorEngine } from './engines/protectability-predictor.engine';
+import { WeaknessAnalyzerEngine } from './engines/weakness-analyzer.engine';
+import { NoveltyGenerationController } from './novelty-generation.controller';
+import { NoveltyGenerationService } from './novelty-generation.service';
+
+import { ConceptMutationEngine } from './v2/engines/concept-mutation.engine';
+import { DnaNoveltyEvaluatorEngine } from './v2/engines/dna-novelty-evaluator.engine';
+import { DnaRecombinationEngine } from './v2/engines/dna-recombination.engine';
+import { IdeaDnaExtractorEngine } from './v2/engines/idea-dna-extractor.engine';
+import { IdeaRebuilderEngine } from './v2/engines/idea-rebuilder.engine';
+import { NoveltyGenerationV2Service } from './v2/novelty-generation-v2.service';
+
+@Module({
+  controllers: [
+    NoveltyGenerationController,
+  ],
+
+  providers: [
+    NoveltyGenerationService,
+    WeaknessAnalyzerEngine,
+    NoveltyOpportunityFinderEngine,
+    IdeaMutationEngine,
+    IdeaRecombinationEngine,
+    OriginalityEvaluatorEngine,
+    ProtectabilityPredictorEngine,
+
+    NoveltyGenerationV2Service,
+    IdeaDnaExtractorEngine,
+    ConceptMutationEngine,
+    DnaRecombinationEngine,
+    DnaNoveltyEvaluatorEngine,
+    IdeaRebuilderEngine,
+  ],
+
+  exports: [
+    NoveltyGenerationService,
+    NoveltyGenerationV2Service,
+  ],
+})
+export class NoveltyGenerationModule {}

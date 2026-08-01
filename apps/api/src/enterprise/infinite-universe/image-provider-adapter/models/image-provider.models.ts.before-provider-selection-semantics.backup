@@ -1,0 +1,194 @@
+﻿export type ImageProviderId =
+  | 'manual-export'
+  | 'mock-image';
+
+export type ImageAssetCategory =
+  | 'character-reference'
+  | 'character-expression'
+  | 'character-pose'
+  | 'environment-reference'
+  | 'prop-reference'
+  | 'storyboard-frame';
+
+export type ImageJobStatus =
+  | 'queued'
+  | 'processing'
+  | 'generated'
+  | 'exported'
+  | 'approval-required'
+  | 'approved'
+  | 'rejected'
+  | 'failed'
+  | 'blocked';
+
+export interface ImageGenerationRequest {
+  requestId: string;
+
+  worldId: string;
+  bibleId: string;
+  storyboardId?: string;
+
+  providerId: ImageProviderId;
+
+  category: ImageAssetCategory;
+
+  sourceEntityId: string;
+  sourceEntityName: string;
+
+  sourceEntityType:
+    | 'character'
+    | 'environment'
+    | 'prop'
+    | 'storyboard-frame';
+
+  resolvedProviderId?: ImageProviderId;
+  providerLockId?: string;
+  providerLockApplied?: boolean;
+  providerFallbackUsed?: boolean;
+  providerFallbackReason?: string;
+
+  prompt: string;
+  negativePrompt: string;
+
+  width: number;
+  height: number;
+
+  imageCount: number;
+
+  continuityKeys: string[];
+  identityLockPrompt?: string;
+
+  metadata: Record<
+    string,
+    string | number | boolean | string[]
+  >;
+}
+
+export interface GeneratedImageAsset {
+  assetId: string;
+  requestId: string;
+
+  providerId: ImageProviderId;
+  providerAssetId?: string;
+
+  category: ImageAssetCategory;
+
+  sourceEntityId: string;
+  sourceEntityName: string;
+
+  imageUrl?: string;
+  localPath?: string;
+  exportPath?: string;
+
+  mimeType: string;
+  width: number;
+  height: number;
+
+  prompt: string;
+  negativePrompt: string;
+
+  continuityKeys: string[];
+
+  status:
+    | 'generated'
+    | 'exported'
+    | 'approval-required'
+    | 'approved'
+    | 'rejected';
+
+  approval: {
+    required: boolean;
+    approved: boolean;
+    approvedAt?: string;
+    rejectedAt?: string;
+    notes?: string;
+  };
+
+  createdAt: string;
+}
+
+export interface ImageGenerationJob {
+  jobId: string;
+
+  worldId: string;
+  bibleId: string;
+  storyboardId?: string;
+
+  providerId: ImageProviderId;
+
+  providerPolicy: {
+    requestedProviderId: ImageProviderId;
+    resolvedProviderIds: ImageProviderId[];
+    lockEnforcementEnabled: boolean;
+    mixedProvidersDetected: boolean;
+    mixedProvidersAllowed: boolean;
+    fallbackUsageCount: number;
+  };
+
+  categories: ImageAssetCategory[];
+
+  status: ImageJobStatus;
+
+  requests: ImageGenerationRequest[];
+  assets: GeneratedImageAsset[];
+
+  progress: {
+    totalRequests: number;
+    completedRequests: number;
+    failedRequests: number;
+    blockedRequests: number;
+    percentage: number;
+  };
+
+  approvalGate: {
+    referencesMustBeApprovedBeforeStoryboard: boolean;
+    approvedReferenceAssets: number;
+    requiredReferenceAssets: number;
+    storyboardGenerationUnlocked: boolean;
+  };
+
+  errors: string[];
+  warnings: string[];
+
+  createdAt: string;
+  startedAt?: string;
+  completedAt?: string;
+}
+
+export interface ImageProviderCapabilities {
+  providerId: ImageProviderId;
+  displayName: string;
+
+  available: boolean;
+  configured: boolean;
+
+  capabilities: {
+    textToImage: boolean;
+    referenceImageInput: boolean;
+    negativePrompt: boolean;
+    multipleImages: boolean;
+    transparentBackground: boolean;
+    deterministicSeed: boolean;
+  };
+
+  executionMode:
+    | 'manual-export'
+    | 'simulation';
+
+  limitations: string[];
+}
+
+export interface ImageProviderExecutionResult {
+  success: boolean;
+
+  providerId: ImageProviderId;
+  status:
+    | 'generated'
+    | 'exported'
+    | 'failed';
+
+  assets: GeneratedImageAsset[];
+  errors: string[];
+  warnings: string[];
+}
+

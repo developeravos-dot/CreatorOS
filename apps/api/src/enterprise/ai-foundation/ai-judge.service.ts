@@ -1,0 +1,149 @@
+﻿import { Injectable } from '@nestjs/common';
+import { AiCriticResult } from './ai-semantic-critic.service';
+
+export type AiJudgeDecision =
+  | 'ACCEPT'
+  | 'REGENERATE'
+  | 'HUMAN_REVIEW';
+
+export interface AiJudgeInput {
+  semantic: AiCriticResult;
+  originality: AiCriticResult;
+  domain: AiCriticResult;
+  safety: AiCriticResult;
+  generationAttempt: number;
+  maximumGenerationAttempts: number;
+}
+
+export interface AiJudgeResult {
+  decision: AiJudgeDecision;
+  passed: boolean;
+  score: number;
+  confidence: number;
+  reasons: string[];
+  failedCritics: string[];
+  regenerationRequired: boolean;
+  regenerationInstructions: string[];
+  humanReviewRequired: boolean;
+}
+
+@Injectable()
+export class AiJudgeService {
+  decide(input: AiJudgeInput): AiJudgeResult {
+    const critics = {
+      semantic: input.semantic,
+      semanticOriginality:
+        input.originality,
+      domain: input.domain,
+      safety: input.safety,
+    };
+
+    const failedCritics =
+      Object.entries(critics)
+        .filter(
+          ([, result]) => !result.passed,
+        )
+        .map(([name]) => name);
+
+    const score = Math.round(
+      input.semantic.score * 0.28 +
+        input.originality.score * 0.3 +
+        input.domain.score * 0.17 +
+        input.safety.score * 0.25,
+    );
+
+    const confidence = Math.round(
+      input.semantic.confidence * 0.28 +
+        input.originality.confidence * 0.3 +
+        input.domain.confidence * 0.17 +
+        input.safety.confidence * 0.25,
+    );
+
+    const regenerationInstructions =
+      this.collectInstructions(
+        critics,
+      );
+
+    let decision: AiJudgeDecision;
+
+    if (
+      input.safety.passed &&
+      input.semantic.passed &&
+      input.originality.passed &&
+      input.domain.passed &&
+      score >= 78
+    ) {
+      decision = 'ACCEPT';
+    } else if (
+      !input.safety.passed ||
+      input.generationAttempt >=
+        input.maximumGenerationAttempts
+    ) {
+      decision = 'HUMAN_REVIEW';
+    } else {
+      decision = 'REGENERATE';
+    }
+
+    const reasons: string[] = [];
+
+    if (decision === 'ACCEPT') {
+      reasons.push(
+        'وافق مجلس المراجعة على المحتوى بعد اجتياز جميع النقاد.',
+      );
+    }
+
+    if (decision === 'REGENERATE') {
+      reasons.push(
+        `يلزم إعادة التوليد بسبب فشل: ${failedCritics.join(', ')}.`,
+      );
+    }
+
+    if (decision === 'HUMAN_REVIEW') {
+      reasons.push(
+        !input.safety.passed
+          ? 'تم تحويل المهمة للمراجعة البشرية بسبب فشل السلامة.'
+          : 'تم استنفاد محاولات التوليد دون اجتياز المجلس.',
+      );
+    }
+
+    return {
+      decision,
+      passed: decision === 'ACCEPT',
+      score,
+      confidence,
+      reasons,
+      failedCritics,
+      regenerationRequired:
+        decision === 'REGENERATE',
+      regenerationInstructions,
+      humanReviewRequired:
+        decision === 'HUMAN_REVIEW',
+    };
+  }
+
+  private collectInstructions(
+    critics: Record<
+      string,
+      AiCriticResult
+    >,
+  ): string[] {
+    const instructions =
+      Object.values(critics)
+        .filter(
+          (critic) => !critic.passed,
+        )
+        .flatMap(
+          (critic) =>
+            critic.recommendations,
+        )
+        .map(
+          (instruction) =>
+            instruction.trim(),
+        )
+        .filter(Boolean);
+
+    return [
+      ...new Set(instructions),
+    ];
+  }
+}

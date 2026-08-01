@@ -1,0 +1,35 @@
+﻿import {
+  IsIn,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+
+export class ResolveCompatibleProviderDto {
+  @IsIn([
+    'character-reference',
+    'character-expression',
+    'character-pose',
+    'environment-reference',
+    'prop-reference',
+    'storyboard-frame',
+  ])
+  workload!:
+    | 'character-reference'
+    | 'character-expression'
+    | 'character-pose'
+    | 'environment-reference'
+    | 'prop-reference'
+    | 'storyboard-frame';
+
+  @IsOptional()
+  @IsString()
+  requestedProviderId?: string;
+
+  @IsOptional()
+  @IsString()
+  entityId?: string;
+
+  @IsOptional()
+  @IsString()
+  worldId?: string;
+}
