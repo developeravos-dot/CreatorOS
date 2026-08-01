@@ -1,9 +1,8 @@
-import {
+﻿import {
   useMemo,
   useState,
 } from "react";
 import {
-  enterpriseApi,
   type EnterpriseDashboard,
   type EnterpriseProject,
   type EnterpriseScript,
@@ -21,10 +20,12 @@ import {
   MainLayout,
   type CreatorView,
 } from "./layouts";
+
 type View = CreatorView;
 
 function App() {
   const [view, setView] = useState<View>("dashboard");
+
   const {
     dashboard,
     connected,
@@ -37,6 +38,7 @@ function App() {
     loadDashboard,
     runAction,
   } = useCreatorDashboard();
+
   const operations = useCreatorOperations({
     dashboard,
     setError,
@@ -53,7 +55,8 @@ function App() {
     changeScriptStatus,
     editScript,
   } = operations;
-const currentTitle = useMemo(() => {
+
+  const currentTitle = useMemo(() => {
     const titles: Record<View, string> = {
       dashboard: "مركز قيادة المحتوى",
       projects: "إدارة المشاريع",
@@ -63,7 +66,7 @@ const currentTitle = useMemo(() => {
       "ai-content": "استوديو المحتوى الذكي",
     };
 
-    return titles[view];
+    return titles[view] ?? "";
   }, [view]);
 
   return (
@@ -84,14 +87,17 @@ const currentTitle = useMemo(() => {
         />
       }
     >
+      {message ? (
+        <div style={styles.successMessage}>
+          {message}
+        </div>
+      ) : null}
 
-        {message && (
-          <div style={styles.successMessage}>{message}</div>
-        )}
-
-        {error && (
-          <div style={styles.errorMessage}>{error}</div>
-        )}
+      {error ? (
+        <div style={styles.errorMessage}>
+          {error}
+        </div>
+      ) : null}
 
       {loading ? (
         <div style={styles.loading}>
@@ -120,8 +126,9 @@ const currentTitle = useMemo(() => {
         error={error}
         operations={operations}
       />
-</MainLayout>
+    </MainLayout>
   );
 }
 
 export default App;
+
