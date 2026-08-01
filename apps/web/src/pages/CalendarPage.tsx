@@ -1,11 +1,22 @@
-﻿import type {
+﻿import {
+  useMemo,
+  useState,
+} from "react";
+import type {
   EnterpriseCalendarItem,
   EnterpriseProject,
 } from "../enterprise-api";
-
-import { EmptyState } from "../components/shared";
-import { styles } from "../styles/appStyles";
-import { platformLabels } from "../utils/contentLabels";
+import {
+  CalendarDetailsPanel,
+  CalendarMonthView,
+  CalendarTimelineView,
+  CalendarToolbar,
+  CalendarWeekView,
+  normalizeCalendarItem,
+  type CalendarDisplayItem,
+  type CalendarViewMode,
+} from "../features/calendar-v2";
+import "../features/calendar-v2/calendar-v2.css";
 
 interface CalendarPageProps {
   items: EnterpriseCalendarItem[];
@@ -14,91 +25,222 @@ interface CalendarPageProps {
   onCreate: () => Promise<void>;
 }
 
-export default function CalendarPage(
-  props: CalendarPageProps,
-) {
-  const projectName = (projectId: string) =>
-    props.projects.find(
-      (project) => project.id === projectId,
-    )?.name ?? "مشروع غير معروف";
+export default function CalendarPage({
+  items,
+  projects,
+  busy,
+  onCreate,
+}: CalendarPageProps) {
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("all");
+  const [projectId, setProjectId] = useState("all");
+  const [viewMode, setViewMode] =
+    useState<CalendarViewMode>("month");
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedItem, setSelectedItem] =
+    useState<CalendarDisplayItem | null>(null);
+  const [localDates, setLocalDates] =
+    useState<Record<string, Date>>({});
+
+  const normalizedItems = useMemo(
+    () =>
+      items.map((item, index) => {
+        const normalized = normalizeCalendarItem(
+          item,
+          projects,
+          index,
+        );
+
+        return {
+          ...normalized,
+          date: localDates[normalized.id] ?? normalized.date,
+        };
+      }),
+    [items, localDates, projects],
+  );
+
+  const statuses = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          normalizedItems
+            .map((item) => item.status)
+            .filter(Boolean),
+        ),
+      ),
+    [normalizedItems],
+  );
+
+  const filteredItems = useMemo(() => {
+    const normalizedSearch = search.trim().toLowerCase();
+
+    return normalizedItems.filter((item) => {
+      const matchesSearch =
+        normalizedSearch.length === 0 ||
+        item.title.toLowerCase().includes(normalizedSearch) ||
+        item.projectName.toLowerCase().includes(normalizedSearch) ||
+        item.platform.toLowerCase().includes(normalizedSearch) ||
+        item.status.toLowerCase().includes(normalizedSearch);
+
+      const matchesStatus =
+        status === "all" || item.status === status;
+
+      const matchesProject =
+        projectId === "all" || item.projectId === projectId;
+
+      return matchesSearch && matchesStatus && matchesProject;
+    });
+  }, [
+    normalizedItems,
+    projectId,
+    search,
+    status,
+  ]);
+
+  const datedItems = normalizedItems.filter((item) => item.date);
+  const undatedItems = normalizedItems.length - datedItems.length;
+
+  function movePeriod(direction: number) {
+    setCurrentDate((previous) => {
+      const next = new Date(previous);
+
+      if (viewMode === "month") {
+        next.setMonth(previous.getMonth() + direction);
+      } else {
+        next.setDate(previous.getDate() + direction * 7);
+      }
+
+      return next;
+    });
+  }
+
+  function moveItemLocally(itemId: string, date: Date) {
+    setLocalDates((previous) => ({
+      ...previous,
+      [itemId]: new Date(date),
+    }));
+  }
+
+  const periodTitle =
+    viewMode === "month"
+      ? new Intl.DateTimeFormat("en", {
+          month: "long",
+          year: "numeric",
+        }).format(currentDate)
+      : `Week of ${new Intl.DateTimeFormat("en", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }).format(currentDate)}`;
 
   return (
-    <section style={styles.panel}>
-      <div style={styles.panelHeader}>
+    <div className="calendar-v2">
+      <header className="calendar-v2-header">
         <div>
-          <div style={styles.eyebrow}>
-            CONTENT CALENDAR
+          <span>CONTENT CALENDAR</span>
+          <h2>Publishing Operations</h2>
+          <p>
+            Plan, inspect and organize scheduled CreatorOS content across
+            projects and platforms.
+          </p>
+        </div>
+
+        <div className="calendar-v2-header__stats">
+          <div>
+            <strong>{items.length}</strong>
+            <span>Total items</span>
           </div>
 
-          <h2 style={styles.panelTitle}>
-            تقويم المحتوى
-          </h2>
+          <div>
+            <strong>{datedItems.length}</strong>
+            <span>Scheduled</span>
+          </div>
+
+          <div>
+            <strong>{undatedItems}</strong>
+            <span>Without date</span>
+          </div>
+        </div>
+      </header>
+
+      <CalendarToolbar
+        search={search}
+        status={status}
+        projectId={projectId}
+        viewMode={viewMode}
+        statuses={statuses}
+        projects={projects.map((project) => ({
+          id: String(project.id),
+          name: project.name,
+        }))}
+        busy={busy}
+        onSearchChange={setSearch}
+        onStatusChange={setStatus}
+        onProjectChange={setProjectId}
+        onViewChange={setViewMode}
+        onCreate={() => void onCreate()}
+      />
+
+      <section className="calendar-v2-period">
+        <button
+          type="button"
+          onClick={() => movePeriod(-1)}
+        >
+          ‹
+        </button>
+
+        <div>
+          <span>CURRENT PERIOD</span>
+          <h3>{periodTitle}</h3>
         </div>
 
         <button
           type="button"
-          style={styles.primaryButton}
-          disabled={props.busy}
-          onClick={() => void props.onCreate()}
+          onClick={() => movePeriod(1)}
         >
-          ＋ جدولة محتوى
+          ›
         </button>
-      </div>
 
-      {props.items.length === 0 ? (
-        <EmptyState text="لا توجد عناصر مجدولة حتى الآن." />
-      ) : (
-        <div style={styles.list}>
-          {props.items
-            .slice()
-            .sort(
-              (a, b) =>
-                Date.parse(a.scheduledAt) -
-                Date.parse(b.scheduledAt),
-            )
-            .map((item) => (
-              <article
-                key={item.id}
-                style={styles.calendarCard}
-              >
-                <div style={styles.calendarDate}>
-                  <strong>
-                    {new Date(
-                      item.scheduledAt,
-                    ).toLocaleDateString("ar-AE", {
-                      day: "2-digit",
-                      month: "short",
-                    })}
-                  </strong>
+        <button
+          type="button"
+          className="calendar-v2-period__today"
+          onClick={() => setCurrentDate(new Date())}
+        >
+          Today
+        </button>
+      </section>
 
-                  <span>
-                    {new Date(
-                      item.scheduledAt,
-                    ).toLocaleTimeString("ar-AE", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </span>
-                </div>
+      <section className="calendar-v2-workspace">
+        {viewMode === "month" ? (
+          <CalendarMonthView
+            currentDate={currentDate}
+            items={filteredItems}
+            onSelect={setSelectedItem}
+            onLocalMove={moveItemLocally}
+          />
+        ) : null}
 
-                <div style={{ flex: 1 }}>
-                  <h3 style={styles.itemTitle}>
-                    {item.title}
-                  </h3>
+        {viewMode === "week" ? (
+          <CalendarWeekView
+            currentDate={currentDate}
+            items={filteredItems}
+            onSelect={setSelectedItem}
+            onLocalMove={moveItemLocally}
+          />
+        ) : null}
 
-                  <p style={styles.itemDescription}>
-                    {projectName(item.projectId)} ·{" "}
-                    {platformLabels[item.platform]}
-                  </p>
-                </div>
+        {viewMode === "timeline" ? (
+          <CalendarTimelineView
+            items={filteredItems}
+            onSelect={setSelectedItem}
+          />
+        ) : null}
+      </section>
 
-                <span style={styles.badge}>
-                  مجدول
-                </span>
-              </article>
-            ))}
-        </div>
-      )}
-    </section>
+      <CalendarDetailsPanel
+        item={selectedItem}
+        onClose={() => setSelectedItem(null)}
+      />
+    </div>
   );
 }
