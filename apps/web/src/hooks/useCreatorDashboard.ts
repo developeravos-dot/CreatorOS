@@ -9,6 +9,8 @@ import {
   type EnterpriseDashboard,
 } from "../enterprise-api";
 
+import { queryClient } from "../api/data-engine/QueryClient";
+
 const emptyDashboard: EnterpriseDashboard = {
   projects: [],
   scripts: [],
@@ -56,7 +58,11 @@ export function useCreatorDashboard() {
     try {
       const [health, data] = await Promise.all([
         enterpriseApi.health(),
-        enterpriseApi.dashboard(),
+        queryClient.fetch(
+          "dashboard",
+          () => enterpriseApi.dashboard(),
+          10000,
+        ),
       ]);
 
       setConnected(
@@ -94,6 +100,8 @@ export function useCreatorDashboard() {
       try {
         await action();
         setMessage(successMessage);
+        queryClient.invalidate("dashboard");
+
         await loadDashboard();
       } catch (currentError) {
         setError(
@@ -127,3 +135,6 @@ export function useCreatorDashboard() {
     clearFeedback,
   };
 }
+
+
+
