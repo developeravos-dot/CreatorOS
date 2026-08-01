@@ -23,7 +23,7 @@ describe('ProtectableIdeaExtractionStageController', () => {
         providers: [
           ProtectableIdeaExtractionStageService,
         ],
-      }).compile();
+      }).useMocker(() => ({})).compile();
 
     controller =
       module.get<ProtectableIdeaExtractionStageController>(
@@ -47,3 +47,4 @@ describe('ProtectableIdeaExtractionStageController', () => {
     ).toHaveLength(24);
   });
 });
+
