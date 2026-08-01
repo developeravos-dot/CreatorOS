@@ -1,11 +1,15 @@
-﻿import type {
+﻿import { useEffect, useMemo, useState } from "react";
+import type {
   EnterpriseProject,
   EnterpriseScript,
 } from "../enterprise-api";
-
-import { EmptyState } from "../components/shared";
-import { styles } from "../styles/appStyles";
-import { scriptStatusLabels } from "../utils/contentLabels";
+import {
+  ScriptEditorWorkspace,
+  ScriptInspector,
+  ScriptsList,
+  ScriptsToolbar,
+} from "../features/scripts-v2";
+import "../features/scripts-v2/scripts-v2.css";
 
 interface ScriptsPageProps {
   scripts: EnterpriseScript[];
@@ -16,91 +20,115 @@ interface ScriptsPageProps {
   onStatus: (script: EnterpriseScript) => Promise<void>;
 }
 
-export default function ScriptsPage(
-  props: ScriptsPageProps,
-) {
-  const projectName = (projectId: string) =>
-    props.projects.find(
-      (project) => project.id === projectId,
-    )?.name ?? "مشروع غير معروف";
+export default function ScriptsPage({
+  scripts,
+  projects,
+  busy,
+  onCreate,
+  onEdit,
+  onStatus,
+}: ScriptsPageProps) {
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("all");
+  const [selectedScript, setSelectedScript] =
+    useState<EnterpriseScript | null>(scripts[0] ?? null);
+
+  const statuses = useMemo(
+    () =>
+      Array.from(
+        new Set(scripts.map((script) => script.status)),
+      ),
+    [scripts],
+  );
+
+  const filteredScripts = useMemo(() => {
+    const normalizedSearch = search.trim().toLowerCase();
+
+    return scripts.filter((script) => {
+      const matchesSearch =
+        normalizedSearch.length === 0 ||
+        script.title.toLowerCase().includes(normalizedSearch) ||
+        script.id.toLowerCase().includes(normalizedSearch) ||
+        script.status.toLowerCase().includes(normalizedSearch);
+
+      const matchesStatus =
+        status === "all" || script.status === status;
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [scripts, search, status]);
+
+  useEffect(() => {
+    if (
+      selectedScript &&
+      !scripts.some((script) => script.id === selectedScript.id)
+    ) {
+      setSelectedScript(scripts[0] ?? null);
+    }
+  }, [scripts, selectedScript]);
 
   return (
-    <section style={styles.panel}>
-      <div style={styles.panelHeader}>
+    <div className="scripts-v2">
+      <header className="scripts-v2-page-header">
         <div>
-          <div style={styles.eyebrow}>
-            SCRIPT WORKSPACE
+          <span>SCRIPTS WORKSPACE</span>
+          <h2>Production Scripts</h2>
+          <p>
+            Write, review and manage every CreatorOS script from one
+            focused production environment.
+          </p>
+        </div>
+
+        <div className="scripts-v2-page-header__stats">
+          <div>
+            <strong>{scripts.length}</strong>
+            <span>Total scripts</span>
           </div>
 
-          <h2 style={styles.panelTitle}>
-            محرر السكربتات
-          </h2>
+          <div>
+            <strong>{projects.length}</strong>
+            <span>Available projects</span>
+          </div>
         </div>
+      </header>
 
-        <button
-          type="button"
-          style={styles.primaryButton}
-          disabled={props.busy}
-          onClick={() => void props.onCreate()}
-        >
-          ＋ إنشاء سكربت
-        </button>
+      <ScriptsToolbar
+        search={search}
+        status={status}
+        statuses={statuses}
+        busy={busy}
+        onSearchChange={setSearch}
+        onStatusChange={setStatus}
+        onCreate={() => void onCreate()}
+      />
+
+      <div className="scripts-v2-layout">
+        <aside className="scripts-v2-library">
+          <header>
+            <div>
+              <span>SCRIPT LIBRARY</span>
+              <h3>All scripts</h3>
+            </div>
+
+            <small>{filteredScripts.length}</small>
+          </header>
+
+          <ScriptsList
+            scripts={filteredScripts}
+            selectedId={selectedScript?.id}
+            onSelect={setSelectedScript}
+          />
+        </aside>
+
+        <ScriptEditorWorkspace
+          script={selectedScript}
+          busy={busy}
+          onEdit={(script) => void onEdit(script)}
+          onStatus={(script) => void onStatus(script)}
+        />
+
+        <ScriptInspector script={selectedScript} />
       </div>
-
-      {props.scripts.length === 0 ? (
-        <EmptyState text="لا توجد سكربتات. أنشئ أول سكربت." />
-      ) : (
-        <div style={styles.list}>
-          {props.scripts.map((script) => (
-            <article
-              key={script.id}
-              style={styles.scriptCard}
-            >
-              <div style={styles.cardTop}>
-                <span style={styles.badge}>
-                  {scriptStatusLabels[script.status]}
-                </span>
-
-                <span style={styles.platform}>
-                  {projectName(script.projectId)}
-                </span>
-              </div>
-
-              <h3 style={styles.itemTitle}>
-                {script.title}
-              </h3>
-
-              <p style={styles.scriptPreview}>
-                {script.content || "السكربت فارغ."}
-              </p>
-
-              <div style={styles.cardFooter}>
-                <button
-                  type="button"
-                  style={styles.primarySmallButton}
-                  disabled={props.busy}
-                  onClick={() =>
-                    void props.onEdit(script)
-                  }
-                >
-                  تعديل السكربت
-                </button>
-
-                <button
-                  type="button"
-                  style={styles.secondaryButton}
-                  disabled={props.busy}
-                  onClick={() =>
-                    void props.onStatus(script)
-                  }
-                >
-                  تغيير المرحلة
-                </button>
-              </div>
-            </article>
-          ))}
-        </div>
-      )}
-    </section>
+    </div>
   );
 }
