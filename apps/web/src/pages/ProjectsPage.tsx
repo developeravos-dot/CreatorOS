@@ -1,12 +1,12 @@
-﻿import type { EnterpriseProject } from "../enterprise-api";
-
-import { EmptyState } from "../components/shared";
-import { styles } from "../styles/appStyles";
-
+﻿import { useMemo, useState } from "react";
+import type { EnterpriseProject } from "../enterprise-api";
 import {
-  platformLabels,
-  statusLabels,
-} from "../utils/contentLabels";
+  ProjectDetailsPanel,
+  ProjectsKanban,
+  ProjectsTable,
+  ProjectsToolbar,
+} from "../features/projects-v2";
+import "../features/projects-v2/projects-v2.css";
 
 interface ProjectsPageProps {
   projects: EnterpriseProject[];
@@ -16,87 +16,126 @@ interface ProjectsPageProps {
   onDelete: (project: EnterpriseProject) => Promise<void>;
 }
 
-export default function ProjectsPage(
-  props: ProjectsPageProps,
-) {
+export default function ProjectsPage({
+  projects,
+  busy,
+  onCreate,
+  onStatus,
+  onDelete,
+}: ProjectsPageProps) {
+  const [search, setSearch] = useState("");
+  const [platform, setPlatform] = useState("all");
+  const [status, setStatus] = useState("all");
+  const [viewMode, setViewMode] = useState<"table" | "kanban">(
+    "table",
+  );
+  const [selectedProject, setSelectedProject] =
+    useState<EnterpriseProject | null>(null);
+
+  const platforms = useMemo(
+    () =>
+      Array.from(
+        new Set(projects.map((project) => project.platform)),
+      ),
+    [projects],
+  );
+
+  const statuses = useMemo(
+    () =>
+      Array.from(
+        new Set(projects.map((project) => project.status)),
+      ),
+    [projects],
+  );
+
+  const filteredProjects = useMemo(() => {
+    const normalizedSearch = search.trim().toLowerCase();
+
+    return projects.filter((project) => {
+      const matchesSearch =
+        normalizedSearch.length === 0 ||
+        project.name.toLowerCase().includes(normalizedSearch) ||
+        project.id.toLowerCase().includes(normalizedSearch) ||
+        project.platform.toLowerCase().includes(normalizedSearch) ||
+        project.status.toLowerCase().includes(normalizedSearch);
+
+      const matchesPlatform =
+        platform === "all" || project.platform === platform;
+
+      const matchesStatus =
+        status === "all" || project.status === status;
+
+      return matchesSearch && matchesPlatform && matchesStatus;
+    });
+  }, [platform, projects, search, status]);
+
   return (
-    <section style={styles.panel}>
-      <div style={styles.panelHeader}>
+    <div className="projects-v2">
+      <header className="projects-v2-header">
         <div>
-          <div style={styles.eyebrow}>
-            PROJECT MANAGEMENT
+          <span>PROJECTS WORKSPACE</span>
+          <h2>Content Projects</h2>
+          <p>
+            Organize, search and manage all CreatorOS production
+            workspaces from one operational view.
+          </p>
+        </div>
+
+        <div className="projects-v2-header__stats">
+          <div>
+            <strong>{projects.length}</strong>
+            <span>Total projects</span>
           </div>
 
-          <h2 style={styles.panelTitle}>
-            مشاريع المحتوى
-          </h2>
+          <div>
+            <strong>{filteredProjects.length}</strong>
+            <span>Visible results</span>
+          </div>
         </div>
+      </header>
 
-        <button
-          type="button"
-          style={styles.primaryButton}
-          disabled={props.busy}
-          onClick={() => void props.onCreate()}
-        >
-          ＋ إنشاء مشروع
-        </button>
-      </div>
+      <ProjectsToolbar
+        search={search}
+        platform={platform}
+        status={status}
+        viewMode={viewMode}
+        platforms={platforms}
+        statuses={statuses}
+        disabled={busy}
+        onSearchChange={setSearch}
+        onPlatformChange={setPlatform}
+        onStatusChange={setStatus}
+        onViewModeChange={setViewMode}
+        onCreate={() => void onCreate()}
+      />
 
-      {props.projects.length === 0 ? (
-        <EmptyState text="لا توجد مشاريع. أنشئ أول مشروع محتوى." />
-      ) : (
-        <div style={styles.cardsGrid}>
-          {props.projects.map((project) => (
-            <article
-              key={project.id}
-              style={styles.itemCard}
-            >
-              <div style={styles.cardTop}>
-                <span style={styles.badge}>
-                  {statusLabels[project.status]}
-                </span>
+      <section className="projects-v2-content">
+        {viewMode === "table" ? (
+          <ProjectsTable
+            projects={filteredProjects}
+            selectedId={selectedProject?.id}
+            busy={busy}
+            onSelect={setSelectedProject}
+            onStatus={(project) => void onStatus(project)}
+            onDelete={(project) => void onDelete(project)}
+          />
+        ) : (
+          <ProjectsKanban
+            projects={filteredProjects}
+            busy={busy}
+            onSelect={setSelectedProject}
+            onStatus={(project) => void onStatus(project)}
+          />
+        )}
+      </section>
 
-                <span style={styles.platform}>
-                  {platformLabels[project.platform]}
-                </span>
-              </div>
-
-              <h3 style={styles.itemTitle}>
-                {project.name}
-              </h3>
-
-              <p style={styles.itemDescription}>
-                {project.description ||
-                  "لا يوجد وصف للمشروع."}
-              </p>
-
-              <div style={styles.cardFooter}>
-                <button
-                  type="button"
-                  style={styles.secondaryButton}
-                  disabled={props.busy}
-                  onClick={() =>
-                    void props.onStatus(project)
-                  }
-                >
-                  تغيير الحالة
-                </button>
-
-                <button
-                  type="button"
-                  style={styles.dangerButton}
-                  disabled={props.busy}
-                  onClick={() =>
-                    void props.onDelete(project)
-                  }
-                >
-                  حذف
-                </button>
-              </div>
-            </article>
-          ))}
-        </div>
-      )}
-    </section>
+      <ProjectDetailsPanel
+        project={selectedProject}
+        busy={busy}
+        onClose={() => setSelectedProject(null)}
+        onStatus={(project) => void onStatus(project)}
+        onDelete={(project) => void onDelete(project)}
+      />
+    </div>
   );
 }
