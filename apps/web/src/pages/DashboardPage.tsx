@@ -1,15 +1,14 @@
-﻿import type { EnterpriseDashboard } from "../enterprise-api";
-
+﻿import { useMemo } from "react";
+import type { EnterpriseDashboard } from "../enterprise-api";
 import {
-  ActionButton,
-  CompactItem,
-  EmptyState,
-  MetricCard,
-  SystemRow,
-} from "../components/shared";
-
-import { styles } from "../styles/appStyles";
-
+  DashboardActivityFeed,
+  DashboardChart,
+  DashboardMetricCard,
+  DashboardQuickActions,
+  type DashboardActivity,
+  type DashboardQuickAction,
+} from "../features/dashboard-v2";
+import "../features/dashboard-v2/dashboard-v2.css";
 import {
   platformLabels,
   scriptStatusLabels,
@@ -26,197 +25,331 @@ interface DashboardPageProps {
   onCreatePrompt: () => Promise<void>;
 }
 
-export default function DashboardPage(
-  props: DashboardPageProps,
-) {
-  const {
-    dashboard,
-    connected,
-    busy,
-    onCreateProject,
-    onCreateScript,
-    onSchedule,
-    onCreatePrompt,
-  } = props;
+function getSystemStatusLabel(value: string): string {
+  const normalized = value.toLowerCase();
+
+  if (
+    normalized.includes("operational") ||
+    normalized.includes("active") ||
+    normalized.includes("ready") ||
+    normalized.includes("connected")
+  ) {
+    return "Operational";
+  }
+
+  return value;
+}
+
+export default function DashboardPage({
+  dashboard,
+  connected,
+  busy,
+  onCreateProject,
+  onCreateScript,
+  onSchedule,
+  onCreatePrompt,
+}: DashboardPageProps) {
+  const chartValues = useMemo(
+    () => [
+      dashboard.metrics.projects,
+      dashboard.metrics.activeProjects,
+      dashboard.metrics.scripts,
+      dashboard.metrics.scheduledContent,
+      dashboard.metrics.prompts,
+    ],
+    [dashboard.metrics],
+  );
+
+  const chartLabels = [
+    "Projects",
+    "Active",
+    "Scripts",
+    "Calendar",
+    "Prompts",
+  ];
+
+  const activities = useMemo<DashboardActivity[]>(() => {
+    const projectActivities: DashboardActivity[] = dashboard.projects
+      .slice(0, 3)
+      .map((project) => ({
+        id: `project-${project.id}`,
+        icon: "▦",
+        title: project.name,
+        description: `${
+          platformLabels[project.platform]
+        } · ${statusLabels[project.status]}`,
+        time: "Project",
+      }));
+
+    const scriptActivities: DashboardActivity[] = dashboard.scripts
+      .slice(0, 3)
+      .map((script) => ({
+        id: `script-${script.id}`,
+        icon: "✎",
+        title: script.title,
+        description: scriptStatusLabels[script.status],
+        time: "Script",
+      }));
+
+    return [...projectActivities, ...scriptActivities].slice(0, 5);
+  }, [dashboard.projects, dashboard.scripts]);
+
+  const quickActions = useMemo<DashboardQuickAction[]>(
+    () => [
+      {
+        id: "create-project",
+        icon: "＋",
+        title: "Create project",
+        description: "Start a new content workspace",
+        disabled: busy,
+        onClick: () => {
+          void onCreateProject();
+        },
+      },
+      {
+        id: "create-script",
+        icon: "✎",
+        title: "Create script",
+        description: "Add a script to a project",
+        disabled: busy,
+        onClick: () => {
+          void onCreateScript();
+        },
+      },
+      {
+        id: "schedule-content",
+        icon: "▣",
+        title: "Schedule content",
+        description: "Add a publishing date",
+        disabled: busy,
+        onClick: () => {
+          void onSchedule();
+        },
+      },
+      {
+        id: "create-prompt",
+        icon: "✦",
+        title: "Create AI prompt",
+        description: "Save an intelligent template",
+        disabled: busy,
+        onClick: () => {
+          void onCreatePrompt();
+        },
+      },
+    ],
+    [
+      busy,
+      onCreateProject,
+      onCreatePrompt,
+      onCreateScript,
+      onSchedule,
+    ],
+  );
+
+  const operationalSystems = [
+    {
+      label: "Backend API",
+      value: connected ? "Connected" : "Disconnected",
+      healthy: connected,
+    },
+    {
+      label: "Project Engine",
+      value: getSystemStatusLabel(dashboard.system.projectEngine),
+      healthy: true,
+    },
+    {
+      label: "Script Engine",
+      value: getSystemStatusLabel(dashboard.system.scriptEngine),
+      healthy: true,
+    },
+    {
+      label: "Calendar Engine",
+      value: getSystemStatusLabel(dashboard.system.calendarEngine),
+      healthy: true,
+    },
+    {
+      label: "Prompt Engine",
+      value: getSystemStatusLabel(dashboard.system.promptEngine),
+      healthy: true,
+    },
+    {
+      label: "Storage",
+      value: getSystemStatusLabel(dashboard.system.storage),
+      healthy: true,
+    },
+  ];
+
+  const healthySystems = operationalSystems.filter(
+    (system) => system.healthy,
+  ).length;
+
+  const systemHealth = Math.round(
+    (healthySystems / operationalSystems.length) * 100,
+  );
 
   return (
-    <>
-      <section style={styles.metricsGrid}>
-        <MetricCard
-          icon="▦"
-          label="المشاريع"
+    <div className="dashboard-v2">
+      <header className="dashboard-v2__header">
+        <div>
+          <span>CREATOROS ENTERPRISE</span>
+          <h2>Command Center</h2>
+          <p>
+            Monitor projects, scripts, publishing operations and the
+            CreatorOS production infrastructure from one workspace.
+          </p>
+        </div>
+
+        <div className="dashboard-v2__header-actions">
+          <button
+            type="button"
+            className="dashboard-v2-button"
+            disabled={busy}
+            onClick={() => void onSchedule()}
+          >
+            Schedule
+          </button>
+
+          <button
+            type="button"
+            className="dashboard-v2-button dashboard-v2-button--primary"
+            disabled={busy}
+            onClick={() => void onCreateProject()}
+          >
+            ＋ New Project
+          </button>
+        </div>
+      </header>
+
+      <section className="dashboard-v2__metrics">
+        <DashboardMetricCard
+          title="Projects"
           value={dashboard.metrics.projects}
-          note={`${dashboard.metrics.activeProjects} مشروع نشط`}
+          description="Total content workspaces"
+          icon="▦"
+          trend={`${dashboard.metrics.activeProjects} active`}
+          status="positive"
         />
 
-        <MetricCard
-          icon="✎"
-          label="السكربتات"
+        <DashboardMetricCard
+          title="Scripts"
           value={dashboard.metrics.scripts}
-          note="محتوى محفوظ في الخادم"
+          description="Scripts stored on the server"
+          icon="✎"
+          trend="Production assets"
+          status="neutral"
         />
 
-        <MetricCard
-          icon="▣"
-          label="المحتوى المجدول"
+        <DashboardMetricCard
+          title="Scheduled Content"
           value={dashboard.metrics.scheduledContent}
-          note="عناصر تقويم الإنتاج"
+          description="Publishing calendar items"
+          icon="▣"
+          trend="Calendar pipeline"
+          status={
+            dashboard.metrics.scheduledContent > 0
+              ? "positive"
+              : "warning"
+          }
         />
 
-        <MetricCard
-          icon="✦"
-          label="القوالب الذكية"
+        <DashboardMetricCard
+          title="AI Prompts"
           value={dashboard.metrics.prompts}
-          note="قوالب الذكاء الاصطناعي"
+          description="Reusable intelligent templates"
+          icon="✦"
+          trend="AI workspace"
+          status="neutral"
         />
       </section>
 
-      <section style={styles.twoColumns}>
-        <div style={styles.panel}>
-          <div style={styles.panelHeader}>
+      <section className="dashboard-v2__grid">
+        <article className="dashboard-v2-panel">
+          <header className="dashboard-v2-panel__header">
             <div>
-              <div style={styles.eyebrow}>
-                QUICK ACTIONS
+              <span>PRODUCTION OVERVIEW</span>
+              <h3>Workspace distribution</h3>
+            </div>
+          </header>
+
+          <DashboardChart
+            values={chartValues}
+            labels={chartLabels}
+          />
+        </article>
+
+        <article className="dashboard-v2-panel">
+          <header className="dashboard-v2-panel__header">
+            <div>
+              <span>QUICK ACTIONS</span>
+              <h3>Start creating</h3>
+            </div>
+          </header>
+
+          <DashboardQuickActions actions={quickActions} />
+        </article>
+
+        <article className="dashboard-v2-panel">
+          <header className="dashboard-v2-panel__header">
+            <div>
+              <span>RECENT ACTIVITY</span>
+              <h3>Latest workspace items</h3>
+            </div>
+          </header>
+
+          <DashboardActivityFeed activities={activities} />
+        </article>
+
+        <article className="dashboard-v2-panel">
+          <header className="dashboard-v2-panel__header">
+            <div>
+              <span>SYSTEM STATUS</span>
+              <h3>Operational health</h3>
+            </div>
+          </header>
+
+          <div className="dashboard-v2-system-health">
+            <div
+              className="dashboard-v2-system-health__ring"
+              style={{
+                background: `radial-gradient(
+                  circle,
+                  var(--cos-surface, #101827) 58%,
+                  transparent 59%
+                ),
+                conic-gradient(
+                  #34d399 0deg ${systemHealth * 3.6}deg,
+                  rgba(148, 163, 184, 0.1) ${systemHealth * 3.6}deg 360deg
+                )`,
+              }}
+            >
+              <div>
+                <strong>{systemHealth}%</strong>
+                <span>
+                  {connected ? "Healthy" : "Attention"}
+                </span>
               </div>
-
-              <h2 style={styles.panelTitle}>
-                مركز العمليات
-              </h2>
-            </div>
-          </div>
-
-          <div style={styles.actionsGrid}>
-            <ActionButton
-              icon="＋"
-              title="إنشاء مشروع"
-              description="إضافة مشروع محتوى جديد"
-              disabled={busy}
-              onClick={() => void onCreateProject()}
-            />
-
-            <ActionButton
-              icon="✎"
-              title="إنشاء سكربت"
-              description="إضافة سكربت إلى أحد المشاريع"
-              disabled={busy}
-              onClick={() => void onCreateScript()}
-            />
-
-            <ActionButton
-              icon="▣"
-              title="جدولة محتوى"
-              description="تحديد موعد نشر جديد"
-              disabled={busy}
-              onClick={() => void onSchedule()}
-            />
-
-            <ActionButton
-              icon="✦"
-              title="إضافة قالب ذكي"
-              description="حفظ أمر للذكاء الاصطناعي"
-              disabled={busy}
-              onClick={() => void onCreatePrompt()}
-            />
-          </div>
-        </div>
-
-        <div style={styles.panel}>
-          <div style={styles.eyebrow}>
-            LIVE SYSTEM
-          </div>
-
-          <h2 style={styles.panelTitle}>
-            حالة النظام
-          </h2>
-
-          <SystemRow
-            label="Backend API"
-            value={connected ? "متصل" : "غير متصل"}
-          />
-
-          <SystemRow
-            label="محرك المشاريع"
-            value={dashboard.system.projectEngine}
-          />
-
-          <SystemRow
-            label="محرك السكربت"
-            value={dashboard.system.scriptEngine}
-          />
-
-          <SystemRow
-            label="محرك التقويم"
-            value={dashboard.system.calendarEngine}
-          />
-
-          <SystemRow
-            label="التخزين"
-            value={dashboard.system.storage}
-          />
-        </div>
-      </section>
-
-      <section style={styles.panel}>
-        <div style={styles.panelHeader}>
-          <div>
-            <div style={styles.eyebrow}>
-              PRODUCTION WORKSPACE
             </div>
 
-            <h2 style={styles.panelTitle}>
-              أحدث المشاريع والسكربتات
-            </h2>
-          </div>
-        </div>
+            <div className="dashboard-v2-system-list">
+              {operationalSystems.map((system) => (
+                <div key={system.label}>
+                  <span>{system.label}</span>
 
-        <div style={styles.workspaceGrid}>
-          <div>
-            <h3 style={styles.sectionTitle}>
-              المشاريع
-            </h3>
-
-            {dashboard.projects.length === 0 ? (
-              <EmptyState text="لا توجد مشاريع حتى الآن." />
-            ) : (
-              dashboard.projects
-                .slice(0, 4)
-                .map((project) => (
-                  <CompactItem
-                    key={project.id}
-                    title={project.name}
-                    subtitle={`${
-                      platformLabels[project.platform]
-                    } · ${
-                      statusLabels[project.status]
-                    }`}
-                  />
-                ))
-            )}
-          </div>
-
-          <div>
-            <h3 style={styles.sectionTitle}>
-              السكربتات
-            </h3>
-
-            {dashboard.scripts.length === 0 ? (
-              <EmptyState text="لا توجد سكربتات حتى الآن." />
-            ) : (
-              dashboard.scripts
-                .slice(0, 4)
-                .map((script) => (
-                  <CompactItem
-                    key={script.id}
-                    title={script.title}
-                    subtitle={
-                      scriptStatusLabels[script.status]
+                  <strong
+                    className={
+                      system.healthy
+                        ? "dashboard-v2-system-list__healthy"
+                        : "dashboard-v2-system-list__offline"
                     }
-                  />
-                ))
-            )}
+                  >
+                    {system.value}
+                  </strong>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </article>
       </section>
-    </>
+    </div>
   );
 }
