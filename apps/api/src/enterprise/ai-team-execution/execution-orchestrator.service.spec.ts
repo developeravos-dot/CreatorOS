@@ -90,35 +90,48 @@ describe(
     });
 
     it("coordinates a successful job", async () => {
-      repository.findSessionById
-        .mockResolvedValueOnce({
-          id: "session-1",
-          status: ExecutionStatus.RUNNING,
-          progress: 0,
-          requiresHumanApproval: false,
-          approvedAt: null,
-        })
-        .mockResolvedValueOnce({
-          id: "session-1",
-          status: ExecutionStatus.COMPLETED,
-          progress: 100,
-        });
+      let session: any = {
+        id: "session-1",
+        status: ExecutionStatus.RUNNING,
+        progress: 0,
+        requiresHumanApproval: false,
+        approvedAt: null,
+      };
 
-      scheduler.tick
-        .mockResolvedValueOnce({
-          action: "job-scheduled",
-          jobId: "job-1",
-          snapshot: {
-            nextJobId: null,
-          },
-        })
-        .mockResolvedValueOnce({
-          action: "session-completed",
-          jobId: null,
-          snapshot: {
-            nextJobId: null,
-          },
-        });
+      repository.findSessionById.mockImplementation(
+        async () => session,
+      );
+
+      repository.updateSessionStatus.mockImplementation(
+        async (_sessionId, update) => {
+          session = {
+            ...session,
+            ...update,
+          };
+
+          return session;
+        },
+      );
+
+      scheduler.tick.mockResolvedValue({
+        action: "job-scheduled",
+        jobId: "job-1",
+        snapshot: {
+          nextJobId: null,
+        },
+      });
+
+      scheduler.synchronizeSessionProgress.mockImplementation(
+        async () => {
+          session = {
+            ...session,
+            status: ExecutionStatus.COMPLETED,
+            progress: 100,
+          };
+
+          return session;
+        },
+      );
 
       repository.findJobById.mockResolvedValue({
         id: "job-1",
@@ -146,10 +159,17 @@ describe(
         "job-1",
       );
 
+      expect(
+        scheduler.synchronizeSessionProgress,
+      ).toHaveBeenCalledWith(
+        "session-1",
+      );
+
       expect(result).toEqual(
         expect.objectContaining({
           status:
             ExecutionStatus.COMPLETED,
+          progress: 100,
           executedJobs: 1,
           executedSteps: 2,
           failedSteps: 0,
@@ -157,7 +177,6 @@ describe(
         }),
       );
     });
-
     it("returns waiting approval from the runner", async () => {
       repository.findSessionById
         .mockResolvedValueOnce({
@@ -211,24 +230,29 @@ describe(
     });
 
     it("marks the session failed after runner failure", async () => {
-      repository.findSessionById
-        .mockResolvedValueOnce({
-          id: "session-1",
-          status: ExecutionStatus.RUNNING,
-          progress: 30,
-          requiresHumanApproval: false,
-          approvedAt: null,
-        })
-        .mockResolvedValueOnce({
-          id: "session-1",
-          status: ExecutionStatus.RUNNING,
-          progress: 30,
-        })
-        .mockResolvedValueOnce({
-          id: "session-1",
-          status: ExecutionStatus.FAILED,
-          progress: 30,
-        });
+      let session: any = {
+        id: "session-1",
+        status: ExecutionStatus.RUNNING,
+        progress: 30,
+        requiresHumanApproval: false,
+        approvedAt: null,
+        errorMessage: null as string | null,
+      };
+
+      repository.findSessionById.mockImplementation(
+        async () => session,
+      );
+
+      repository.updateSessionStatus.mockImplementation(
+        async (_sessionId, update) => {
+          session = {
+            ...session,
+            ...update,
+          };
+
+          return session;
+        },
+      );
 
       scheduler.tick.mockResolvedValue({
         action: "job-scheduled",
@@ -254,7 +278,78 @@ describe(
           "Runtime provider failed.",
       });
 
-      repository.updateSessionStatus.mockResolvedValue(
+      const result =
+        await service.executeSession(
+          "session-1",
+        );
+
+      expect(result.failedSteps).toBe(1);
+
+      expect(result.status).toBe(
+        ExecutionStatus.FAILED,
+      );
+
+      expect(
+        repository.updateSessionStatus,
+      ).toHaveBeenCalledWith(
+        "session-1",
+        expect.objectContaining({
+          status: ExecutionStatus.FAILED,
+          progress: 30,
+          errorMessage:
+            "Runtime provider failed.",
+        }),
+      );
+    });
+    it("does not tick again after synchronization completes the session", async () => {
+      repository.findSessionById
+        .mockResolvedValueOnce({
+          id: "session-1",
+          status: ExecutionStatus.RUNNING,
+          progress: 0,
+          requiresHumanApproval: false,
+          approvedAt: null,
+        })
+        .mockResolvedValueOnce({
+          id: "session-1",
+          status: ExecutionStatus.RUNNING,
+          progress: 0,
+        })
+        .mockResolvedValueOnce({
+          id: "session-1",
+          status: ExecutionStatus.COMPLETED,
+          progress: 100,
+        })
+        .mockResolvedValueOnce({
+          id: "session-1",
+          status: ExecutionStatus.COMPLETED,
+          progress: 100,
+        });
+
+      scheduler.tick.mockResolvedValueOnce({
+        action: "job-scheduled",
+        jobId: "job-1",
+        snapshot: {
+          nextJobId: null,
+        },
+      });
+
+      repository.findJobById.mockResolvedValue({
+        id: "job-1",
+        requiresApproval: false,
+        approvedAt: null,
+      });
+
+      jobRunner.runJob.mockResolvedValue({
+        jobId: "job-1",
+        state: "completed",
+        executedSteps: 1,
+        failedSteps: 0,
+        waitingStepId: null,
+        errorMessage: null,
+      });
+
+      scheduler.synchronizeSessionProgress.mockResolvedValue(
         {},
       );
 
@@ -263,18 +358,12 @@ describe(
           "session-1",
         );
 
-      expect(result.failedSteps).toBe(1);
-
-      expect(
-        repository.updateSessionStatus,
-      ).toHaveBeenCalledWith(
-        "session-1",
-        expect.objectContaining({
-          status: ExecutionStatus.FAILED,
-          errorMessage:
-            "Runtime provider failed.",
-        }),
+      expect(result.status).toBe(
+        ExecutionStatus.COMPLETED,
       );
-    });
-  },
+
+      expect(scheduler.tick).toHaveBeenCalledTimes(
+        1,
+      );
+    });  },
 );

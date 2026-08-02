@@ -93,6 +93,22 @@ export class ExecutionOrchestratorService {
       cycle < this.maximumCycles;
       cycle++
     ) {
+      const cycleSession =
+        await this.getSessionOrThrow(
+          sessionId,
+        );
+
+      if (
+        cycleSession.status ===
+          ExecutionStatus.COMPLETED ||
+        cycleSession.status ===
+          ExecutionStatus.FAILED ||
+        cycleSession.status ===
+          ExecutionStatus.CANCELLED
+      ) {
+        break;
+      }
+
       const tick =
         await this.scheduler.tick(
           sessionId,
@@ -233,6 +249,22 @@ export class ExecutionOrchestratorService {
         .synchronizeSessionProgress(
           sessionId,
         );
+
+      const synchronizedSession =
+        await this.getSessionOrThrow(
+          sessionId,
+        );
+
+      if (
+        synchronizedSession.status ===
+          ExecutionStatus.COMPLETED ||
+        synchronizedSession.status ===
+          ExecutionStatus.FAILED ||
+        synchronizedSession.status ===
+          ExecutionStatus.CANCELLED
+      ) {
+        break;
+      }
     }
 
     const finalSession =
