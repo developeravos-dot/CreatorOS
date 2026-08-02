@@ -1,4 +1,4 @@
-﻿import { useMemo } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "../hooks";
 import type { EnterpriseDashboard } from "../enterprise-api";
 import {
@@ -11,6 +11,19 @@ import {
   type DashboardQuickAction,
 } from "../features/dashboard-v2";
 import "../features/dashboard-v2/dashboard-v2.css";
+
+import {
+  EnterpriseForecastPanel,
+  EnterpriseHealthPanel,
+  EnterpriseKpiGrid,
+  EnterpriseOpportunityPanel,
+  EnterpriseRevenuePanel,
+  IntelligenceNotificationCenter,
+  UnifiedActivityFeed,
+  useEnterpriseIntelligence,
+} from "../features/enterprise-intelligence";
+
+import "../features/enterprise-intelligence/enterprise-intelligence.css";
 import {
   platformLabels,
   scriptStatusLabels,
@@ -69,7 +82,18 @@ export default function DashboardPage({
 
   const { t } = useTranslation();
 
-  function getLocalizedSystemStatus(value: string): string {
+
+
+  const {
+    intelligence,
+    loading: intelligenceLoading,
+    refreshing: intelligenceRefreshing,
+    error: intelligenceError,
+    refresh: refreshIntelligence,
+  } = useEnterpriseIntelligence(
+    dashboard,
+  );
+function getLocalizedSystemStatus(value: string): string {
     const status = normalizeSystemStatus(value);
 
     if (status === "operational") {
@@ -112,11 +136,11 @@ const chartValues = useMemo(
       .slice(0, 3)
       .map((project) => ({
         id: `project-${project.id}`,
-        icon: "▦",
+        icon: "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“Ãƒâ€šÃ‚Â¦",
         title: project.name,
         description: `${
           platformLabels[project.platform]
-        } · ${statusLabels[project.status]}`,
+        } ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· ${statusLabels[project.status]}`,
         time: t("dashboard.activityProject"),
       }));
 
@@ -124,7 +148,7 @@ const chartValues = useMemo(
       .slice(0, 3)
       .map((script) => ({
         id: `script-${script.id}`,
-        icon: "✎",
+        icon: "ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“Ãƒâ€¦Ã‚Â½",
         title: script.title,
         description: scriptStatusLabels[script.status],
         time: t("dashboard.activityScript"),
@@ -137,7 +161,7 @@ const chartValues = useMemo(
     () => [
       {
         id: "create-project",
-        icon: "＋",
+        icon: "ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¼ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹",
         title: t("quickActions.createProject"),
         description: t("quickActions.startWorkspace"),
         disabled: busy,
@@ -147,7 +171,7 @@ const chartValues = useMemo(
       },
       {
         id: "create-script",
-        icon: "✎",
+        icon: "ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“Ãƒâ€¦Ã‚Â½",
         title: t("quickActions.createScript"),
         description: t("quickActions.addScript"),
         disabled: busy,
@@ -157,7 +181,7 @@ const chartValues = useMemo(
       },
       {
         id: "schedule-content",
-        icon: "▣",
+        icon: "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“Ãƒâ€šÃ‚Â£",
         title: t("quickActions.scheduleContent"),
         description: t("quickActions.addPublishDate"),
         disabled: busy,
@@ -167,7 +191,7 @@ const chartValues = useMemo(
       },
       {
         id: "create-prompt",
-        icon: "✦",
+        icon: "ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“Ãƒâ€šÃ‚Â¦",
         title: t("quickActions.createPrompt"),
         description: t("quickActions.saveTemplate"),
         disabled: busy,
@@ -253,7 +277,7 @@ const chartValues = useMemo(
             disabled={busy}
             onClick={() => void onCreateProject()}
           >
-            ＋ {t("actions.newProject")}
+            ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¼ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹ {t("actions.newProject")}
           </button>
         </div>
       </header>
@@ -263,7 +287,7 @@ const chartValues = useMemo(
           title={t("navigation.projects")}
           value={dashboard.metrics.projects}
           description={t("dashboard.totalWorkspaces")}
-          icon="▦"
+          icon="ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“Ãƒâ€šÃ‚Â¦"
           trend={`${dashboard.metrics.activeProjects} ${t("dashboard.active")}`}
           status="positive"
         />
@@ -272,7 +296,7 @@ const chartValues = useMemo(
           title={t("navigation.scripts")}
           value={dashboard.metrics.scripts}
           description={t("dashboard.scriptsStored")}
-          icon="✎"
+          icon="ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“Ãƒâ€¦Ã‚Â½"
           trend={t("dashboard.productionAssets")}
           status="neutral"
         />
@@ -281,7 +305,7 @@ const chartValues = useMemo(
           title={t("dashboard.scheduledContent")}
           value={dashboard.metrics.scheduledContent}
           description={t("dashboard.calendarItems")}
-          icon="▣"
+          icon="ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“Ãƒâ€šÃ‚Â£"
           trend={t("dashboard.calendarPipeline")}
           status={
             dashboard.metrics.scheduledContent > 0
@@ -294,12 +318,95 @@ const chartValues = useMemo(
           title={t("dashboard.aiPrompts")}
           value={dashboard.metrics.prompts}
           description={t("dashboard.promptTemplates")}
-          icon="✦"
+          icon="ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“Ãƒâ€šÃ‚Â¦"
           trend={t("dashboard.aiWorkspace")}
           status="neutral"
         />
       </section>
 
+      <section className="enterprise-intelligence">
+        <div className="enterprise-intelligence__status">
+          <div>
+            <strong>
+              {intelligenceLoading
+                ? "Building enterprise intelligence..."
+                : intelligenceRefreshing
+                  ? "Refreshing intelligence..."
+                  : "Enterprise intelligence operational"}
+            </strong>
+
+            <span>
+              {intelligence
+                ? `Generated: ${new Date(
+                    intelligence.generatedAt,
+                  ).toLocaleTimeString()}`
+                : "Waiting for intelligence snapshot"}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            disabled={
+              intelligenceLoading ||
+              intelligenceRefreshing
+            }
+            onClick={() =>
+              void refreshIntelligence()
+            }
+          >
+            Refresh
+          </button>
+        </div>
+
+        {intelligenceError ? (
+          <div
+            className="enterprise-intelligence__error"
+            role="alert"
+          >
+            {intelligenceError}
+          </div>
+        ) : null}
+
+        {intelligence ? (
+          <>
+            <EnterpriseKpiGrid
+              kpis={intelligence.kpis}
+            />
+
+            <div className="enterprise-intelligence-grid">
+              <EnterpriseHealthPanel
+                health={intelligence.health}
+              />
+
+              <EnterpriseForecastPanel
+                forecasts={
+                  intelligence.forecasts
+                }
+              />
+            </div>
+            <div className="enterprise-intelligence-grid">
+              <UnifiedActivityFeed
+                activities={intelligence.activities}
+              />
+
+              <IntelligenceNotificationCenter
+                intelligence={intelligence}
+              />
+            </div>
+            <div className="enterprise-intelligence-grid">
+              <EnterpriseRevenuePanel
+                revenue={intelligence.revenue}
+              />
+
+              <EnterpriseOpportunityPanel
+                opportunities={
+                  intelligence.revenue.opportunities
+                }
+              />
+            </div>
+          </>
+        ) : null}
+      </section>
       <DashboardIntelligencePanel />
 
       <section className="dashboard-v2__grid">
@@ -393,22 +500,5 @@ const chartValues = useMemo(
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

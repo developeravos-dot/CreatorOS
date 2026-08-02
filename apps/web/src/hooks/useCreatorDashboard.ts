@@ -61,7 +61,7 @@ function getErrorMessage(
     return error.message;
   }
 
-  return "Ø­Ø¯Ø« Ø®Ø·Ø£ ØºÙŠØ± Ù…ØªÙˆÙ‚Ø¹ Ø£Ø«Ù†Ø§Ø¡ Ø§Ù„Ø§ØªØµØ§Ù„ Ø¨Ø§Ù„Ø®Ø§Ø¯Ù….";
+  return "Ã˜Â­Ã˜Â¯Ã˜Â« Ã˜Â®Ã˜Â·Ã˜Â£ Ã˜ÂºÃ™Å Ã˜Â± Ã™â€¦Ã˜ÂªÃ™Ë†Ã™â€šÃ˜Â¹ Ã˜Â£Ã˜Â«Ã™â€ Ã˜Â§Ã˜Â¡ Ã˜Â§Ã™â€žÃ˜Â§Ã˜ÂªÃ˜ÂµÃ˜Â§Ã™â€ž Ã˜Â¨Ã˜Â§Ã™â€žÃ˜Â®Ã˜Â§Ã˜Â¯Ã™â€¦.";
 }
 
 export function useCreatorDashboard() {
@@ -92,6 +92,10 @@ export function useCreatorDashboard() {
       if (force) {
         queryClient.invalidate(
           apiQueryKeys.enterpriseDashboard,
+        );
+
+        queryClient.invalidate(
+          apiQueryKeys.enterpriseIntelligence,
         );
 
         queryClient.invalidate(
@@ -162,6 +166,10 @@ export function useCreatorDashboard() {
 
         queryClient.invalidate(
           apiQueryKeys.enterpriseDashboard,
+        );
+
+        queryClient.invalidate(
+          apiQueryKeys.enterpriseIntelligence,
         );
 
         await loadDashboard(true);

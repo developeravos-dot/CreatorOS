@@ -1,4 +1,4 @@
-﻿function resourceKey(
+function resourceKey(
   resource: string,
   identifier?: string,
 ): string {
@@ -12,6 +12,9 @@ export const apiQueryKeys = {
 
   enterpriseDashboard:
     "enterprise.dashboard",
+
+  enterpriseIntelligence:
+    "enterprise.intelligence.snapshot",
 
   enterpriseHealth:
     "enterprise.health",
