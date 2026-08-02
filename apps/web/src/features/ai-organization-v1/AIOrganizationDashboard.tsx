@@ -1,5 +1,4 @@
-﻿import {
-  useEffect,
+import {
   useMemo,
   useState,
 } from "react";
@@ -19,6 +18,10 @@ import type {
   AIOrganizationTaskStatus,
   AIOrganizationTeam,
 } from "./ai-organization-types";
+
+import {
+  useAIOrganizationPersistence,
+} from "./useAIOrganizationPersistence";
 import "./ai-organization-v1.css";
 
 interface AIOrganizationDashboardProps {
@@ -34,35 +37,17 @@ type OrganizationView =
   | "memory"
   | "timeline";
 
-const storageKey =
+const fallbackStorageKey =
   "creatoros.ai-organization.pack-4";
 
+const initialOrganizationState: AIOrganizationState = {
+  teams: [],
+  selectedTeamId: null,
+};
 function createId(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.random()
     .toString(36)
     .slice(2, 9)}`;
-}
-
-function loadState(): AIOrganizationState {
-  try {
-    const saved = window.localStorage.getItem(
-      storageKey,
-    );
-
-    if (!saved) {
-      return {
-        teams: [],
-        selectedTeamId: null,
-      };
-    }
-
-    return JSON.parse(saved) as AIOrganizationState;
-  } catch {
-    return {
-      teams: [],
-      selectedTeamId: null,
-    };
-  }
 }
 
 function formatDate(value: string): string {
@@ -83,8 +68,18 @@ export default function AIOrganizationDashboard({
     [runtimeAgents],
   );
 
-  const [state, setState] =
-    useState<AIOrganizationState>(loadState);
+  const {
+    state,
+    setState,
+    status: persistenceStatus,
+    error: persistenceError,
+    version: persistenceVersion,
+    reload: reloadPersistence,
+  } = useAIOrganizationPersistence({
+    workspaceKey: "default",
+    fallbackStorageKey,
+    initialState: initialOrganizationState,
+  });
 
   const [view, setView] =
     useState<OrganizationView>("overview");
@@ -105,15 +100,7 @@ export default function AIOrganizationDashboard({
     useState("");
   const [memoryContent, setMemoryContent] =
     useState("");
-
-  useEffect(() => {
-    window.localStorage.setItem(
-      storageKey,
-      JSON.stringify(state),
-    );
-  }, [state]);
-
-  const selectedTeam =
+const selectedTeam =
     state.teams.find(
       (team) => team.id === state.selectedTeamId,
     ) ??
@@ -396,6 +383,49 @@ export default function AIOrganizationDashboard({
           </div>
         </div>
       </header>
+
+      <section className="ai-organization__persistence">
+        <div className="ai-organization__persistence-main">
+          <span
+            className={`ai-organization__persistence-dot ai-organization__persistence-dot--${persistenceStatus}`}
+          />
+
+          <div>
+            <strong>
+              {persistenceStatus === "loading"
+                ? "جارٍ تحميل بيانات المنظمة"
+                : persistenceStatus === "saving"
+                  ? "جارٍ الحفظ في PostgreSQL"
+                  : persistenceStatus === "saved"
+                    ? "محفوظ في PostgreSQL"
+                    : persistenceStatus === "ready"
+                      ? "متصل بقاعدة البيانات"
+                      : "تعذر الاتصال بقاعدة البيانات"}
+            </strong>
+
+            <small>
+              {persistenceVersion !== null
+                ? `نسخة البيانات ${persistenceVersion}`
+                : "بانتظار النسخة الأولى"}
+            </small>
+          </div>
+        </div>
+
+        {persistenceError ? (
+          <div className="ai-organization__persistence-error">
+            <span>{persistenceError}</span>
+
+            <button
+              type="button"
+              onClick={() => {
+                void reloadPersistence();
+              }}
+            >
+              إعادة التحميل
+            </button>
+          </div>
+        ) : null}
+      </section>
 
       <section className="ai-organization__kpis">
         <article>
