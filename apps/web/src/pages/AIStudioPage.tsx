@@ -14,6 +14,7 @@ import {
 } from "../features/ai-studio-v2/runtime";
 import "../features/ai-studio-v2/ai-studio-v2.css";
 
+import { AIOrganizationDashboard } from "../features/ai-organization-v1";
 type RuntimeSection =
   | "agents"
   | "tasks"
@@ -294,6 +295,10 @@ export default function AIStudioPage() {
           </div>
         </article>
       </section>
+      <AIOrganizationDashboard
+        runtimeAgents={data.agents.items}
+        runtimeHealth={data.overview.health}
+      />
 
       <nav className="ai-runtime-navigation">
         {runtimeSections.map((section) => (
@@ -387,4 +392,5 @@ export default function AIStudioPage() {
     </div>
   );
 }
+
 
