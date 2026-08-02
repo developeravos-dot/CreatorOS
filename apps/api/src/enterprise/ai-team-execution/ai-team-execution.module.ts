@@ -14,6 +14,10 @@ import {
   AiTeamExecutionService,
 } from "./ai-team-execution.service";
 
+import {
+  ExecutionSchedulerService,
+} from "./execution-scheduler.service";
+
 @Module({
   controllers: [
     AiTeamExecutionController,
@@ -21,9 +25,11 @@ import {
   providers: [
     AiTeamExecutionRepository,
     AiTeamExecutionService,
+    ExecutionSchedulerService,
   ],
   exports: [
     AiTeamExecutionService,
+    ExecutionSchedulerService,
   ],
 })
 export class AiTeamExecutionModule {}

@@ -18,3 +18,11 @@ export type {
   ExecutionDomainHealth,
   UpdateExecutionStatusInput,
 } from "./ai-team-execution.contracts";
+export {
+  ExecutionSchedulerService,
+} from "./execution-scheduler.service";
+
+export type {
+  ExecutionSchedulerSnapshot,
+  ExecutionSchedulerTickResult,
+} from "./execution-scheduler.service";

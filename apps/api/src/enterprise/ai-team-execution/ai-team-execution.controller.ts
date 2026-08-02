@@ -19,6 +19,10 @@ import {
   AiTeamExecutionService,
 } from "./ai-team-execution.service";
 
+import {
+  ExecutionSchedulerService,
+} from "./execution-scheduler.service";
+
 @Controller(
   "enterprise/ai-team-execution",
 )
@@ -26,6 +30,9 @@ export class AiTeamExecutionController {
   constructor(
     private readonly service:
       AiTeamExecutionService,
+
+    private readonly scheduler:
+      ExecutionSchedulerService,
   ) {}
 
   @Get("health")
@@ -137,4 +144,61 @@ export class AiTeamExecutionController {
       input,
     );
   }
-}
+
+  @Get("sessions/:sessionId/scheduler")
+  getSchedulerSnapshot(
+    @Param("sessionId")
+    sessionId: string,
+  ) {
+    return this.scheduler.getSnapshot(
+      sessionId,
+    );
+  }
+
+  @Post("sessions/:sessionId/scheduler/start")
+  startScheduledSession(
+    @Param("sessionId")
+    sessionId: string,
+  ) {
+    return this.scheduler.startSession(
+      sessionId,
+    );
+  }
+
+  @Post("sessions/:sessionId/scheduler/next")
+  scheduleNextJob(
+    @Param("sessionId")
+    sessionId: string,
+  ) {
+    return this.scheduler.scheduleNextJob(
+      sessionId,
+    );
+  }
+
+  @Post("sessions/:sessionId/scheduler/tick")
+  tickScheduler(
+    @Param("sessionId")
+    sessionId: string,
+  ) {
+    return this.scheduler.tick(sessionId);
+  }
+
+  @Post("sessions/:sessionId/scheduler/sync")
+  synchronizeScheduler(
+    @Param("sessionId")
+    sessionId: string,
+  ) {
+    return this.scheduler.synchronizeSessionProgress(
+      sessionId,
+    );
+  }
+
+  @Post("sessions/:sessionId/scheduler/cancel")
+  cancelScheduledSession(
+    @Param("sessionId")
+    sessionId: string,
+  ) {
+    return this.scheduler.cancelSession(
+      sessionId,
+    );
+  }}
