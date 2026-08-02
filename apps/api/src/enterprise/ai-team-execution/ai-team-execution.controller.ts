@@ -34,6 +34,9 @@ import {
 import {
   RuntimeExecutionGatewayService,
 } from "./runtime-execution-gateway.service";
+import {
+  ExecutionOrchestratorService,
+} from "./execution-orchestrator.service";
 
 @Controller(
   "enterprise/ai-team-execution",
@@ -53,6 +56,9 @@ export class AiTeamExecutionController {
 
     private readonly gateway:
       RuntimeExecutionGatewayService,
+  
+    private readonly orchestrator:
+      ExecutionOrchestratorService,
   ) {}
 
   @Get("health")
@@ -276,5 +282,14 @@ export class AiTeamExecutionController {
   ) {
     return this.gateway.inspectProvider(
       providerId,
+    );
+  }
+  @Post("sessions/:sessionId/execute")
+  executeSession(
+    @Param("sessionId")
+    sessionId: string,
+  ) {
+    return this.orchestrator.executeSession(
+      sessionId,
     );
   }}
