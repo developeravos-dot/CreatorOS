@@ -1,4 +1,4 @@
-import { AiFoundationModule } from './enterprise/ai-foundation/ai-foundation.module';
+﻿import { AiFoundationModule } from './enterprise/ai-foundation/ai-foundation.module';
 import { EnterpriseFoundationModule } from "./enterprise-foundation/enterprise-foundation.module";
 import { CreatorDashboardModule } from "./creator-dashboard/creator-dashboard.module";
 import { FinalProductionModule } from './modules/final-production-mega-pack-e/final-production.module';
@@ -45,16 +45,18 @@ import { YoutubeIntelligenceStrategyMegaModule } from './modules/youtube/youtube
 import { YoutubeGlobalExpansionMegaModule } from './modules/youtube/youtube-global-expansion-mega/youtube-global-expansion-mega.module';
 import { AvosMediaModule } from './modules/media/avos-media.module';
 import { MediaResearchModule } from './avos/media-research/media-research.module';
-
+
+
 import { AiContentModule } from './ai-content/ai-content.module';
-import { IntelligenceModule } from './enterprise/intelligence/intelligence.module';
+import { IntelligenceModule } from './enterprise/intelligence/intelligence.module';
+
 import { NoveltyGenerationModule } from './enterprise/intelligence/novelty-generation/novelty-generation.module';
 import { InfiniteUniverseModule } from './enterprise/infinite-universe/infinite-universe.module';
 import { SponsorshipIntelligenceModule } from "./enterprise/business-intelligence/sponsorship/sponsorship-intelligence.module";
 import { SponsorshipBusinessIntelligenceModule } from "./enterprise/sponsorship-business-intelligence/sponsorship-business-intelligence.module";
 import { AiStudioRuntimeModule } from "./enterprise/ai-studio-runtime";
 import { AiOrganizationPersistenceModule } from "./enterprise/ai-organization-persistence";
-import { AiTeamExecutionModule } from "./enterprise/ai-team-execution";
+import { AiTeamExecutionModule } from "./enterprise/ai-team-execution/ai-team-execution.module";
 @Module({
   imports: [
     
@@ -115,6 +117,10 @@ import { AiTeamExecutionModule } from "./enterprise/ai-team-execution";
   providers: [],
 })
 export class AppModule {}
+
+console.log("APP MODULE AI TEAM CHECK");
+
+console.log("AI TEAM EXECUTION MODULE LOADED");
 
 
 

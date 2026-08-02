@@ -107,7 +107,10 @@ async function bootstrap(): Promise<void> {
   const config = app.get(ConfigService);
   const port = config.get<number>('port') ?? 3000;
 
-  await app.listen(port);
+  
+await app.listen(port);
+
+
 }
 
 void bootstrap();
