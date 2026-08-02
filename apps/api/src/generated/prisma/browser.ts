@@ -387,3 +387,8 @@ export type MediaAudienceProfile = Prisma.MediaAudienceProfileModel
  * 
  */
 export type MediaOpportunity = Prisma.MediaOpportunityModel
+/**
+ * Model AiOrganizationWorkspaceState
+ * 
+ */
+export type AiOrganizationWorkspaceState = Prisma.AiOrganizationWorkspaceStateModel

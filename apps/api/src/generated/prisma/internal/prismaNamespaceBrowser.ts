@@ -124,7 +124,8 @@ export const ModelName = {
   MediaTrend: 'MediaTrend',
   MediaCompetitor: 'MediaCompetitor',
   MediaAudienceProfile: 'MediaAudienceProfile',
-  MediaOpportunity: 'MediaOpportunity'
+  MediaOpportunity: 'MediaOpportunity',
+  AiOrganizationWorkspaceState: 'AiOrganizationWorkspaceState'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1354,6 +1355,19 @@ export const MediaOpportunityScalarFieldEnum = {
 } as const
 
 export type MediaOpportunityScalarFieldEnum = (typeof MediaOpportunityScalarFieldEnum)[keyof typeof MediaOpportunityScalarFieldEnum]
+
+
+export const AiOrganizationWorkspaceStateScalarFieldEnum = {
+  id: 'id',
+  workspaceKey: 'workspaceKey',
+  projectId: 'projectId',
+  version: 'version',
+  state: 'state',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AiOrganizationWorkspaceStateScalarFieldEnum = (typeof AiOrganizationWorkspaceStateScalarFieldEnum)[keyof typeof AiOrganizationWorkspaceStateScalarFieldEnum]
 
 
 export const SortOrder = {

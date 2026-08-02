@@ -53,9 +53,11 @@ import { InfiniteUniverseModule } from './enterprise/infinite-universe/infinite-
 import { SponsorshipIntelligenceModule } from "./enterprise/business-intelligence/sponsorship/sponsorship-intelligence.module";
 import { SponsorshipBusinessIntelligenceModule } from "./enterprise/sponsorship-business-intelligence/sponsorship-business-intelligence.module";
 import { AiStudioRuntimeModule } from "./enterprise/ai-studio-runtime";
+import { AiOrganizationPersistenceModule } from "./enterprise/ai-organization-persistence";
 @Module({
   imports: [
-    AiStudioRuntimeModule,
+    
+    AiOrganizationPersistenceModule,AiStudioRuntimeModule,
     SponsorshipBusinessIntelligenceModule,
     SponsorshipIntelligenceModule,
     AiFoundationModule,
@@ -111,6 +113,7 @@ import { AiStudioRuntimeModule } from "./enterprise/ai-studio-runtime";
   providers: [],
 })
 export class AppModule {}
+
 
 
 

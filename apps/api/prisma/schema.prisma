@@ -1473,7 +1473,7 @@ model MediaDomainEvent {
 }
 
 //
-// AME-FMP2 — Media Research Intelligence
+// AME-FMP2 â€” Media Research Intelligence
 //
 
 model MediaResearch {
@@ -1583,4 +1583,23 @@ model MediaOpportunity {
   @@index([status])
   @@index([totalScore])
   @@index([createdAt])
+}
+
+// =========================================================
+// CreatorOS AI Organization Persistence — Pack 5C
+// Persistent aggregate envelope for the Pack 4 workspace.
+// Existing AgentTeam and AgentMission models remain intact.
+// =========================================================
+
+model AiOrganizationWorkspaceState {
+  id           String   @id @default(uuid())
+  workspaceKey String   @unique
+  projectId    String?
+  version      Int      @default(1)
+  state        Json
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([projectId])
+  @@index([updatedAt])
 }

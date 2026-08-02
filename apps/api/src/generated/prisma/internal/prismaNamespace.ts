@@ -470,7 +470,8 @@ export const ModelName = {
   MediaTrend: 'MediaTrend',
   MediaCompetitor: 'MediaCompetitor',
   MediaAudienceProfile: 'MediaAudienceProfile',
-  MediaOpportunity: 'MediaOpportunity'
+  MediaOpportunity: 'MediaOpportunity',
+  AiOrganizationWorkspaceState: 'AiOrganizationWorkspaceState'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -486,7 +487,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "runtimePlugin" | "blueprint" | "blueprintVersion" | "approvalGate" | "executionPlan" | "knowledgeNode" | "knowledgeEdge" | "capability" | "organizationUnit" | "agent" | "integration" | "auditLog" | "creatorUser" | "creatorRole" | "creatorPermission" | "creatorUserRole" | "creatorRolePermission" | "creatorRefreshToken" | "creatorOutboxEvent" | "creatorIdempotencyKey" | "creatorJobRun" | "creatorUserProfile" | "creatorSession" | "creatorApiKey" | "creatorPersonalAccessToken" | "governancePolicy" | "governanceDecision" | "governanceRisk" | "governanceComplianceRule" | "governanceAssessment" | "governanceChangeRequest" | "opsService" | "opsIncident" | "opsRunbook" | "opsSla" | "opsDeployment" | "integrationEndpoint" | "integrationEventDefinition" | "integrationEvent" | "integrationWebhook" | "integrationDelivery" | "integrationSaga" | "knowledgeSource" | "knowledgeEvidence" | "knowledgeInsight" | "agentTeam" | "agentTeamMember" | "agentMission" | "agentMissionAssignment" | "agentDecision" | "eventTopic" | "eventSubscription" | "eventMessage" | "eventDelivery" | "eventDeadLetter" | "eventReplay" | "obsMetric" | "obsHealthCheck" | "obsLogEntry" | "obsTraceSpan" | "obsAlertRule" | "obsAlertEvent" | "productionPlan" | "mediaProject" | "mediaChannelFamily" | "mediaChannel" | "mediaContentIdea" | "mediaHumanApproval" | "mediaDomainEvent" | "mediaResearch" | "mediaTrend" | "mediaCompetitor" | "mediaAudienceProfile" | "mediaOpportunity"
+    modelProps: "runtimePlugin" | "blueprint" | "blueprintVersion" | "approvalGate" | "executionPlan" | "knowledgeNode" | "knowledgeEdge" | "capability" | "organizationUnit" | "agent" | "integration" | "auditLog" | "creatorUser" | "creatorRole" | "creatorPermission" | "creatorUserRole" | "creatorRolePermission" | "creatorRefreshToken" | "creatorOutboxEvent" | "creatorIdempotencyKey" | "creatorJobRun" | "creatorUserProfile" | "creatorSession" | "creatorApiKey" | "creatorPersonalAccessToken" | "governancePolicy" | "governanceDecision" | "governanceRisk" | "governanceComplianceRule" | "governanceAssessment" | "governanceChangeRequest" | "opsService" | "opsIncident" | "opsRunbook" | "opsSla" | "opsDeployment" | "integrationEndpoint" | "integrationEventDefinition" | "integrationEvent" | "integrationWebhook" | "integrationDelivery" | "integrationSaga" | "knowledgeSource" | "knowledgeEvidence" | "knowledgeInsight" | "agentTeam" | "agentTeamMember" | "agentMission" | "agentMissionAssignment" | "agentDecision" | "eventTopic" | "eventSubscription" | "eventMessage" | "eventDelivery" | "eventDeadLetter" | "eventReplay" | "obsMetric" | "obsHealthCheck" | "obsLogEntry" | "obsTraceSpan" | "obsAlertRule" | "obsAlertEvent" | "productionPlan" | "mediaProject" | "mediaChannelFamily" | "mediaChannel" | "mediaContentIdea" | "mediaHumanApproval" | "mediaDomainEvent" | "mediaResearch" | "mediaTrend" | "mediaCompetitor" | "mediaAudienceProfile" | "mediaOpportunity" | "aiOrganizationWorkspaceState"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -5966,6 +5967,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AiOrganizationWorkspaceState: {
+      payload: Prisma.$AiOrganizationWorkspaceStatePayload<ExtArgs>
+      fields: Prisma.AiOrganizationWorkspaceStateFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AiOrganizationWorkspaceStateFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOrganizationWorkspaceStatePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AiOrganizationWorkspaceStateFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOrganizationWorkspaceStatePayload>
+        }
+        findFirst: {
+          args: Prisma.AiOrganizationWorkspaceStateFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOrganizationWorkspaceStatePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AiOrganizationWorkspaceStateFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOrganizationWorkspaceStatePayload>
+        }
+        findMany: {
+          args: Prisma.AiOrganizationWorkspaceStateFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOrganizationWorkspaceStatePayload>[]
+        }
+        create: {
+          args: Prisma.AiOrganizationWorkspaceStateCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOrganizationWorkspaceStatePayload>
+        }
+        createMany: {
+          args: Prisma.AiOrganizationWorkspaceStateCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AiOrganizationWorkspaceStateCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOrganizationWorkspaceStatePayload>[]
+        }
+        delete: {
+          args: Prisma.AiOrganizationWorkspaceStateDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOrganizationWorkspaceStatePayload>
+        }
+        update: {
+          args: Prisma.AiOrganizationWorkspaceStateUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOrganizationWorkspaceStatePayload>
+        }
+        deleteMany: {
+          args: Prisma.AiOrganizationWorkspaceStateDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AiOrganizationWorkspaceStateUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AiOrganizationWorkspaceStateUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOrganizationWorkspaceStatePayload>[]
+        }
+        upsert: {
+          args: Prisma.AiOrganizationWorkspaceStateUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOrganizationWorkspaceStatePayload>
+        }
+        aggregate: {
+          args: Prisma.AiOrganizationWorkspaceStateAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAiOrganizationWorkspaceState>
+        }
+        groupBy: {
+          args: Prisma.AiOrganizationWorkspaceStateGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AiOrganizationWorkspaceStateGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AiOrganizationWorkspaceStateCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AiOrganizationWorkspaceStateCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -7218,6 +7293,19 @@ export const MediaOpportunityScalarFieldEnum = {
 export type MediaOpportunityScalarFieldEnum = (typeof MediaOpportunityScalarFieldEnum)[keyof typeof MediaOpportunityScalarFieldEnum]
 
 
+export const AiOrganizationWorkspaceStateScalarFieldEnum = {
+  id: 'id',
+  workspaceKey: 'workspaceKey',
+  projectId: 'projectId',
+  version: 'version',
+  state: 'state',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AiOrganizationWorkspaceStateScalarFieldEnum = (typeof AiOrganizationWorkspaceStateScalarFieldEnum)[keyof typeof AiOrganizationWorkspaceStateScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -8077,6 +8165,7 @@ export type GlobalOmitConfig = {
   mediaCompetitor?: Prisma.MediaCompetitorOmit
   mediaAudienceProfile?: Prisma.MediaAudienceProfileOmit
   mediaOpportunity?: Prisma.MediaOpportunityOmit
+  aiOrganizationWorkspaceState?: Prisma.AiOrganizationWorkspaceStateOmit
 }
 
 /* Types for Logging */
