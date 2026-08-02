@@ -129,7 +129,8 @@ export const ModelName = {
   ExecutionSession: 'ExecutionSession',
   ExecutionJob: 'ExecutionJob',
   ExecutionStep: 'ExecutionStep',
-  ExecutionResult: 'ExecutionResult'
+  ExecutionResult: 'ExecutionResult',
+  ExecutionAuditEvent: 'ExecutionAuditEvent'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1482,6 +1483,27 @@ export const ExecutionResultScalarFieldEnum = {
 } as const
 
 export type ExecutionResultScalarFieldEnum = (typeof ExecutionResultScalarFieldEnum)[keyof typeof ExecutionResultScalarFieldEnum]
+
+
+export const ExecutionAuditEventScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  jobId: 'jobId',
+  stepId: 'stepId',
+  resultId: 'resultId',
+  eventType: 'eventType',
+  severity: 'severity',
+  status: 'status',
+  message: 'message',
+  runtimeProviderId: 'runtimeProviderId',
+  actorType: 'actorType',
+  actorId: 'actorId',
+  metadata: 'metadata',
+  occurredAt: 'occurredAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ExecutionAuditEventScalarFieldEnum = (typeof ExecutionAuditEventScalarFieldEnum)[keyof typeof ExecutionAuditEventScalarFieldEnum]
 
 
 export const SortOrder = {

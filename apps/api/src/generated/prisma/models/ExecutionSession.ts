@@ -334,6 +334,7 @@ export type ExecutionSessionWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"ExecutionSession"> | Date | string
   workspace?: Prisma.XOR<Prisma.AiOrganizationWorkspaceStateScalarRelationFilter, Prisma.AiOrganizationWorkspaceStateWhereInput>
   jobs?: Prisma.ExecutionJobListRelationFilter
+  auditEvents?: Prisma.ExecutionAuditEventListRelationFilter
 }
 
 export type ExecutionSessionOrderByWithRelationInput = {
@@ -360,6 +361,7 @@ export type ExecutionSessionOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   workspace?: Prisma.AiOrganizationWorkspaceStateOrderByWithRelationInput
   jobs?: Prisma.ExecutionJobOrderByRelationAggregateInput
+  auditEvents?: Prisma.ExecutionAuditEventOrderByRelationAggregateInput
 }
 
 export type ExecutionSessionWhereUniqueInput = Prisma.AtLeast<{
@@ -389,6 +391,7 @@ export type ExecutionSessionWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"ExecutionSession"> | Date | string
   workspace?: Prisma.XOR<Prisma.AiOrganizationWorkspaceStateScalarRelationFilter, Prisma.AiOrganizationWorkspaceStateWhereInput>
   jobs?: Prisma.ExecutionJobListRelationFilter
+  auditEvents?: Prisma.ExecutionAuditEventListRelationFilter
 }, "id" | "sessionKey">
 
 export type ExecutionSessionOrderByWithAggregationInput = {
@@ -470,6 +473,7 @@ export type ExecutionSessionCreateInput = {
   updatedAt?: Date | string
   workspace: Prisma.AiOrganizationWorkspaceStateCreateNestedOneWithoutExecutionSessionsInput
   jobs?: Prisma.ExecutionJobCreateNestedManyWithoutSessionInput
+  auditEvents?: Prisma.ExecutionAuditEventCreateNestedManyWithoutSessionInput
 }
 
 export type ExecutionSessionUncheckedCreateInput = {
@@ -495,6 +499,7 @@ export type ExecutionSessionUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   jobs?: Prisma.ExecutionJobUncheckedCreateNestedManyWithoutSessionInput
+  auditEvents?: Prisma.ExecutionAuditEventUncheckedCreateNestedManyWithoutSessionInput
 }
 
 export type ExecutionSessionUpdateInput = {
@@ -520,6 +525,7 @@ export type ExecutionSessionUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.AiOrganizationWorkspaceStateUpdateOneRequiredWithoutExecutionSessionsNestedInput
   jobs?: Prisma.ExecutionJobUpdateManyWithoutSessionNestedInput
+  auditEvents?: Prisma.ExecutionAuditEventUpdateManyWithoutSessionNestedInput
 }
 
 export type ExecutionSessionUncheckedUpdateInput = {
@@ -545,6 +551,7 @@ export type ExecutionSessionUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jobs?: Prisma.ExecutionJobUncheckedUpdateManyWithoutSessionNestedInput
+  auditEvents?: Prisma.ExecutionAuditEventUncheckedUpdateManyWithoutSessionNestedInput
 }
 
 export type ExecutionSessionCreateManyInput = {
@@ -763,6 +770,20 @@ export type ExecutionSessionUpdateOneRequiredWithoutJobsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ExecutionSessionUpdateToOneWithWhereWithoutJobsInput, Prisma.ExecutionSessionUpdateWithoutJobsInput>, Prisma.ExecutionSessionUncheckedUpdateWithoutJobsInput>
 }
 
+export type ExecutionSessionCreateNestedOneWithoutAuditEventsInput = {
+  create?: Prisma.XOR<Prisma.ExecutionSessionCreateWithoutAuditEventsInput, Prisma.ExecutionSessionUncheckedCreateWithoutAuditEventsInput>
+  connectOrCreate?: Prisma.ExecutionSessionCreateOrConnectWithoutAuditEventsInput
+  connect?: Prisma.ExecutionSessionWhereUniqueInput
+}
+
+export type ExecutionSessionUpdateOneRequiredWithoutAuditEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.ExecutionSessionCreateWithoutAuditEventsInput, Prisma.ExecutionSessionUncheckedCreateWithoutAuditEventsInput>
+  connectOrCreate?: Prisma.ExecutionSessionCreateOrConnectWithoutAuditEventsInput
+  upsert?: Prisma.ExecutionSessionUpsertWithoutAuditEventsInput
+  connect?: Prisma.ExecutionSessionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ExecutionSessionUpdateToOneWithWhereWithoutAuditEventsInput, Prisma.ExecutionSessionUpdateWithoutAuditEventsInput>, Prisma.ExecutionSessionUncheckedUpdateWithoutAuditEventsInput>
+}
+
 export type ExecutionSessionCreateWithoutWorkspaceInput = {
   id?: string
   projectId?: string | null
@@ -785,6 +806,7 @@ export type ExecutionSessionCreateWithoutWorkspaceInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   jobs?: Prisma.ExecutionJobCreateNestedManyWithoutSessionInput
+  auditEvents?: Prisma.ExecutionAuditEventCreateNestedManyWithoutSessionInput
 }
 
 export type ExecutionSessionUncheckedCreateWithoutWorkspaceInput = {
@@ -809,6 +831,7 @@ export type ExecutionSessionUncheckedCreateWithoutWorkspaceInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   jobs?: Prisma.ExecutionJobUncheckedCreateNestedManyWithoutSessionInput
+  auditEvents?: Prisma.ExecutionAuditEventUncheckedCreateNestedManyWithoutSessionInput
 }
 
 export type ExecutionSessionCreateOrConnectWithoutWorkspaceInput = {
@@ -886,6 +909,7 @@ export type ExecutionSessionCreateWithoutJobsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.AiOrganizationWorkspaceStateCreateNestedOneWithoutExecutionSessionsInput
+  auditEvents?: Prisma.ExecutionAuditEventCreateNestedManyWithoutSessionInput
 }
 
 export type ExecutionSessionUncheckedCreateWithoutJobsInput = {
@@ -910,6 +934,7 @@ export type ExecutionSessionUncheckedCreateWithoutJobsInput = {
   errorMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  auditEvents?: Prisma.ExecutionAuditEventUncheckedCreateNestedManyWithoutSessionInput
 }
 
 export type ExecutionSessionCreateOrConnectWithoutJobsInput = {
@@ -950,6 +975,7 @@ export type ExecutionSessionUpdateWithoutJobsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.AiOrganizationWorkspaceStateUpdateOneRequiredWithoutExecutionSessionsNestedInput
+  auditEvents?: Prisma.ExecutionAuditEventUpdateManyWithoutSessionNestedInput
 }
 
 export type ExecutionSessionUncheckedUpdateWithoutJobsInput = {
@@ -974,6 +1000,123 @@ export type ExecutionSessionUncheckedUpdateWithoutJobsInput = {
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  auditEvents?: Prisma.ExecutionAuditEventUncheckedUpdateManyWithoutSessionNestedInput
+}
+
+export type ExecutionSessionCreateWithoutAuditEventsInput = {
+  id?: string
+  projectId?: string | null
+  sessionKey: string
+  name: string
+  objective?: string | null
+  status?: $Enums.ExecutionStatus
+  progress?: number
+  requiresHumanApproval?: boolean
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  failedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  context?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  finalOutput?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  errorMessage?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  workspace: Prisma.AiOrganizationWorkspaceStateCreateNestedOneWithoutExecutionSessionsInput
+  jobs?: Prisma.ExecutionJobCreateNestedManyWithoutSessionInput
+}
+
+export type ExecutionSessionUncheckedCreateWithoutAuditEventsInput = {
+  id?: string
+  workspaceId: string
+  projectId?: string | null
+  sessionKey: string
+  name: string
+  objective?: string | null
+  status?: $Enums.ExecutionStatus
+  progress?: number
+  requiresHumanApproval?: boolean
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  failedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  context?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  finalOutput?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  errorMessage?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  jobs?: Prisma.ExecutionJobUncheckedCreateNestedManyWithoutSessionInput
+}
+
+export type ExecutionSessionCreateOrConnectWithoutAuditEventsInput = {
+  where: Prisma.ExecutionSessionWhereUniqueInput
+  create: Prisma.XOR<Prisma.ExecutionSessionCreateWithoutAuditEventsInput, Prisma.ExecutionSessionUncheckedCreateWithoutAuditEventsInput>
+}
+
+export type ExecutionSessionUpsertWithoutAuditEventsInput = {
+  update: Prisma.XOR<Prisma.ExecutionSessionUpdateWithoutAuditEventsInput, Prisma.ExecutionSessionUncheckedUpdateWithoutAuditEventsInput>
+  create: Prisma.XOR<Prisma.ExecutionSessionCreateWithoutAuditEventsInput, Prisma.ExecutionSessionUncheckedCreateWithoutAuditEventsInput>
+  where?: Prisma.ExecutionSessionWhereInput
+}
+
+export type ExecutionSessionUpdateToOneWithWhereWithoutAuditEventsInput = {
+  where?: Prisma.ExecutionSessionWhereInput
+  data: Prisma.XOR<Prisma.ExecutionSessionUpdateWithoutAuditEventsInput, Prisma.ExecutionSessionUncheckedUpdateWithoutAuditEventsInput>
+}
+
+export type ExecutionSessionUpdateWithoutAuditEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionKey?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  objective?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumExecutionStatusFieldUpdateOperationsInput | $Enums.ExecutionStatus
+  progress?: Prisma.IntFieldUpdateOperationsInput | number
+  requiresHumanApproval?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  context?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  finalOutput?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workspace?: Prisma.AiOrganizationWorkspaceStateUpdateOneRequiredWithoutExecutionSessionsNestedInput
+  jobs?: Prisma.ExecutionJobUpdateManyWithoutSessionNestedInput
+}
+
+export type ExecutionSessionUncheckedUpdateWithoutAuditEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionKey?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  objective?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumExecutionStatusFieldUpdateOperationsInput | $Enums.ExecutionStatus
+  progress?: Prisma.IntFieldUpdateOperationsInput | number
+  requiresHumanApproval?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  context?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  finalOutput?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  jobs?: Prisma.ExecutionJobUncheckedUpdateManyWithoutSessionNestedInput
 }
 
 export type ExecutionSessionCreateManyWorkspaceInput = {
@@ -1021,6 +1164,7 @@ export type ExecutionSessionUpdateWithoutWorkspaceInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jobs?: Prisma.ExecutionJobUpdateManyWithoutSessionNestedInput
+  auditEvents?: Prisma.ExecutionAuditEventUpdateManyWithoutSessionNestedInput
 }
 
 export type ExecutionSessionUncheckedUpdateWithoutWorkspaceInput = {
@@ -1045,6 +1189,7 @@ export type ExecutionSessionUncheckedUpdateWithoutWorkspaceInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jobs?: Prisma.ExecutionJobUncheckedUpdateManyWithoutSessionNestedInput
+  auditEvents?: Prisma.ExecutionAuditEventUncheckedUpdateManyWithoutSessionNestedInput
 }
 
 export type ExecutionSessionUncheckedUpdateManyWithoutWorkspaceInput = {
@@ -1077,10 +1222,12 @@ export type ExecutionSessionUncheckedUpdateManyWithoutWorkspaceInput = {
 
 export type ExecutionSessionCountOutputType = {
   jobs: number
+  auditEvents: number
 }
 
 export type ExecutionSessionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   jobs?: boolean | ExecutionSessionCountOutputTypeCountJobsArgs
+  auditEvents?: boolean | ExecutionSessionCountOutputTypeCountAuditEventsArgs
 }
 
 /**
@@ -1098,6 +1245,13 @@ export type ExecutionSessionCountOutputTypeDefaultArgs<ExtArgs extends runtime.T
  */
 export type ExecutionSessionCountOutputTypeCountJobsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ExecutionJobWhereInput
+}
+
+/**
+ * ExecutionSessionCountOutputType without action
+ */
+export type ExecutionSessionCountOutputTypeCountAuditEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExecutionAuditEventWhereInput
 }
 
 
@@ -1125,6 +1279,7 @@ export type ExecutionSessionSelect<ExtArgs extends runtime.Types.Extensions.Inte
   updatedAt?: boolean
   workspace?: boolean | Prisma.AiOrganizationWorkspaceStateDefaultArgs<ExtArgs>
   jobs?: boolean | Prisma.ExecutionSession$jobsArgs<ExtArgs>
+  auditEvents?: boolean | Prisma.ExecutionSession$auditEventsArgs<ExtArgs>
   _count?: boolean | Prisma.ExecutionSessionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["executionSession"]>
 
@@ -1206,6 +1361,7 @@ export type ExecutionSessionOmit<ExtArgs extends runtime.Types.Extensions.Intern
 export type ExecutionSessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.AiOrganizationWorkspaceStateDefaultArgs<ExtArgs>
   jobs?: boolean | Prisma.ExecutionSession$jobsArgs<ExtArgs>
+  auditEvents?: boolean | Prisma.ExecutionSession$auditEventsArgs<ExtArgs>
   _count?: boolean | Prisma.ExecutionSessionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ExecutionSessionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1220,6 +1376,7 @@ export type $ExecutionSessionPayload<ExtArgs extends runtime.Types.Extensions.In
   objects: {
     workspace: Prisma.$AiOrganizationWorkspaceStatePayload<ExtArgs>
     jobs: Prisma.$ExecutionJobPayload<ExtArgs>[]
+    auditEvents: Prisma.$ExecutionAuditEventPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1639,6 +1796,7 @@ export interface Prisma__ExecutionSessionClient<T, Null = never, ExtArgs extends
   readonly [Symbol.toStringTag]: "PrismaPromise"
   workspace<T extends Prisma.AiOrganizationWorkspaceStateDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AiOrganizationWorkspaceStateDefaultArgs<ExtArgs>>): Prisma.Prisma__AiOrganizationWorkspaceStateClient<runtime.Types.Result.GetResult<Prisma.$AiOrganizationWorkspaceStatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   jobs<T extends Prisma.ExecutionSession$jobsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExecutionSession$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExecutionJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  auditEvents<T extends Prisma.ExecutionSession$auditEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExecutionSession$auditEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExecutionAuditEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2111,6 +2269,30 @@ export type ExecutionSession$jobsArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.ExecutionJobScalarFieldEnum | Prisma.ExecutionJobScalarFieldEnum[]
+}
+
+/**
+ * ExecutionSession.auditEvents
+ */
+export type ExecutionSession$auditEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ExecutionAuditEvent
+   */
+  select?: Prisma.ExecutionAuditEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ExecutionAuditEvent
+   */
+  omit?: Prisma.ExecutionAuditEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExecutionAuditEventInclude<ExtArgs> | null
+  where?: Prisma.ExecutionAuditEventWhereInput
+  orderBy?: Prisma.ExecutionAuditEventOrderByWithRelationInput | Prisma.ExecutionAuditEventOrderByWithRelationInput[]
+  cursor?: Prisma.ExecutionAuditEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ExecutionAuditEventScalarFieldEnum | Prisma.ExecutionAuditEventScalarFieldEnum[]
 }
 
 /**

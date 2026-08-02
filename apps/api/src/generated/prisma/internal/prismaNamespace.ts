@@ -475,7 +475,8 @@ export const ModelName = {
   ExecutionSession: 'ExecutionSession',
   ExecutionJob: 'ExecutionJob',
   ExecutionStep: 'ExecutionStep',
-  ExecutionResult: 'ExecutionResult'
+  ExecutionResult: 'ExecutionResult',
+  ExecutionAuditEvent: 'ExecutionAuditEvent'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -491,7 +492,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "runtimePlugin" | "blueprint" | "blueprintVersion" | "approvalGate" | "executionPlan" | "knowledgeNode" | "knowledgeEdge" | "capability" | "organizationUnit" | "agent" | "integration" | "auditLog" | "creatorUser" | "creatorRole" | "creatorPermission" | "creatorUserRole" | "creatorRolePermission" | "creatorRefreshToken" | "creatorOutboxEvent" | "creatorIdempotencyKey" | "creatorJobRun" | "creatorUserProfile" | "creatorSession" | "creatorApiKey" | "creatorPersonalAccessToken" | "governancePolicy" | "governanceDecision" | "governanceRisk" | "governanceComplianceRule" | "governanceAssessment" | "governanceChangeRequest" | "opsService" | "opsIncident" | "opsRunbook" | "opsSla" | "opsDeployment" | "integrationEndpoint" | "integrationEventDefinition" | "integrationEvent" | "integrationWebhook" | "integrationDelivery" | "integrationSaga" | "knowledgeSource" | "knowledgeEvidence" | "knowledgeInsight" | "agentTeam" | "agentTeamMember" | "agentMission" | "agentMissionAssignment" | "agentDecision" | "eventTopic" | "eventSubscription" | "eventMessage" | "eventDelivery" | "eventDeadLetter" | "eventReplay" | "obsMetric" | "obsHealthCheck" | "obsLogEntry" | "obsTraceSpan" | "obsAlertRule" | "obsAlertEvent" | "productionPlan" | "mediaProject" | "mediaChannelFamily" | "mediaChannel" | "mediaContentIdea" | "mediaHumanApproval" | "mediaDomainEvent" | "mediaResearch" | "mediaTrend" | "mediaCompetitor" | "mediaAudienceProfile" | "mediaOpportunity" | "aiOrganizationWorkspaceState" | "executionSession" | "executionJob" | "executionStep" | "executionResult"
+    modelProps: "runtimePlugin" | "blueprint" | "blueprintVersion" | "approvalGate" | "executionPlan" | "knowledgeNode" | "knowledgeEdge" | "capability" | "organizationUnit" | "agent" | "integration" | "auditLog" | "creatorUser" | "creatorRole" | "creatorPermission" | "creatorUserRole" | "creatorRolePermission" | "creatorRefreshToken" | "creatorOutboxEvent" | "creatorIdempotencyKey" | "creatorJobRun" | "creatorUserProfile" | "creatorSession" | "creatorApiKey" | "creatorPersonalAccessToken" | "governancePolicy" | "governanceDecision" | "governanceRisk" | "governanceComplianceRule" | "governanceAssessment" | "governanceChangeRequest" | "opsService" | "opsIncident" | "opsRunbook" | "opsSla" | "opsDeployment" | "integrationEndpoint" | "integrationEventDefinition" | "integrationEvent" | "integrationWebhook" | "integrationDelivery" | "integrationSaga" | "knowledgeSource" | "knowledgeEvidence" | "knowledgeInsight" | "agentTeam" | "agentTeamMember" | "agentMission" | "agentMissionAssignment" | "agentDecision" | "eventTopic" | "eventSubscription" | "eventMessage" | "eventDelivery" | "eventDeadLetter" | "eventReplay" | "obsMetric" | "obsHealthCheck" | "obsLogEntry" | "obsTraceSpan" | "obsAlertRule" | "obsAlertEvent" | "productionPlan" | "mediaProject" | "mediaChannelFamily" | "mediaChannel" | "mediaContentIdea" | "mediaHumanApproval" | "mediaDomainEvent" | "mediaResearch" | "mediaTrend" | "mediaCompetitor" | "mediaAudienceProfile" | "mediaOpportunity" | "aiOrganizationWorkspaceState" | "executionSession" | "executionJob" | "executionStep" | "executionResult" | "executionAuditEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -6341,6 +6342,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ExecutionAuditEvent: {
+      payload: Prisma.$ExecutionAuditEventPayload<ExtArgs>
+      fields: Prisma.ExecutionAuditEventFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExecutionAuditEventFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionAuditEventPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExecutionAuditEventFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionAuditEventPayload>
+        }
+        findFirst: {
+          args: Prisma.ExecutionAuditEventFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionAuditEventPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExecutionAuditEventFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionAuditEventPayload>
+        }
+        findMany: {
+          args: Prisma.ExecutionAuditEventFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionAuditEventPayload>[]
+        }
+        create: {
+          args: Prisma.ExecutionAuditEventCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionAuditEventPayload>
+        }
+        createMany: {
+          args: Prisma.ExecutionAuditEventCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ExecutionAuditEventCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionAuditEventPayload>[]
+        }
+        delete: {
+          args: Prisma.ExecutionAuditEventDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionAuditEventPayload>
+        }
+        update: {
+          args: Prisma.ExecutionAuditEventUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionAuditEventPayload>
+        }
+        deleteMany: {
+          args: Prisma.ExecutionAuditEventDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExecutionAuditEventUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ExecutionAuditEventUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionAuditEventPayload>[]
+        }
+        upsert: {
+          args: Prisma.ExecutionAuditEventUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionAuditEventPayload>
+        }
+        aggregate: {
+          args: Prisma.ExecutionAuditEventAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExecutionAuditEvent>
+        }
+        groupBy: {
+          args: Prisma.ExecutionAuditEventGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExecutionAuditEventGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExecutionAuditEventCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExecutionAuditEventCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -7716,6 +7791,27 @@ export const ExecutionResultScalarFieldEnum = {
 export type ExecutionResultScalarFieldEnum = (typeof ExecutionResultScalarFieldEnum)[keyof typeof ExecutionResultScalarFieldEnum]
 
 
+export const ExecutionAuditEventScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  jobId: 'jobId',
+  stepId: 'stepId',
+  resultId: 'resultId',
+  eventType: 'eventType',
+  severity: 'severity',
+  status: 'status',
+  message: 'message',
+  runtimeProviderId: 'runtimeProviderId',
+  actorType: 'actorType',
+  actorId: 'actorId',
+  metadata: 'metadata',
+  occurredAt: 'occurredAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ExecutionAuditEventScalarFieldEnum = (typeof ExecutionAuditEventScalarFieldEnum)[keyof typeof ExecutionAuditEventScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -8580,6 +8676,7 @@ export type GlobalOmitConfig = {
   executionJob?: Prisma.ExecutionJobOmit
   executionStep?: Prisma.ExecutionStepOmit
   executionResult?: Prisma.ExecutionResultOmit
+  executionAuditEvent?: Prisma.ExecutionAuditEventOmit
 }
 
 /* Types for Logging */

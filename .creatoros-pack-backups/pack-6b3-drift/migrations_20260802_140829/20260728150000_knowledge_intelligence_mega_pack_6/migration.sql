@@ -1,0 +1,17 @@
+CREATE TYPE "KnowledgeSourceType" AS ENUM ('DOCUMENT','DATABASE','API','HUMAN','AGENT','EVENT','EXTERNAL');
+CREATE TYPE "KnowledgeConfidenceLevel" AS ENUM ('LOW','MEDIUM','HIGH','VERIFIED');
+CREATE TYPE "KnowledgeInsightStatus" AS ENUM ('PROPOSED','APPROVED','REJECTED','RETIRED');
+CREATE TABLE "KnowledgeSource" ("id" TEXT NOT NULL,"sourceKey" TEXT NOT NULL,"name" TEXT NOT NULL,"type" "KnowledgeSourceType" NOT NULL,"uri" TEXT,"metadata" JSONB NOT NULL,"status" "RecordStatus" NOT NULL DEFAULT 'ACTIVE',"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,"updatedAt" TIMESTAMP(3) NOT NULL,CONSTRAINT "KnowledgeSource_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "KnowledgeEvidence" ("id" TEXT NOT NULL,"nodeId" TEXT NOT NULL,"sourceId" TEXT NOT NULL,"claim" TEXT NOT NULL,"confidence" "KnowledgeConfidenceLevel" NOT NULL,"score" DOUBLE PRECISION NOT NULL,"context" JSONB NOT NULL,"observedAt" TIMESTAMP(3) NOT NULL,"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,"updatedAt" TIMESTAMP(3) NOT NULL,CONSTRAINT "KnowledgeEvidence_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "KnowledgeInsight" ("id" TEXT NOT NULL,"insightKey" TEXT NOT NULL,"title" TEXT NOT NULL,"summary" TEXT NOT NULL,"category" TEXT NOT NULL,"confidence" "KnowledgeConfidenceLevel" NOT NULL,"score" DOUBLE PRECISION NOT NULL,"status" "KnowledgeInsightStatus" NOT NULL DEFAULT 'PROPOSED',"nodeId" TEXT,"evidenceIds" JSONB NOT NULL,"recommendations" JSONB NOT NULL,"metadata" JSONB NOT NULL,"reviewNote" TEXT,"reviewedAt" TIMESTAMP(3),"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,"updatedAt" TIMESTAMP(3) NOT NULL,CONSTRAINT "KnowledgeInsight_pkey" PRIMARY KEY ("id"));
+CREATE UNIQUE INDEX "KnowledgeSource_sourceKey_key" ON "KnowledgeSource"("sourceKey");
+CREATE INDEX "KnowledgeSource_type_status_idx" ON "KnowledgeSource"("type","status");
+CREATE INDEX "KnowledgeEvidence_nodeId_confidence_idx" ON "KnowledgeEvidence"("nodeId","confidence");
+CREATE INDEX "KnowledgeEvidence_sourceId_observedAt_idx" ON "KnowledgeEvidence"("sourceId","observedAt");
+CREATE UNIQUE INDEX "KnowledgeInsight_insightKey_key" ON "KnowledgeInsight"("insightKey");
+CREATE INDEX "KnowledgeInsight_status_confidence_idx" ON "KnowledgeInsight"("status","confidence");
+CREATE INDEX "KnowledgeInsight_category_updatedAt_idx" ON "KnowledgeInsight"("category","updatedAt");
+CREATE INDEX "KnowledgeInsight_nodeId_idx" ON "KnowledgeInsight"("nodeId");
+ALTER TABLE "KnowledgeEvidence" ADD CONSTRAINT "KnowledgeEvidence_nodeId_fkey" FOREIGN KEY ("nodeId") REFERENCES "KnowledgeNode"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "KnowledgeEvidence" ADD CONSTRAINT "KnowledgeEvidence_sourceId_fkey" FOREIGN KEY ("sourceId") REFERENCES "KnowledgeSource"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "KnowledgeInsight" ADD CONSTRAINT "KnowledgeInsight_nodeId_fkey" FOREIGN KEY ("nodeId") REFERENCES "KnowledgeNode"("id") ON DELETE SET NULL ON UPDATE CASCADE;

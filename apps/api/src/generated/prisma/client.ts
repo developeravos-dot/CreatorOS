@@ -434,3 +434,8 @@ export type ExecutionStep = Prisma.ExecutionStepModel
  * 
  */
 export type ExecutionResult = Prisma.ExecutionResultModel
+/**
+ * Model ExecutionAuditEvent
+ * 
+ */
+export type ExecutionAuditEvent = Prisma.ExecutionAuditEventModel
