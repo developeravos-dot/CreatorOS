@@ -18,6 +18,18 @@ import {
   ExecutionSchedulerService,
 } from "./execution-scheduler.service";
 
+import {
+  RuntimeDispatcherService,
+} from "./runtime-dispatcher.service";
+
+import {
+  RuntimeProviderRegistryService,
+} from "./runtime-provider-registry.service";
+
+import {
+  AgentAssignmentService,
+} from "./agent-assignment.service";
+
 @Module({
   controllers: [
     AiTeamExecutionController,
@@ -26,10 +38,16 @@ import {
     AiTeamExecutionRepository,
     AiTeamExecutionService,
     ExecutionSchedulerService,
+    RuntimeProviderRegistryService,
+    RuntimeDispatcherService,
+    AgentAssignmentService,
   ],
   exports: [
     AiTeamExecutionService,
     ExecutionSchedulerService,
+    RuntimeProviderRegistryService,
+    RuntimeDispatcherService,
+    AgentAssignmentService,
   ],
 })
 export class AiTeamExecutionModule {}

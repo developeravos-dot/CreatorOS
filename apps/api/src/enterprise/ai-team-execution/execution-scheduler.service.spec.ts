@@ -20,9 +20,14 @@ describe(
       updateJobStatus: jest.fn(),
     };
 
+    const assignment = {
+      assignJob: jest.fn(),
+    };
+
     const service =
       new ExecutionSchedulerService(
         repository as never,
+        assignment as never,
       );
 
     beforeEach(() => {
@@ -53,11 +58,15 @@ describe(
             id: "job-1",
             status: ExecutionStatus.COMPLETED,
             progress: 100,
+            capability: "agent",
+            runtimeProviderId: "provider-1",
           },
           {
             id: "job-2",
             status: ExecutionStatus.PENDING,
             progress: 0,
+            capability: "agent",
+            runtimeProviderId: null,
           },
         ],
       });
@@ -127,7 +136,80 @@ describe(
       );
     });
 
-    it("schedules the next pending job", async () => {
+    it("assigns and schedules the next pending job", async () => {
+      repository.findSessionById
+        .mockResolvedValueOnce({
+          id: "session-1",
+          status: ExecutionStatus.RUNNING,
+          progress: 0,
+          requiresHumanApproval: false,
+          approvedAt: null,
+          jobs: [
+            {
+              id: "job-1",
+              status: ExecutionStatus.PENDING,
+              progress: 0,
+              requiresApproval: false,
+              approvedAt: null,
+              capability: "agent",
+              runtimeProviderId: null,
+            },
+          ],
+        })
+        .mockResolvedValueOnce({
+          id: "session-1",
+          status: ExecutionStatus.RUNNING,
+          progress: 0,
+          requiresHumanApproval: false,
+          approvedAt: null,
+          jobs: [
+            {
+              id: "job-1",
+              status: ExecutionStatus.PENDING,
+              progress: 0,
+              requiresApproval: false,
+              approvedAt: null,
+              capability: "agent",
+              runtimeProviderId: "provider-1",
+            },
+          ],
+        });
+
+      assignment.assignJob.mockResolvedValue({
+        jobId: "job-1",
+        runtimeProviderId: "provider-1",
+      });
+
+      repository.updateJobStatus.mockResolvedValue({
+        id: "job-1",
+        status: ExecutionStatus.RUNNING,
+      });
+
+      await service.scheduleNextJob(
+        "session-1",
+      );
+
+      expect(
+        assignment.assignJob,
+      ).toHaveBeenCalledWith(
+        "job-1",
+        {
+          capability: "agent",
+        },
+      );
+
+      expect(
+        repository.updateJobStatus,
+      ).toHaveBeenCalledWith(
+        "job-1",
+        {
+          status: ExecutionStatus.RUNNING,
+          progress: 1,
+        },
+      );
+    });
+
+    it("schedules a job that already has a Runtime provider", async () => {
       repository.findSessionById.mockResolvedValue({
         id: "session-1",
         status: ExecutionStatus.RUNNING,
@@ -141,6 +223,8 @@ describe(
             progress: 0,
             requiresApproval: false,
             approvedAt: null,
+            capability: "agent",
+            runtimeProviderId: "provider-1",
           },
         ],
       });
@@ -153,6 +237,10 @@ describe(
       await service.scheduleNextJob(
         "session-1",
       );
+
+      expect(
+        assignment.assignJob,
+      ).not.toHaveBeenCalled();
 
       expect(
         repository.updateJobStatus,
@@ -179,6 +267,8 @@ describe(
             progress: 20,
             requiresApproval: false,
             approvedAt: null,
+            capability: "agent",
+            runtimeProviderId: "provider-1",
           },
           {
             id: "job-pending",
@@ -186,6 +276,8 @@ describe(
             progress: 0,
             requiresApproval: false,
             approvedAt: null,
+            capability: "agent",
+            runtimeProviderId: null,
           },
         ],
       });
@@ -199,7 +291,42 @@ describe(
       );
 
       expect(
+        assignment.assignJob,
+      ).not.toHaveBeenCalled();
+
+      expect(
         repository.updateJobStatus,
+      ).not.toHaveBeenCalled();
+    });
+
+    it("blocks a job that requires human approval", async () => {
+      repository.findSessionById.mockResolvedValue({
+        id: "session-1",
+        status: ExecutionStatus.RUNNING,
+        progress: 0,
+        requiresHumanApproval: false,
+        approvedAt: null,
+        jobs: [
+          {
+            id: "job-1",
+            status: ExecutionStatus.PENDING,
+            progress: 0,
+            requiresApproval: true,
+            approvedAt: null,
+            capability: "agent",
+            runtimeProviderId: null,
+          },
+        ],
+      });
+
+      await expect(
+        service.scheduleNextJob("session-1"),
+      ).rejects.toBeInstanceOf(
+        ConflictException,
+      );
+
+      expect(
+        assignment.assignJob,
       ).not.toHaveBeenCalled();
     });
 
@@ -215,11 +342,15 @@ describe(
             id: "job-1",
             status: ExecutionStatus.COMPLETED,
             progress: 100,
+            capability: "agent",
+            runtimeProviderId: "provider-1",
           },
           {
             id: "job-2",
             status: ExecutionStatus.COMPLETED,
             progress: 100,
+            capability: "agent",
+            runtimeProviderId: "provider-2",
           },
         ],
       });
@@ -257,16 +388,22 @@ describe(
             id: "job-1",
             status: ExecutionStatus.RUNNING,
             progress: 30,
+            capability: "agent",
+            runtimeProviderId: "provider-1",
           },
           {
             id: "job-2",
             status: ExecutionStatus.PENDING,
             progress: 0,
+            capability: "agent",
+            runtimeProviderId: null,
           },
           {
             id: "job-3",
             status: ExecutionStatus.COMPLETED,
             progress: 100,
+            capability: "agent",
+            runtimeProviderId: "provider-3",
           },
         ],
       });

@@ -384,6 +384,28 @@ export class AiTeamExecutionRepository {
     });
   }
 
+  assignJobProvider(
+    jobId: string,
+    assignment: {
+      assignedAgentId: string;
+      runtimeProviderId: string;
+      capability: string;
+    },
+  ) {
+    return this.prisma.executionJob.update({
+      where: {
+        id: jobId,
+      },
+      data: {
+        assignedAgentId:
+          assignment.assignedAgentId,
+        runtimeProviderId:
+          assignment.runtimeProviderId,
+        capability:
+          assignment.capability,
+      },
+    });
+  }
   private progress(
     value: number,
   ): number {

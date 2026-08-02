@@ -11,6 +11,9 @@ import {
 import {
   AiTeamExecutionRepository,
 } from "./ai-team-execution.repository";
+import {
+  AgentAssignmentService,
+} from "./agent-assignment.service";
 
 export interface ExecutionSchedulerSnapshot {
   sessionId: string;
@@ -42,6 +45,9 @@ export class ExecutionSchedulerService {
   constructor(
     private readonly repository:
       AiTeamExecutionRepository,
+
+    private readonly assignment:
+      AgentAssignmentService,
   ) {}
 
   async getSnapshot(
@@ -198,13 +204,61 @@ export class ExecutionSchedulerService {
       });
     }
 
+    let scheduledJob = nextJob;
+
+    if (
+      !scheduledJob.runtimeProviderId &&
+      scheduledJob.capability
+    ) {
+      await this.assignment.assignJob(
+        scheduledJob.id,
+        {
+          capability:
+            scheduledJob.capability,
+        },
+      );
+
+      const refreshedSession =
+        await this.getSessionOrThrow(
+          sessionId,
+        );
+
+      const refreshedJob =
+        refreshedSession.jobs.find(
+          (job) =>
+            job.id === scheduledJob.id,
+        );
+
+      if (!refreshedJob) {
+        throw new NotFoundException(
+          `Execution job disappeared after assignment: ${scheduledJob.id}`,
+        );
+      }
+
+      scheduledJob = refreshedJob;
+    }
+
+    if (
+      scheduledJob.capability &&
+      !scheduledJob.runtimeProviderId
+    ) {
+      throw new ConflictException({
+        message:
+          "Execution job has no assigned Runtime provider.",
+        sessionId,
+        jobId: scheduledJob.id,
+        capability:
+          scheduledJob.capability,
+      });
+    }
+
     return this.repository.updateJobStatus(
-      nextJob.id,
+      scheduledJob.id,
       {
         status: ExecutionStatus.RUNNING,
         progress: Math.max(
           1,
-          nextJob.progress,
+          scheduledJob.progress,
         ),
       },
     );

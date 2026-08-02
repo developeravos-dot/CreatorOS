@@ -14,6 +14,9 @@ import type {
   CreateExecutionStepInput,
   UpdateExecutionStatusInput,
 } from "./ai-team-execution.contracts";
+import type {
+  AssignExecutionJobInput,
+} from "./agent-assignment.contracts";
 
 import {
   AiTeamExecutionService,
@@ -22,6 +25,9 @@ import {
 import {
   ExecutionSchedulerService,
 } from "./execution-scheduler.service";
+import {
+  AgentAssignmentService,
+} from "./agent-assignment.service";
 
 @Controller(
   "enterprise/ai-team-execution",
@@ -33,6 +39,10 @@ export class AiTeamExecutionController {
 
     private readonly scheduler:
       ExecutionSchedulerService,
+  
+
+    private readonly assignment:
+      AgentAssignmentService,
   ) {}
 
   @Get("health")
@@ -199,6 +209,29 @@ export class AiTeamExecutionController {
     sessionId: string,
   ) {
     return this.scheduler.cancelSession(
+      sessionId,
+    );
+  }
+  @Post("jobs/:jobId/assignment")
+  assignExecutionJob(
+    @Param("jobId")
+    jobId: string,
+
+    @Body()
+    input: AssignExecutionJobInput,
+  ) {
+    return this.assignment.assignJob(
+      jobId,
+      input,
+    );
+  }
+
+  @Post("sessions/:sessionId/assignments")
+  assignPendingSessionJobs(
+    @Param("sessionId")
+    sessionId: string,
+  ) {
+    return this.assignment.assignPendingJobs(
       sessionId,
     );
   }}

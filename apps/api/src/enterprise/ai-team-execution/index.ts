@@ -26,3 +26,28 @@ export type {
   ExecutionSchedulerSnapshot,
   ExecutionSchedulerTickResult,
 } from "./execution-scheduler.service";
+export {
+  RuntimeDispatcherService,
+} from "./runtime-dispatcher.service";
+
+export {
+  RuntimeProviderRegistryService,
+} from "./runtime-provider-registry.service";
+
+export type {
+  RuntimeDispatchDecision,
+  RuntimeDispatchProvider,
+  RuntimeDispatchRequest,
+  RuntimeDispatcherOverview,
+  RuntimeProviderAvailability,
+  RuntimeProviderQuery,
+  RuntimeProviderSelection,
+} from "./runtime-provider.contracts";
+export {
+  AgentAssignmentService,
+} from "./agent-assignment.service";
+
+export type {
+  AssignExecutionJobInput,
+  ExecutionJobAssignment,
+} from "./agent-assignment.contracts";
