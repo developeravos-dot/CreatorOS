@@ -1,3 +1,6 @@
+import {
+  recordQueryDiagnostic,
+} from "../../core/observability/query-diagnostics";
 export type QueryKey = string;
 
 export type QueryStatus =
@@ -354,11 +357,19 @@ export class QueryClient {
       this.listeners.get(key);
 
     if (!listeners) {
+      recordQueryDiagnostic(
+        this.getSnapshot(key),
+      );
+
       return;
     }
 
     const snapshot =
       this.getSnapshot(key);
+
+    recordQueryDiagnostic(
+      snapshot,
+    );
 
     for (const listener of listeners) {
       listener(snapshot);
