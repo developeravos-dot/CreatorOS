@@ -51,3 +51,14 @@ export type {
   AssignExecutionJobInput,
   ExecutionJobAssignment,
 } from "./agent-assignment.contracts";
+export {
+  RuntimeExecutionGatewayService,
+} from "./runtime-execution-gateway.service";
+
+export type {
+  ExecuteRuntimeStepInput,
+  RuntimeExecutionOperation,
+  RuntimeGatewayCommand,
+  RuntimeGatewayExecutionResult,
+  RuntimeGatewayFailureResult,
+} from "./runtime-execution-gateway.contracts";

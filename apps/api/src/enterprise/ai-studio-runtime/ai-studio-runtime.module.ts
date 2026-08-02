@@ -1,4 +1,4 @@
-﻿import { Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { DiscoveryModule } from "@nestjs/core";
 import { AiStudioRuntimeCommandService } from "./ai-studio-runtime-command.service";
 import { AiStudioRuntimeController } from "./ai-studio-runtime.controller";

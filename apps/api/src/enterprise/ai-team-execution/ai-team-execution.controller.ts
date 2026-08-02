@@ -17,6 +17,9 @@ import type {
 import type {
   AssignExecutionJobInput,
 } from "./agent-assignment.contracts";
+import type {
+  ExecuteRuntimeStepInput,
+} from "./runtime-execution-gateway.contracts";
 
 import {
   AiTeamExecutionService,
@@ -28,6 +31,9 @@ import {
 import {
   AgentAssignmentService,
 } from "./agent-assignment.service";
+import {
+  RuntimeExecutionGatewayService,
+} from "./runtime-execution-gateway.service";
 
 @Controller(
   "enterprise/ai-team-execution",
@@ -43,6 +49,10 @@ export class AiTeamExecutionController {
 
     private readonly assignment:
       AgentAssignmentService,
+  
+
+    private readonly gateway:
+      RuntimeExecutionGatewayService,
   ) {}
 
   @Get("health")
@@ -233,5 +243,38 @@ export class AiTeamExecutionController {
   ) {
     return this.assignment.assignPendingJobs(
       sessionId,
+    );
+  }
+  @Post("steps/:stepId/runtime/execute")
+  executeRuntimeStep(
+    @Param("stepId")
+    stepId: string,
+
+    @Body()
+    input: ExecuteRuntimeStepInput,
+  ) {
+    return this.gateway.executeStep(
+      stepId,
+      input,
+    );
+  }
+
+  @Post("runtime/providers/:providerId/ping")
+  pingRuntimeProvider(
+    @Param("providerId")
+    providerId: string,
+  ) {
+    return this.gateway.pingProvider(
+      providerId,
+    );
+  }
+
+  @Post("runtime/providers/:providerId/inspect")
+  inspectRuntimeProvider(
+    @Param("providerId")
+    providerId: string,
+  ) {
+    return this.gateway.inspectProvider(
+      providerId,
     );
   }}

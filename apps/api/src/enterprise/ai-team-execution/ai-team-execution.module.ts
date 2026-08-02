@@ -1,10 +1,16 @@
 import {
+  AiStudioRuntimeModule,
+} from "../ai-studio-runtime/ai-studio-runtime.module";
+import {
   Module,
 } from "@nestjs/common";
 
 import {
   AiTeamExecutionController,
 } from "./ai-team-execution.controller";
+import {
+  RuntimeDispatcherController,
+} from "./runtime-dispatcher.controller";
 
 import {
   AiTeamExecutionRepository,
@@ -29,10 +35,17 @@ import {
 import {
   AgentAssignmentService,
 } from "./agent-assignment.service";
+import {
+  RuntimeExecutionGatewayService,
+} from "./runtime-execution-gateway.service";
 
 @Module({
+  imports: [
+    AiStudioRuntimeModule,
+  ],
   controllers: [
     AiTeamExecutionController,
+    RuntimeDispatcherController,
   ],
   providers: [
     AiTeamExecutionRepository,
@@ -41,6 +54,7 @@ import {
     RuntimeProviderRegistryService,
     RuntimeDispatcherService,
     AgentAssignmentService,
+    RuntimeExecutionGatewayService,
   ],
   exports: [
     AiTeamExecutionService,
@@ -48,6 +62,7 @@ import {
     RuntimeProviderRegistryService,
     RuntimeDispatcherService,
     AgentAssignmentService,
+    RuntimeExecutionGatewayService,
   ],
 })
 export class AiTeamExecutionModule {}
