@@ -1,9 +1,12 @@
+﻿import { ExecutionIntelligenceService } from "./execution-intelligence/execution-intelligence.service";
 import {
   AiStudioRuntimeModule,
 } from "../ai-studio-runtime/ai-studio-runtime.module";
 import {
   Module,
 } from "@nestjs/common";
+
+import { WorkflowEngineModule } from "./workflow-engine/workflow-engine.module";
 
 import {
   AiTeamExecutionController,
@@ -48,12 +51,14 @@ import {
 @Module({
   imports: [
     AiStudioRuntimeModule,
+    WorkflowEngineModule,
   ],
   controllers: [
     AiTeamExecutionController,
     RuntimeDispatcherController,
   ],
   providers: [
+    ExecutionIntelligenceService,
     AiTeamExecutionRepository,
     AiTeamExecutionService,
     ExecutionSchedulerService,
@@ -76,3 +81,5 @@ import {
   ],
 })
 export class AiTeamExecutionModule {}
+
+

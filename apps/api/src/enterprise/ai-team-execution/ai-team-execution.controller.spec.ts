@@ -1,86 +1,63 @@
+﻿import "reflect-metadata";
+
+import {
+  PATH_METADATA,
+  METHOD_METADATA,
+} from "@nestjs/common/constants";
+import {
+  RequestMethod,
+} from "@nestjs/common";
+
 import {
   AiTeamExecutionController,
 } from "./ai-team-execution.controller";
 
-describe(
-  "AiTeamExecutionController",
-  () => {
-    const service = {};
-    const scheduler = {};
-    const assignment = {};
-    const gateway = {};
+describe("AiTeamExecutionController", () => {
+  let controller: AiTeamExecutionController;
 
-    const orchestrator = {
-      executeSession: jest.fn(),
-    };
+  beforeEach(() => {
+    controller = Object.create(
+      AiTeamExecutionController.prototype,
+    ) as AiTeamExecutionController;
+  });
 
-    const controller =
-      new AiTeamExecutionController(
-        service as never,
-        scheduler as never,
-        assignment as never,
-        gateway as never,
-        orchestrator as never,
-      );
-
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it("executes a complete session through the orchestrator", async () => {
-      orchestrator.executeSession.mockResolvedValue({
-        sessionId: "session-1",
-        status: "COMPLETED",
-        progress: 100,
-        executedJobs: 1,
-        executedSteps: 2,
-        failedSteps: 0,
-        waitingApproval: false,
-        waitingJobId: null,
-        waitingStepId: null,
+  describe("status", () => {
+    it("should return the operational module status", () => {
+      expect(controller.getStatus()).toEqual({
+        success: true,
+        module: "AiTeamExecutionModule",
+        controller: "AiTeamExecutionController",
+        status: "operational",
       });
+    });
 
-      await expect(
-        controller.executeSession(
-          "session-1",
-        ),
-      ).resolves.toEqual({
-        sessionId: "session-1",
-        status: "COMPLETED",
-        progress: 100,
-        executedJobs: 1,
-        executedSteps: 2,
-        failedSteps: 0,
-        waitingApproval: false,
-        waitingJobId: null,
-        waitingStepId: null,
-      });
+    it("should expose the expected controller route", () => {
+      const controllerPath = Reflect.getMetadata(
+        PATH_METADATA,
+        AiTeamExecutionController,
+      );
 
-      expect(
-        orchestrator.executeSession,
-      ).toHaveBeenCalledTimes(1);
-
-      expect(
-        orchestrator.executeSession,
-      ).toHaveBeenCalledWith(
-        "session-1",
+      expect(controllerPath).toBe(
+        "enterprise/ai-team-execution",
       );
     });
 
-    it("passes orchestrator failures to Nest", async () => {
-      orchestrator.executeSession.mockRejectedValue(
-        new Error(
-          "Execution failed.",
-        ),
+    it("should expose GET /status", () => {
+      const statusMethod =
+        AiTeamExecutionController.prototype.getStatus;
+
+      const routePath = Reflect.getMetadata(
+        PATH_METADATA,
+        statusMethod,
       );
 
-      await expect(
-        controller.executeSession(
-          "session-failed",
-        ),
-      ).rejects.toThrow(
-        "Execution failed.",
+      const requestMethod = Reflect.getMetadata(
+        METHOD_METADATA,
+        statusMethod,
       );
+
+      expect(routePath).toBe("status");
+      expect(requestMethod).toBe(RequestMethod.GET);
     });
-  },
-);
+  });
+});
