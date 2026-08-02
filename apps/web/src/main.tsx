@@ -2,6 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import {
+  ThemeProvider,
+} from "./design-system";
+
+import "./design-system/tokens.css";
+import "./design-system/components.css";
+import "./design-system/layout.css";
+import "./design-system/forms/forms.css";
+import "./features/dashboard-enterprise-v2/dashboard-enterprise-v2.css";
+
+import {
   DevelopmentDiagnostics,
 } from "./core/observability";
 
@@ -24,13 +34,15 @@ ReactDOM.createRoot(
 ).render(
   <React.StrictMode>
     <AppErrorBoundary>
-      <DialogProvider>
+      <ThemeProvider>
+        <DialogProvider>
         <LocalizationProvider>
           <NetworkStatusBanner />
           <DevelopmentDiagnostics />
           <App />
         </LocalizationProvider>
-      </DialogProvider>
+        </DialogProvider>
+      </ThemeProvider>
     </AppErrorBoundary>
   </React.StrictMode>,
 );

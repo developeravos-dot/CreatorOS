@@ -1,0 +1,219 @@
+﻿.cos-form {
+  display: grid;
+  gap: var(--cos-space-4);
+  min-width: 0;
+}
+
+.cos-form--pending {
+  cursor: progress;
+}
+
+.cos-form-field {
+  display: grid;
+  gap: var(--cos-space-2);
+  min-width: 0;
+}
+
+.cos-form-field__label {
+  display: flex;
+  align-items: center;
+  gap: var(--cos-space-1);
+  font-size: var(--cos-font-size-sm);
+  font-weight: 700;
+  color: var(--cos-text-secondary);
+}
+
+.cos-form-field__label > span {
+  color: var(--cos-color-danger);
+}
+
+.cos-form-control {
+  width: 100%;
+  min-height: 42px;
+  padding:
+    var(--cos-space-2)
+    var(--cos-space-3);
+  border: 1px solid var(--cos-border);
+  border-radius: var(--cos-radius-md);
+  outline: 0;
+  color: var(--cos-text-primary);
+  background: var(--cos-surface-raised);
+}
+
+.cos-form-control:hover {
+  border-color: var(--cos-border-strong);
+}
+
+.cos-form-control:focus {
+  border-color: var(--cos-color-primary-400);
+  box-shadow:
+    0 0 0 3px
+    var(--cos-focus-ring);
+}
+
+.cos-form-control--textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: var(--cos-line-height-relaxed);
+}
+
+.cos-form-control:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.cos-form-field--error
+.cos-form-control {
+  border-color: var(--cos-color-danger);
+}
+
+.cos-form-field__helper,
+.cos-form-field__error {
+  font-size: var(--cos-font-size-xs);
+  line-height: var(--cos-line-height-normal);
+}
+
+.cos-form-field__helper {
+  color: var(--cos-text-muted);
+}
+
+.cos-form-field__error {
+  color: var(--cos-color-danger);
+}
+
+.cos-form__submit-error {
+  padding: var(--cos-space-3);
+  border:
+    1px solid
+    color-mix(
+      in srgb,
+      var(--cos-color-danger) 35%,
+      transparent
+    );
+  border-radius: var(--cos-radius-md);
+  color: var(--cos-color-danger);
+  background:
+    color-mix(
+      in srgb,
+      var(--cos-color-danger) 10%,
+      transparent
+    );
+}
+
+.cos-checkbox,
+.cos-switch {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--cos-space-3);
+  cursor: pointer;
+}
+
+.cos-checkbox input,
+.cos-switch input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.cos-checkbox__indicator {
+  display: grid;
+  place-items: center;
+  width: 21px;
+  height: 21px;
+  flex: 0 0 21px;
+  border: 1px solid var(--cos-border-strong);
+  border-radius: var(--cos-radius-xs);
+  color: transparent;
+  background: var(--cos-surface-raised);
+}
+
+.cos-checkbox input:checked +
+.cos-checkbox__indicator {
+  color: #ffffff;
+  border-color: var(--cos-color-primary-500);
+  background: var(--cos-color-primary-600);
+}
+
+.cos-checkbox__content,
+.cos-switch__content {
+  display: grid;
+  gap: var(--cos-space-1);
+}
+
+.cos-checkbox__content small,
+.cos-switch__content small {
+  color: var(--cos-text-muted);
+  line-height: var(--cos-line-height-normal);
+}
+
+.cos-switch__track {
+  display: flex;
+  align-items: center;
+  width: 44px;
+  height: 24px;
+  flex: 0 0 44px;
+  padding: 2px;
+  border-radius: var(--cos-radius-full);
+  background: var(--cos-text-disabled);
+}
+
+.cos-switch__track > span {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ffffff;
+  transition:
+    transform
+    var(--cos-transition-normal);
+}
+
+.cos-switch input:checked +
+.cos-switch__track {
+  background: var(--cos-color-primary-600);
+}
+
+.cos-switch input:checked +
+.cos-switch__track > span {
+  transform: translateX(20px);
+}
+
+[dir="rtl"]
+.cos-switch input:checked +
+.cos-switch__track > span {
+  transform: translateX(-20px);
+}
+
+.cos-button-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cos-space-2);
+}
+
+.cos-button-group--start {
+  justify-content: flex-start;
+}
+
+.cos-button-group--center {
+  justify-content: center;
+}
+
+.cos-button-group--end {
+  justify-content: flex-end;
+}
+
+.cos-button-group--between {
+  justify-content: space-between;
+}
+
+@media (max-width: 640px) {
+  .cos-button-group {
+    align-items: stretch;
+  }
+
+  .cos-button-group > button {
+    flex: 1;
+  }
+}
