@@ -23,7 +23,7 @@ export default function AIRuntimeExecutionCenter({
     <article className="ai-runtime-execution-center">
       <header>
         <div>
-          <span>{t("aiStudio.executionRuntime")}</span>
+          <span>{t("aiStudio.executionRuntimeLocalized")}</span>
           <h3>{t("aiStudio.executionHistory")}</h3>
         </div>
 
@@ -49,7 +49,11 @@ export default function AIRuntimeExecutionCenter({
                   <div
                     className={[
                       "ai-runtime-execution-item__status",
-                      `ai-runtime-execution-item__status--${execution.status}`,
+                      `ai-runtime-execution-item__status--${execution.status === "completed"
+  ? t("aiStudio.status.completed")
+  : execution.status === "failed"
+    ? t("aiStudio.status.failed")
+    : t("aiStudio.status.awaitingApproval")}`,
                     ].join(" ")}
                   />
 
@@ -71,7 +75,11 @@ export default function AIRuntimeExecutionCenter({
                   </div>
 
                   <div className="ai-runtime-execution-item__state">
-                    {execution.status}
+                    {execution.status === "completed"
+  ? t("aiStudio.status.completed")
+  : execution.status === "failed"
+    ? t("aiStudio.status.failed")
+    : t("aiStudio.status.awaitingApproval")}
                   </div>
 
                   {execution.status ===
@@ -109,3 +117,5 @@ export default function AIRuntimeExecutionCenter({
     </article>
   );
 }
+
+

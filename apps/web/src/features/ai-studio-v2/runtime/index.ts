@@ -1,4 +1,5 @@
-﻿export { default as AIRuntimeExecutionCenter } from "./AIRuntimeExecutionCenter";
+﻿export { default as AIRuntimeProviderInspector } from "./AIRuntimeProviderInspector";
+export { default as AIRuntimeExecutionCenter } from "./AIRuntimeExecutionCenter";
 export { default as AIRuntimeProviderPanel } from "./AIRuntimeProviderPanel";
 
 export {
@@ -23,3 +24,12 @@ export type {
   AIRuntimeProvider,
   AIStudioRuntimeSnapshot,
 } from "./ai-runtime-types";
+export {
+  formatRuntimeModuleName,
+  getRuntimeProviderMetadata,
+} from "./ai-runtime-metadata";
+
+export type {
+  AIRuntimeMetadataCategory,
+  AIRuntimeProviderMetadata,
+} from "./ai-runtime-metadata";

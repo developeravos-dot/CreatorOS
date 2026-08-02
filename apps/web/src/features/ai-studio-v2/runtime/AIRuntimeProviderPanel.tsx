@@ -3,6 +3,10 @@
   useState,
 } from "react";
 import { useTranslation } from "../../../hooks";
+import {
+  getRuntimeProviderMetadata,
+  type AIRuntimeMetadataCategory,
+} from "./ai-runtime-metadata";
 import type {
   AIRuntimeCollection,
   AIRuntimeProvider,
@@ -13,10 +17,19 @@ interface AIRuntimeProviderPanelProps {
   description: string;
   icon: string;
   collection: AIRuntimeCollection;
+  selectedProviderId: string | null;
   pendingProviderId: string | null;
+  onSelect: (provider: AIRuntimeProvider) => void;
   onInspect: (providerId: string) => void;
   onPing: (providerId: string) => void;
   onDryRun: (providerId: string) => void;
+}
+
+interface ProviderViewModel {
+  provider: AIRuntimeProvider;
+  metadata: ReturnType<
+    typeof getRuntimeProviderMetadata
+  >;
 }
 
 export default function AIRuntimeProviderPanel({
@@ -24,7 +37,9 @@ export default function AIRuntimeProviderPanel({
   description,
   icon,
   collection,
+  selectedProviderId,
   pendingProviderId,
+  onSelect,
   onInspect,
   onPing,
   onDryRun,
@@ -32,30 +47,105 @@ export default function AIRuntimeProviderPanel({
   const { t } = useTranslation();
 
   const [search, setSearch] = useState("");
+  const [scope, setScope] = useState("all");
+  const [availability, setAvailability] =
+    useState("all");
+  const [category, setCategory] = useState("all");
   const [expanded, setExpanded] = useState(false);
+
+  const providerViewModels =
+    useMemo<ProviderViewModel[]>(
+      () =>
+        collection.items.map((provider) => ({
+          provider,
+          metadata:
+            getRuntimeProviderMetadata(provider),
+        })),
+      [collection.items],
+    );
+
+  const scopes = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          collection.items
+            .map((provider) => provider.scope)
+            .filter(Boolean),
+        ),
+      ),
+    [collection.items],
+  );
+
+  const categories = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          providerViewModels.map(
+            (item) => item.metadata.category,
+          ),
+        ),
+      ),
+    [providerViewModels],
+  );
 
   const filteredProviders = useMemo(() => {
     const normalizedSearch =
       search.trim().toLowerCase();
 
-    if (!normalizedSearch) {
-      return collection.items;
-    }
+    return providerViewModels.filter(
+      ({ provider, metadata }) => {
+        const matchesSearch =
+          normalizedSearch.length === 0 ||
+          metadata.displayName
+            .toLowerCase()
+            .includes(normalizedSearch) ||
+          metadata.moduleDisplayName
+            .toLowerCase()
+            .includes(normalizedSearch) ||
+          provider.name
+            .toLowerCase()
+            .includes(normalizedSearch) ||
+          provider.module
+            .toLowerCase()
+            .includes(normalizedSearch) ||
+          provider.capability
+            .toLowerCase()
+            .includes(normalizedSearch);
 
-    return collection.items.filter(
-      (provider) =>
-        provider.name
-          .toLowerCase()
-          .includes(normalizedSearch) ||
-        provider.module
-          .toLowerCase()
-          .includes(normalizedSearch),
+        const matchesScope =
+          scope === "all" ||
+          provider.scope === scope;
+
+        const matchesAvailability =
+          availability === "all" ||
+          (availability === "available" &&
+            provider.available) ||
+          (availability === "unavailable" &&
+            !provider.available);
+
+        const matchesCategory =
+          category === "all" ||
+          metadata.category === category;
+
+        return (
+          matchesSearch &&
+          matchesScope &&
+          matchesAvailability &&
+          matchesCategory
+        );
+      },
     );
-  }, [collection.items, search]);
+  }, [
+    availability,
+    category,
+    providerViewModels,
+    scope,
+    search,
+  ]);
 
   const visibleProviders = expanded
     ? filteredProviders
-    : filteredProviders.slice(0, 8);
+    : filteredProviders.slice(0, 12);
 
   return (
     <article className="ai-runtime-panel">
@@ -72,24 +162,88 @@ export default function AIRuntimeProviderPanel({
         </div>
 
         <strong className="ai-runtime-panel__count">
-          {collection.total}
+          {filteredProviders.length}
         </strong>
       </header>
 
-      <label className="ai-runtime-panel__search">
-        <span>⌕</span>
+      <div className="ai-runtime-provider-filters ai-runtime-provider-filters--catalog">
+        <label className="ai-runtime-panel__search">
+          <span>⌕</span>
 
-        <input
-          type="search"
-          value={search}
-          placeholder={`${t(
-            "aiStudio.searchRuntime",
-          )} ${title}`}
+          <input
+            type="search"
+            value={search}
+            placeholder={t(
+              "aiStudio.searchProviders",
+            )}
+            onChange={(event) =>
+              setSearch(event.target.value)
+            }
+          />
+        </label>
+
+        <select
+          value={category}
+          aria-label={t("aiStudio.filterCategory")}
           onChange={(event) =>
-            setSearch(event.target.value)
+            setCategory(event.target.value)
           }
-        />
-      </label>
+        >
+          <option value="all">
+            {t("aiStudio.allCategories")}
+          </option>
+
+          {categories.map((item) => (
+            <option value={item} key={item}>
+              {t(
+                `aiStudio.metadata.categories.${item}`,
+              )}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={scope}
+          aria-label={t("aiStudio.filterScope")}
+          onChange={(event) =>
+            setScope(event.target.value)
+          }
+        >
+          <option value="all">
+            {t("aiStudio.allScopes")}
+          </option>
+
+          {scopes.map((item) => (
+            <option value={item} key={item}>
+              {item === "0"
+                ? t("aiStudio.singleton")
+                : item === "default"
+                  ? t("aiStudio.defaultScope")
+                  : item}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={availability}
+          aria-label={t(
+            "aiStudio.filterAvailability",
+          )}
+          onChange={(event) =>
+            setAvailability(event.target.value)
+          }
+        >
+          <option value="all">
+            {t("aiStudio.allAvailability")}
+          </option>
+          <option value="available">
+            {t("aiStudio.available")}
+          </option>
+          <option value="unavailable">
+            {t("aiStudio.unavailable")}
+          </option>
+        </select>
+      </div>
 
       <div className="ai-runtime-provider-list">
         {visibleProviders.length === 0 ? (
@@ -98,34 +252,104 @@ export default function AIRuntimeProviderPanel({
           </div>
         ) : (
           visibleProviders.map(
-            (provider: AIRuntimeProvider) => {
+            ({ provider, metadata }) => {
+              const localizedDisplayName =
+                metadata.displayNameKey
+                  ? t(metadata.displayNameKey)
+                  : metadata.displayName;
+
               const busy =
                 pendingProviderId === provider.id;
 
+              const selected =
+                selectedProviderId === provider.id;
+
               return (
-                <div
-                  className="ai-runtime-provider"
+                <section
+                  className={[
+                    "ai-runtime-provider",
+                    "ai-runtime-provider--catalog",
+                    selected
+                      ? "ai-runtime-provider--selected"
+                      : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                   key={provider.id}
                 >
-                  <span
-                    className={[
-                      "ai-runtime-provider__status",
-                      provider.available
-                        ? "ai-runtime-provider__status--online"
-                        : "ai-runtime-provider__status--offline",
-                    ].join(" ")}
-                  />
+                  <button
+                    type="button"
+                    className="ai-runtime-provider__select"
+                    onClick={() => onSelect(provider)}
+                  >
+                    <span className="ai-runtime-provider__catalog-icon">
+                      {metadata.icon}
+                    </span>
 
-                  <div className="ai-runtime-provider__main">
-                    <strong>{provider.name}</strong>
-                    <small>{provider.module}</small>
+                    <span className="ai-runtime-provider__main">
+                      <strong
+                        title={localizedDisplayName}
+                      >
+                        {localizedDisplayName}
+                      </strong>
+
+                      <small
+                        title={metadata.moduleDisplayName}
+                      >
+                        {metadata.moduleDisplayName}
+                      </small>
+                    </span>
+
+                    <span className="ai-runtime-provider__scope">
+                      {provider.scope === "0"
+                        ? t("aiStudio.singleton")
+                        : provider.scope === "default"
+                          ? t(
+                              "aiStudio.enterpriseRuntime",
+                            )
+                          : provider.scope}
+                    </span>
+
+                    <span className="ai-runtime-provider__open">
+                      ›
+                    </span>
+                  </button>
+
+                  <div className="ai-runtime-provider__description">
+                    {t(metadata.descriptionKey)}
                   </div>
 
-                  <span className="ai-runtime-provider__scope">
-                    {provider.scope === "0"
-                      ? "singleton"
-                      : provider.scope}
-                  </span>
+                  <div className="ai-runtime-provider__meta">
+                    <span>
+                      {t(metadata.categoryKey)}
+                    </span>
+
+                    <span>
+                      {t(
+                        `aiStudio.capabilities.${provider.capability}`,
+                      )}
+                    </span>
+
+                    <span
+                      className={
+                        provider.available
+                          ? "available"
+                          : "unavailable"
+                      }
+                    >
+                      {provider.available
+                        ? t("aiStudio.available")
+                        : t("aiStudio.unavailable")}
+                    </span>
+                  </div>
+
+                  <div className="ai-runtime-provider__technical">
+                    <span
+                      title={metadata.technicalName}
+                    >
+                      {metadata.technicalName}
+                    </span>
+                  </div>
 
                   <div className="ai-runtime-provider__actions">
                     <button
@@ -161,14 +385,14 @@ export default function AIRuntimeProviderPanel({
                         : t("aiStudio.dryRun")}
                     </button>
                   </div>
-                </div>
+                </section>
               );
             },
           )
         )}
       </div>
 
-      {filteredProviders.length > 8 ? (
+      {filteredProviders.length > 12 ? (
         <button
           type="button"
           className="ai-runtime-panel__expand"
@@ -186,3 +410,4 @@ export default function AIRuntimeProviderPanel({
     </article>
   );
 }
+

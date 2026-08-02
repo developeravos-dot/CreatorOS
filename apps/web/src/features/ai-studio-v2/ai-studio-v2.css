@@ -1463,3 +1463,969 @@
     grid-column: 2;
   }
 }
+
+/* AI RUNTIME PACK 3C START */
+
+.ai-runtime-command-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(340px, 0.8fr);
+  align-items: start;
+  gap: 16px;
+}
+
+.ai-runtime-provider {
+  display: grid;
+  padding: 0;
+  overflow: hidden;
+}
+
+.ai-runtime-provider--selected {
+  border-color: rgba(129, 140, 248, 0.48);
+  background: rgba(99, 102, 241, 0.1);
+  box-shadow: inset 3px 0 0 #818cf8;
+}
+
+.ai-runtime-provider__select {
+  display: grid;
+  grid-template-columns: 9px minmax(0, 1fr) auto 22px;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 58px;
+  padding: 11px 12px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.ai-runtime-provider__select:hover {
+  background: rgba(99, 102, 241, 0.06);
+}
+
+.ai-runtime-provider__open {
+  color: #818cf8;
+  font-size: 1.15rem;
+}
+
+.ai-runtime-provider__actions {
+  grid-column: auto;
+  padding: 0 12px 11px;
+}
+
+.ai-runtime-inspector {
+  position: sticky;
+  top: 14px;
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(15, 23, 42, 0.96),
+      rgba(17, 24, 39, 0.88)
+    );
+}
+
+.ai-runtime-inspector--empty {
+  min-height: 330px;
+  place-items: center;
+  color: #64748b;
+  text-align: center;
+}
+
+.ai-runtime-inspector--empty > div {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.ai-runtime-inspector--empty > div > span {
+  font-size: 2rem;
+  color: #818cf8;
+}
+
+.ai-runtime-inspector--empty h3,
+.ai-runtime-inspector--empty p {
+  margin: 0;
+}
+
+.ai-runtime-inspector__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ai-runtime-inspector__header > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.ai-runtime-inspector__header span {
+  color: #818cf8;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+}
+
+.ai-runtime-inspector__header h3 {
+  overflow: hidden;
+  margin: 0;
+  color: #f8fafc;
+  font-size: 1.12rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ai-runtime-inspector__close {
+  display: grid;
+  place-items: center;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 0;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 8px;
+  background: rgba(2, 6, 23, 0.3);
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.ai-runtime-inspector__identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px;
+  border-radius: 11px;
+  background: rgba(2, 6, 23, 0.28);
+}
+
+.ai-runtime-inspector__availability {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.ai-runtime-inspector__availability--online {
+  background: #34d399;
+  box-shadow: 0 0 12px rgba(52, 211, 153, 0.6);
+}
+
+.ai-runtime-inspector__availability--offline {
+  background: #ef4444;
+}
+
+.ai-runtime-inspector__identity > div {
+  display: grid;
+  gap: 2px;
+}
+
+.ai-runtime-inspector__identity strong {
+  color: #e2e8f0;
+  font-size: 0.78rem;
+}
+
+.ai-runtime-inspector__identity small {
+  color: #818cf8;
+  font-size: 0.67rem;
+}
+
+.ai-runtime-inspector__metadata {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+}
+
+.ai-runtime-inspector__metadata > div {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.ai-runtime-inspector__metadata dt {
+  color: #64748b;
+  font-size: 0.68rem;
+}
+
+.ai-runtime-inspector__metadata dd {
+  overflow-wrap: anywhere;
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 0.7rem;
+}
+
+.ai-runtime-command-console {
+  display: grid;
+  gap: 10px;
+  padding: 13px;
+  border: 1px solid rgba(129, 140, 248, 0.14);
+  border-radius: 12px;
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.ai-runtime-command-console header {
+  display: grid;
+  gap: 2px;
+}
+
+.ai-runtime-command-console header span {
+  color: #818cf8;
+  font-size: 0.64rem;
+}
+
+.ai-runtime-command-console h4 {
+  margin: 0;
+  color: #e2e8f0;
+  font-size: 0.88rem;
+}
+
+.ai-runtime-command-console__actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.ai-runtime-command-console__actions button {
+  min-height: 36px;
+  padding: 7px;
+  border: 1px solid rgba(129, 140, 248, 0.2);
+  border-radius: 8px;
+  background: rgba(99, 102, 241, 0.08);
+  color: #a5b4fc;
+  font: inherit;
+  font-size: 0.66rem;
+  cursor: pointer;
+}
+
+.ai-runtime-command-console__actions button.primary {
+  border-color: rgba(52, 211, 153, 0.24);
+  background: rgba(52, 211, 153, 0.08);
+  color: #6ee7b7;
+}
+
+.ai-runtime-command-console p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.64rem;
+  line-height: 1.5;
+}
+
+.ai-runtime-inspector__execution {
+  display: grid;
+  gap: 10px;
+}
+
+.ai-runtime-inspector__execution > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ai-runtime-inspector__execution > header > span {
+  color: #94a3b8;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.ai-runtime-inspector__execution-status {
+  padding: 4px 7px;
+  border-radius: 7px;
+  font-size: 0.58rem;
+}
+
+.ai-runtime-inspector__execution-status--completed {
+  background: rgba(52, 211, 153, 0.1);
+  color: #6ee7b7;
+}
+
+.ai-runtime-inspector__execution-status--failed {
+  background: rgba(248, 113, 113, 0.1);
+  color: #fca5a5;
+}
+
+.ai-runtime-inspector__execution-status--awaiting_approval {
+  background: rgba(245, 158, 11, 0.1);
+  color: #fbbf24;
+}
+
+.ai-runtime-inspector__no-execution {
+  padding: 18px;
+  border-radius: 10px;
+  background: rgba(2, 6, 23, 0.22);
+  color: #64748b;
+  font-size: 0.7rem;
+  text-align: center;
+}
+
+.ai-runtime-inspector__execution-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.ai-runtime-inspector__execution-summary > div {
+  display: grid;
+  gap: 3px;
+  padding: 9px;
+  border-radius: 9px;
+  background: rgba(2, 6, 23, 0.25);
+}
+
+.ai-runtime-inspector__execution-summary small {
+  color: #64748b;
+  font-size: 0.6rem;
+}
+
+.ai-runtime-inspector__execution-summary strong {
+  overflow-wrap: anywhere;
+  color: #cbd5e1;
+  font-size: 0.68rem;
+}
+
+.ai-runtime-inspector__payload {
+  display: grid;
+  gap: 5px;
+}
+
+.ai-runtime-inspector__payload > span {
+  color: #64748b;
+  font-size: 0.64rem;
+}
+
+.ai-runtime-inspector__payload pre {
+  max-height: 170px;
+  overflow: auto;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  border-radius: 9px;
+  background: rgba(2, 6, 23, 0.4);
+  color: #94a3b8;
+  font-size: 0.62rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.ai-runtime-inspector__approval-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+
+.ai-runtime-inspector__approval-actions button {
+  min-height: 36px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.68rem;
+  cursor: pointer;
+}
+
+.ai-runtime-inspector__approval-actions .approve {
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  background: rgba(52, 211, 153, 0.08);
+  color: #6ee7b7;
+}
+
+.ai-runtime-inspector__approval-actions .reject {
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  background: rgba(248, 113, 113, 0.08);
+  color: #fca5a5;
+}
+
+@media (max-width: 1100px) {
+  .ai-runtime-command-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-runtime-inspector {
+    position: static;
+  }
+}
+
+/* AI RUNTIME PACK 3C END */
+
+/* AI RUNTIME PACK 3D START */
+
+.ai-runtime-provider-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 145px 160px;
+  gap: 9px;
+  margin-bottom: 13px;
+}
+
+.ai-runtime-provider-filters select {
+  min-height: 42px;
+  padding: 0 10px;
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  border-radius: 10px;
+  background: rgba(2, 6, 23, 0.32);
+  color: #cbd5e1;
+  font: inherit;
+  font-size: 0.72rem;
+}
+
+.ai-runtime-provider__main {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+}
+
+.ai-runtime-provider__main strong {
+  overflow: hidden;
+  color: #f1f5f9;
+  font-size: 0.84rem;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ai-runtime-provider__main small {
+  overflow: hidden;
+  color: #64748b;
+  font-size: 0.68rem;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ai-runtime-provider__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 0 12px 8px;
+}
+
+.ai-runtime-provider__meta span {
+  padding: 4px 7px;
+  border-radius: 7px;
+  background: rgba(99, 102, 241, 0.07);
+  color: #94a3b8;
+  font-size: 0.62rem;
+}
+
+.ai-runtime-provider__scope {
+  min-width: 64px;
+  text-align: center;
+}
+
+[dir="rtl"] .ai-runtime-provider--selected {
+  box-shadow: inset -3px 0 0 #818cf8;
+}
+
+[dir="rtl"] .ai-runtime-provider__open {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 900px) {
+  .ai-runtime-provider-filters {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* AI RUNTIME PACK 3D END */
+
+/* AI RUNTIME PACK 3D CARD FIX START */
+
+.ai-runtime-provider__select {
+  display: grid !important;
+  grid-template-columns:
+    10px
+    minmax(180px, 1fr)
+    minmax(74px, auto)
+    24px !important;
+  align-items: center !important;
+  column-gap: 12px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.ai-runtime-provider__main {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  align-content: center !important;
+  justify-items: start !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  text-align: start !important;
+}
+
+.ai-runtime-provider__main strong {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  color: #f8fafc !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.ai-runtime-provider__main small {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  margin-top: 3px !important;
+  color: #94a3b8 !important;
+  font-size: 0.72rem !important;
+  line-height: 1.4 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.ai-runtime-provider__scope {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 74px !important;
+  min-height: 26px !important;
+  padding: 4px 8px !important;
+  white-space: nowrap !important;
+}
+
+.ai-runtime-provider__open {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 24px !important;
+}
+
+[dir="rtl"] .ai-runtime-provider__main {
+  justify-items: start !important;
+  text-align: right !important;
+}
+
+@media (max-width: 720px) {
+  .ai-runtime-provider__select {
+    grid-template-columns:
+      10px
+      minmax(0, 1fr)
+      24px !important;
+  }
+
+  .ai-runtime-provider__scope {
+    grid-column: 2 !important;
+    justify-self: start !important;
+    margin-top: 5px !important;
+  }
+
+  .ai-runtime-provider__open {
+    grid-column: 3 !important;
+    grid-row: 1 / span 2 !important;
+  }
+}
+
+/* AI RUNTIME PACK 3D CARD FIX END */
+
+/* AI RUNTIME METADATA CATALOG START */
+
+.ai-runtime-provider-filters--catalog {
+  grid-template-columns:
+    minmax(220px, 1fr)
+    150px
+    135px
+    155px;
+}
+
+.ai-runtime-provider--catalog {
+  min-height: 176px;
+}
+
+.ai-runtime-provider--catalog
+.ai-runtime-provider__select {
+  grid-template-columns:
+    42px
+    minmax(180px, 1fr)
+    minmax(110px, auto)
+    24px !important;
+}
+
+.ai-runtime-provider__catalog-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(129, 140, 248, 0.2);
+  border-radius: 11px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(99, 102, 241, 0.2),
+      rgba(139, 92, 246, 0.08)
+    );
+  font-size: 1.15rem;
+}
+
+.ai-runtime-provider__description {
+  min-height: 42px;
+  padding: 0 12px 9px;
+  color: #94a3b8;
+  font-size: 0.72rem;
+  line-height: 1.55;
+}
+
+.ai-runtime-provider__technical {
+  min-width: 0;
+  padding: 0 12px 9px;
+}
+
+.ai-runtime-provider__technical span {
+  display: block;
+  overflow: hidden;
+  padding: 5px 8px;
+  border-radius: 7px;
+  background: rgba(2, 6, 23, 0.25);
+  color: #64748b;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+  font-size: 0.58rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ai-runtime-provider__meta .available {
+  background: rgba(52, 211, 153, 0.09);
+  color: #6ee7b7;
+}
+
+.ai-runtime-provider__meta .unavailable {
+  background: rgba(248, 113, 113, 0.09);
+  color: #fca5a5;
+}
+
+.ai-runtime-inspector__catalog-identity {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(129, 140, 248, 0.14);
+  border-radius: 13px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(99, 102, 241, 0.11),
+      rgba(15, 23, 42, 0.15)
+    );
+}
+
+.ai-runtime-inspector__catalog-identity
+> span {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
+  background: rgba(99, 102, 241, 0.15);
+  font-size: 1.45rem;
+}
+
+.ai-runtime-inspector__catalog-identity
+> div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.ai-runtime-inspector__catalog-identity
+strong {
+  color: #f8fafc;
+  font-size: 0.96rem;
+}
+
+.ai-runtime-inspector__catalog-identity
+small {
+  color: #94a3b8;
+  font-size: 0.68rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 1250px) {
+  .ai-runtime-provider-filters--catalog {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .ai-runtime-provider-filters--catalog {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-runtime-provider--catalog
+  .ai-runtime-provider__select {
+    grid-template-columns:
+      42px
+      minmax(0, 1fr)
+      24px !important;
+  }
+
+  .ai-runtime-provider--catalog
+  .ai-runtime-provider__scope {
+    grid-column: 2;
+  }
+}
+
+/* AI RUNTIME METADATA CATALOG END */
+
+/* AI RUNTIME RTL CARD REPAIR START */
+
+/*
+  قائمة واحدة عريضة تمنع ضغط الأسماء والوصف والأزرار.
+*/
+.ai-runtime-provider-list {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 12px !important;
+}
+
+.ai-runtime-provider--catalog {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+}
+
+.ai-runtime-provider--catalog .ai-runtime-provider__select {
+  grid-column: 1 / -1 !important;
+  display: grid !important;
+  grid-template-columns:
+    46px
+    minmax(240px, 1fr)
+    minmax(120px, auto)
+    26px !important;
+  width: 100% !important;
+  min-height: 76px !important;
+  padding: 14px 16px !important;
+  column-gap: 14px !important;
+}
+
+.ai-runtime-provider__main {
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+/*
+  اسم العرض قد يكون عربيًا أو إنجليزيًا.
+  plaintext يمنع تداخل الاتجاهين.
+*/
+.ai-runtime-provider__main strong {
+  display: block !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  color: #f8fafc !important;
+  font-size: 1rem !important;
+  font-weight: 750 !important;
+  line-height: 1.45 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  unicode-bidi: plaintext !important;
+}
+
+/*
+  اسم الوحدة تقني إنجليزي دائمًا.
+*/
+.ai-runtime-provider__main small {
+  display: block !important;
+  width: 100% !important;
+  margin-top: 5px !important;
+  overflow: hidden !important;
+  color: #94a3b8 !important;
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: isolate !important;
+  font-size: 0.76rem !important;
+  line-height: 1.45 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.ai-runtime-provider__description {
+  grid-column: 1 !important;
+  min-height: 0 !important;
+  padding: 0 16px 10px !important;
+  color: #a8b3c7 !important;
+  font-size: 0.82rem !important;
+  line-height: 1.65 !important;
+}
+
+.ai-runtime-provider__meta {
+  grid-column: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  padding: 0 16px 13px !important;
+}
+
+.ai-runtime-provider__meta span {
+  min-height: 27px !important;
+  padding: 5px 9px !important;
+  font-size: 0.7rem !important;
+}
+
+/*
+  السطر التقني يبقى إنجليزيًا واتجاهه مستقل.
+*/
+.ai-runtime-provider__technical {
+  grid-column: 1 !important;
+  min-width: 0 !important;
+  padding: 0 16px 14px !important;
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+.ai-runtime-provider__technical span {
+  display: block !important;
+  width: 100% !important;
+  padding: 7px 10px !important;
+  overflow: hidden !important;
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: isolate !important;
+  color: #7f8da3 !important;
+  font-size: 0.66rem !important;
+  line-height: 1.45 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/*
+  الأزرار في عمود مستقل واضح.
+*/
+.ai-runtime-provider--catalog .ai-runtime-provider__actions {
+  grid-column: 2 !important;
+  grid-row: 2 / span 3 !important;
+  display: grid !important;
+  grid-template-columns: 150px !important;
+  align-content: center !important;
+  gap: 8px !important;
+  min-width: 174px !important;
+  padding: 12px 16px 15px !important;
+}
+
+.ai-runtime-provider--catalog
+.ai-runtime-provider__actions button {
+  width: 100% !important;
+  min-height: 40px !important;
+  padding: 8px 12px !important;
+  font-size: 0.78rem !important;
+}
+
+/*
+  النطاق لا يضغط عنوان المزود.
+*/
+.ai-runtime-provider__scope {
+  min-width: 118px !important;
+  max-width: 180px !important;
+  min-height: 30px !important;
+  padding: 6px 10px !important;
+  overflow: hidden !important;
+  font-size: 0.7rem !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/*
+  Inspector: البيانات التقنية LTR.
+*/
+.ai-runtime-inspector__metadata dd {
+  unicode-bidi: plaintext !important;
+}
+
+.ai-runtime-inspector__metadata > div:nth-last-child(-n + 2) dd {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: isolate !important;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace !important;
+  font-size: 0.66rem !important;
+}
+
+/*
+  عدم استخدام خط Serif للعناوين التقنية والإنجليزية.
+*/
+.ai-runtime-provider,
+.ai-runtime-inspector {
+  font-family:
+    Inter,
+    "Segoe UI",
+    Tahoma,
+    Arial,
+    sans-serif !important;
+}
+
+.ai-runtime-provider__main strong,
+.ai-runtime-provider__main small,
+.ai-runtime-provider__technical span {
+  font-family:
+    Inter,
+    "Segoe UI",
+    Tahoma,
+    Arial,
+    sans-serif !important;
+}
+
+[dir="rtl"] .ai-runtime-provider__main {
+  text-align: right !important;
+}
+
+[dir="rtl"] .ai-runtime-provider__main small,
+[dir="rtl"] .ai-runtime-provider__technical,
+[dir="rtl"] .ai-runtime-provider__technical span {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+@media (max-width: 1100px) {
+  .ai-runtime-provider--catalog {
+    grid-template-columns: 1fr !important;
+  }
+
+  .ai-runtime-provider--catalog .ai-runtime-provider__actions {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    min-width: 0 !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .ai-runtime-provider--catalog .ai-runtime-provider__select {
+    grid-template-columns:
+      42px
+      minmax(0, 1fr)
+      24px !important;
+  }
+
+  .ai-runtime-provider--catalog .ai-runtime-provider__scope {
+    grid-column: 2 !important;
+    justify-self: start !important;
+  }
+
+  .ai-runtime-provider--catalog .ai-runtime-provider__actions {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* AI RUNTIME RTL CARD REPAIR END */

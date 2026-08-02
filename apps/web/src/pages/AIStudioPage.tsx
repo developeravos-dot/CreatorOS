@@ -1,13 +1,16 @@
 ﻿import {
+  useEffect,
   useMemo,
   useState,
 } from "react";
 import { useTranslation } from "../hooks";
 import {
   AIRuntimeExecutionCenter,
+  AIRuntimeProviderInspector,
   AIRuntimeProviderPanel,
   useAIStudioRuntime,
   type AIRuntimeCollection,
+  type AIRuntimeProvider,
 } from "../features/ai-studio-v2/runtime";
 import "../features/ai-studio-v2/ai-studio-v2.css";
 
@@ -33,62 +36,62 @@ interface RuntimeSectionDefinition {
 const runtimeSections: RuntimeSectionDefinition[] = [
   {
     id: "agents",
-    title: "Agents",
-    description: "Specialist organization",
+    title: "aiStudio.sections.agents.title",
+    description: "aiStudio.sections.agents.description",
     icon: "◎",
   },
   {
     id: "tasks",
-    title: "Tasks",
-    description: "Commands and operations",
+    title: "aiStudio.sections.tasks.title",
+    description: "aiStudio.sections.tasks.description",
     icon: "✓",
   },
   {
     id: "workflows",
-    title: "Workflows",
-    description: "Pipelines and orchestration",
+    title: "aiStudio.sections.workflows.title",
+    description: "aiStudio.sections.workflows.description",
     icon: "⌘",
   },
   {
     id: "approvals",
-    title: "Approvals",
-    description: "Human authority gates",
+    title: "aiStudio.sections.approvals.title",
+    description: "aiStudio.sections.approvals.description",
     icon: "!",
   },
   {
     id: "memory",
-    title: "Memory",
-    description: "Knowledge and shared context",
+    title: "aiStudio.sections.memory.title",
+    description: "aiStudio.sections.memory.description",
     icon: "◈",
   },
   {
     id: "models",
-    title: "Models",
-    description: "AI providers and routers",
+    title: "aiStudio.sections.models.title",
+    description: "aiStudio.sections.models.description",
     icon: "◇",
   },
   {
     id: "executions",
-    title: "Executions",
-    description: "Runtime and monitoring",
+    title: "aiStudio.sections.executions.title",
+    description: "aiStudio.sections.executions.description",
     icon: "▶",
   },
   {
     id: "tools",
-    title: "Tools",
-    description: "Capabilities and integrations",
+    title: "aiStudio.sections.tools.title",
+    description: "aiStudio.sections.tools.description",
     icon: "✦",
   },
   {
     id: "queues",
-    title: "Queues",
-    description: "Jobs and scheduling",
+    title: "aiStudio.sections.queues.title",
+    description: "aiStudio.sections.queues.description",
     icon: "≡",
   },
   {
     id: "logs",
-    title: "Logs",
-    description: "Audit and observability",
+    title: "aiStudio.sections.logs.title",
+    description: "aiStudio.sections.logs.description",
     icon: "▤",
   },
 ];
@@ -113,6 +116,9 @@ export default function AIStudioPage() {
   const [activeSection, setActiveSection] =
     useState<RuntimeSection>("agents");
 
+  const [selectedProvider, setSelectedProvider] =
+    useState<AIRuntimeProvider | null>(null);
+
   const activeDefinition = useMemo(
     () =>
       runtimeSections.find(
@@ -120,6 +126,48 @@ export default function AIStudioPage() {
       ) ?? runtimeSections[0]!,
     [activeSection],
   );
+
+  const activeCollection = data
+    ? (data[activeSection] as AIRuntimeCollection)
+    : null;
+
+  const latestSelectedExecution = useMemo(() => {
+    if (!selectedProvider) {
+      return null;
+    }
+
+    return (
+      history.items.find(
+        (execution) =>
+          execution.providerId === selectedProvider.id,
+      ) ?? null
+    );
+  }, [history.items, selectedProvider]);
+
+  useEffect(() => {
+    if (!activeCollection) {
+      return;
+    }
+
+    if (
+      selectedProvider &&
+      activeCollection.items.some(
+        (provider) =>
+          provider.id === selectedProvider.id,
+      )
+    ) {
+      return;
+    }
+
+    setSelectedProvider(
+      activeCollection.items[0] ?? null,
+    );
+  }, [activeCollection, selectedProvider]);
+
+  function changeSection(section: RuntimeSection) {
+    setActiveSection(section);
+    setSelectedProvider(null);
+  }
 
   if (loading && !data) {
     return (
@@ -149,12 +197,9 @@ export default function AIStudioPage() {
     );
   }
 
-  if (!data) {
+  if (!data || !activeCollection) {
     return null;
   }
-
-  const activeCollection =
-    data[activeSection] as AIRuntimeCollection;
 
   return (
     <div className="ai-studio ai-runtime-live">
@@ -215,35 +260,24 @@ export default function AIStudioPage() {
       <section className="ai-studio-kpis">
         <article>
           <span>◎</span>
-
           <div>
-            <small>
-              {t("aiStudio.runtimeProviders")}
-            </small>
+            <small>{t("aiStudio.runtimeProviders")}</small>
             <strong>{data.overview.providers}</strong>
-            <p>
-              {t("aiStudio.discoveredProviders")}
-            </p>
+            <p>{t("aiStudio.discoveredProviders")}</p>
           </div>
         </article>
 
         <article>
           <span>⌘</span>
-
           <div>
-            <small>
-              {t("aiStudio.runtimeCapabilities")}
-            </small>
+            <small>{t("aiStudio.runtimeCapabilities")}</small>
             <strong>{runtimeSections.length}</strong>
-            <p>
-              {t("aiStudio.connectedCapabilities")}
-            </p>
+            <p>{t("aiStudio.connectedCapabilities")}</p>
           </div>
         </article>
 
         <article>
           <span>▶</span>
-
           <div>
             <small>{t("aiStudio.workflows")}</small>
             <strong>{data.workflows.total}</strong>
@@ -253,15 +287,10 @@ export default function AIStudioPage() {
 
         <article>
           <span>✓</span>
-
           <div>
             <small>{t("aiStudio.systemHealth")}</small>
             <strong>{data.overview.health}%</strong>
-            <p>
-              {data.overview.status === "operational"
-                ? t("aiStudio.operational")
-                : t("aiStudio.runtimeDegraded")}
-            </p>
+            <p>{t("aiStudio.operational")}</p>
           </div>
         </article>
       </section>
@@ -276,36 +305,55 @@ export default function AIStudioPage() {
                 ? "ai-runtime-navigation__item ai-runtime-navigation__item--active"
                 : "ai-runtime-navigation__item"
             }
-            onClick={() =>
-              setActiveSection(section.id)
-            }
+            onClick={() => changeSection(section.id)}
           >
             <span>{section.icon}</span>
 
             <div>
-              <strong>{section.title}</strong>
+              <strong>{t(section.title)}</strong>
               <small>{data[section.id].total}</small>
             </div>
           </button>
         ))}
       </nav>
 
-      <AIRuntimeProviderPanel
-        title={activeDefinition.title}
-        description={activeDefinition.description}
-        icon={activeDefinition.icon}
-        collection={activeCollection}
-        pendingProviderId={pendingProviderId}
-        onInspect={(providerId) =>
-          void runCommand(providerId, "inspect")
-        }
-        onPing={(providerId) =>
-          void runCommand(providerId, "ping")
-        }
-        onDryRun={(providerId) =>
-          void runCommand(providerId, "dry-run")
-        }
-      />
+      <section className="ai-runtime-command-workspace">
+        <AIRuntimeProviderPanel
+          title={t(activeDefinition.title)}
+          description={t(activeDefinition.description)}
+          icon={activeDefinition.icon}
+          collection={activeCollection}
+          selectedProviderId={selectedProvider?.id ?? null}
+          pendingProviderId={pendingProviderId}
+          onSelect={setSelectedProvider}
+          onInspect={(providerId) =>
+            void runCommand(providerId, "inspect")
+          }
+          onPing={(providerId) =>
+            void runCommand(providerId, "ping")
+          }
+          onDryRun={(providerId) =>
+            void runCommand(providerId, "dry-run")
+          }
+        />
+
+        <AIRuntimeProviderInspector
+          provider={selectedProvider}
+          latestExecution={latestSelectedExecution}
+          pendingProviderId={pendingProviderId}
+          pendingExecutionId={pendingExecutionId}
+          onCommand={(providerId, action) =>
+            void runCommand(providerId, action)
+          }
+          onApprove={(executionId) =>
+            void approveExecution(executionId)
+          }
+          onReject={(executionId) =>
+            void rejectExecution(executionId)
+          }
+          onClose={() => setSelectedProvider(null)}
+        />
+      </section>
 
       <AIRuntimeExecutionCenter
         history={history}
@@ -323,15 +371,13 @@ export default function AIStudioPage() {
           <button
             type="button"
             key={section.id}
-            onClick={() =>
-              setActiveSection(section.id)
-            }
+            onClick={() => changeSection(section.id)}
           >
             <span>{section.icon}</span>
 
             <div>
-              <small>{section.description}</small>
-              <strong>{section.title}</strong>
+              <small>{t(section.description)}</small>
+              <strong>{t(section.title)}</strong>
             </div>
 
             <b>{data[section.id].total}</b>
@@ -341,5 +387,4 @@ export default function AIStudioPage() {
     </div>
   );
 }
-
 
