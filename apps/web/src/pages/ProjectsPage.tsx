@@ -24,6 +24,7 @@ export default function ProjectsPage({
   onStatus,
   onDelete,
 }: ProjectsPageProps) {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [platform, setPlatform] = useState("all");
   const [status, setStatus] = useState("all");
@@ -140,6 +141,7 @@ export default function ProjectsPage({
     </div>
   );
 }
+
 
 
 

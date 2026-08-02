@@ -1,0 +1,1016 @@
+﻿/* ========================================================
+   CreatorOS Enterprise UI Scale System
+   Desktop Default: 125%
+   ======================================================== */
+
+:root {
+  --creatoros-ui-scale: 1.125;
+
+  --creatoros-font-xs: 0.78rem;
+  --creatoros-font-sm: 0.9rem;
+  --creatoros-font-md: 1rem;
+  --creatoros-font-lg: 1.125rem;
+  --creatoros-font-xl: 1.35rem;
+  --creatoros-font-2xl: 1.7rem;
+  --creatoros-font-3xl: 2.2rem;
+  --creatoros-font-4xl: 2.75rem;
+
+  --creatoros-control-height: 48px;
+  --creatoros-control-height-lg: 54px;
+  --creatoros-sidebar-item-height: 54px;
+  --creatoros-topbar-height: 76px;
+
+  --creatoros-space-xs: 6px;
+  --creatoros-space-sm: 10px;
+  --creatoros-space-md: 16px;
+  --creatoros-space-lg: 24px;
+  --creatoros-space-xl: 32px;
+}
+
+/* ========================================================
+   Global typography
+   ======================================================== */
+
+html {
+  font-size: 17px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+body {
+  font-size: var(--creatoros-font-md);
+  line-height: 1.6;
+}
+
+button,
+input,
+select,
+textarea {
+  font-size: 1rem;
+}
+
+button,
+select,
+input:not([type="checkbox"]):not([type="radio"]) {
+  min-height: var(--creatoros-control-height);
+}
+
+textarea {
+  line-height: 1.65;
+}
+
+h1 {
+  font-size: var(--creatoros-font-4xl);
+  line-height: 1.15;
+}
+
+h2 {
+  font-size: var(--creatoros-font-3xl);
+  line-height: 1.2;
+}
+
+h3 {
+  font-size: var(--creatoros-font-xl);
+  line-height: 1.3;
+}
+
+h4 {
+  font-size: var(--creatoros-font-lg);
+  line-height: 1.35;
+}
+
+p {
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+small {
+  font-size: var(--creatoros-font-sm);
+  line-height: 1.5;
+}
+
+/* ========================================================
+   CreatorOS layout
+   ======================================================== */
+
+.creator-layout,
+.creator-shell,
+.creator-workspace,
+.creator-main,
+.creator-content {
+  font-size: 1rem;
+}
+
+.creator-main,
+.creator-workspace,
+.creator-content {
+  padding-inline: clamp(20px, 2vw, 36px);
+}
+
+/* ========================================================
+   Sidebar
+   ======================================================== */
+
+.creator-sidebar {
+  font-size: 1rem;
+}
+
+.creator-sidebar button,
+.creator-sidebar a,
+.creator-sidebar__item,
+.creator-sidebar__link,
+.creator-sidebar nav > * {
+  min-height: var(--creatoros-sidebar-item-height);
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.creator-sidebar__brand strong,
+.creator-sidebar__brand h1,
+.creator-sidebar__brand h2 {
+  font-size: 1.2rem;
+}
+
+.creator-sidebar__brand small,
+.creator-sidebar__section-label,
+.creator-sidebar__group-title {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+}
+
+.creator-sidebar svg,
+.creator-sidebar__icon {
+  width: 22px;
+  height: 22px;
+  font-size: 1.25rem;
+}
+
+/* ========================================================
+   Header / Top Bar
+   ======================================================== */
+
+.creator-header,
+.creator-topbar {
+  min-height: var(--creatoros-topbar-height);
+}
+
+.creator-header input,
+.creator-topbar input {
+  min-height: 48px;
+  font-size: 1rem;
+}
+
+.creator-header button,
+.creator-topbar button {
+  min-height: 44px;
+  font-size: 0.95rem;
+}
+
+.creator-header__title,
+.creator-topbar__title {
+  font-size: 1.2rem;
+}
+
+.creator-header__subtitle,
+.creator-topbar__subtitle {
+  font-size: 0.88rem;
+}
+
+/* ========================================================
+   Shared page headers
+   ======================================================== */
+
+.dashboard-v2__header h2,
+.projects-v2-page-header h2,
+.scripts-v2-page-header h2,
+.calendar-v2-header h2,
+.ai-studio-page-header h2 {
+  margin-block: 6px 10px;
+  font-size: clamp(2rem, 2.4vw, 2.7rem);
+  font-weight: 750;
+  line-height: 1.15;
+}
+
+.dashboard-v2__header > div > span,
+.projects-v2-page-header > div > span,
+.scripts-v2-page-header > div > span,
+.calendar-v2-header > div > span,
+.ai-studio-page-header > div > span {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.dashboard-v2__header p,
+.projects-v2-page-header p,
+.scripts-v2-page-header p,
+.calendar-v2-header p,
+.ai-studio-page-header p {
+  max-width: 850px;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+/* ========================================================
+   Shared buttons and controls
+   ======================================================== */
+
+.dashboard-v2 button,
+.projects-v2 button,
+.scripts-v2 button,
+.calendar-v2 button,
+.ai-studio button {
+  min-height: 46px;
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.dashboard-v2 input,
+.dashboard-v2 select,
+.projects-v2 input,
+.projects-v2 select,
+.scripts-v2 input,
+.scripts-v2 select,
+.calendar-v2 input,
+.calendar-v2 select,
+.ai-studio input,
+.ai-studio select {
+  min-height: 48px;
+  padding-inline: 14px;
+  font-size: 0.96rem;
+}
+
+/* ========================================================
+   Dashboard metrics
+   ======================================================== */
+
+.dashboard-v2__metrics {
+  gap: 18px;
+}
+
+.dashboard-v2__metrics article,
+.dashboard-v2-metric-card {
+  min-height: 160px;
+  padding: 22px;
+}
+
+.dashboard-v2-metric-card h3,
+.dashboard-v2-metric-card__title,
+.dashboard-v2__metrics article h3 {
+  font-size: 1.05rem;
+}
+
+.dashboard-v2-metric-card strong,
+.dashboard-v2-metric-card__value,
+.dashboard-v2__metrics article > strong {
+  font-size: clamp(2.2rem, 3vw, 3.2rem);
+  line-height: 1;
+}
+
+.dashboard-v2-metric-card p,
+.dashboard-v2-metric-card__description {
+  font-size: 0.95rem;
+}
+
+.dashboard-v2-metric-card small,
+.dashboard-v2-metric-card__trend {
+  font-size: 0.85rem;
+}
+
+/* ========================================================
+   Dashboard panels
+   ======================================================== */
+
+.dashboard-v2-panel {
+  padding: 22px;
+}
+
+.dashboard-v2-panel__header {
+  margin-bottom: 18px;
+}
+
+.dashboard-v2-panel__header span {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+}
+
+.dashboard-v2-panel__header h3 {
+  margin-top: 5px;
+  font-size: 1.35rem;
+}
+
+/* ========================================================
+   Production Intelligence panel
+   ======================================================== */
+
+.dashboard-intelligence-panel,
+.dashboard-v2-intelligence,
+.dashboard-intelligence {
+  padding: 22px;
+}
+
+.dashboard-intelligence-panel > header h3,
+.dashboard-v2-intelligence__header h3,
+.dashboard-intelligence__header h3 {
+  font-size: 1.4rem;
+}
+
+.dashboard-intelligence-grid,
+.dashboard-v2-intelligence__metrics,
+.dashboard-intelligence__metrics {
+  gap: 14px;
+}
+
+.dashboard-intelligence-card,
+.dashboard-v2-intelligence__metric,
+.dashboard-intelligence__metric {
+  min-height: 112px;
+  padding: 18px;
+  gap: 10px 16px;
+}
+
+.dashboard-intelligence-card strong,
+.dashboard-v2-intelligence__metric strong,
+.dashboard-intelligence__metric strong {
+  font-size: 1.02rem;
+  line-height: 1.45;
+}
+
+.dashboard-intelligence-card b,
+.dashboard-v2-intelligence__metric b,
+.dashboard-intelligence__metric b {
+  font-size: 1.65rem;
+  line-height: 1;
+}
+
+.dashboard-intelligence-card small,
+.dashboard-v2-intelligence__metric small,
+.dashboard-intelligence__metric small {
+  font-size: 0.86rem;
+}
+
+.dashboard-intelligence-card__status,
+.dashboard-v2-intelligence__status,
+.dashboard-intelligence__status {
+  min-height: 28px;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+}
+
+/* ========================================================
+   Quick actions and activity feed
+   ======================================================== */
+
+.dashboard-v2-quick-actions button,
+.dashboard-v2-quick-action {
+  min-height: 88px;
+  padding: 16px;
+}
+
+.dashboard-v2-quick-actions strong,
+.dashboard-v2-quick-action strong {
+  font-size: 1rem;
+}
+
+.dashboard-v2-quick-actions small,
+.dashboard-v2-quick-action small {
+  font-size: 0.86rem;
+}
+
+.dashboard-v2-activity-feed strong,
+.dashboard-v2-activity-item strong {
+  font-size: 1rem;
+}
+
+.dashboard-v2-activity-feed small,
+.dashboard-v2-activity-item small {
+  font-size: 0.86rem;
+}
+
+/* ========================================================
+   Projects
+   ======================================================== */
+
+.projects-v2-toolbar {
+  gap: 12px;
+}
+
+.projects-v2-table th {
+  height: 52px;
+  padding: 12px 16px;
+  font-size: 0.82rem;
+}
+
+.projects-v2-table td {
+  min-height: 58px;
+  padding: 15px 16px;
+  font-size: 0.96rem;
+}
+
+.projects-v2-table strong {
+  font-size: 1rem;
+}
+
+.projects-v2-table small {
+  font-size: 0.84rem;
+}
+
+.projects-v2-kanban-column h3 {
+  font-size: 1.1rem;
+}
+
+.projects-v2-kanban-card {
+  min-height: 130px;
+  padding: 17px;
+}
+
+.projects-v2-kanban-card strong {
+  font-size: 1rem;
+}
+
+/* ========================================================
+   Scripts
+   ======================================================== */
+
+.scripts-v2-toolbar {
+  gap: 12px;
+}
+
+.scripts-v2-library header h3,
+.scripts-v2-editor__header h2,
+.scripts-v2-inspector header h3 {
+  font-size: 1.35rem;
+}
+
+.scripts-v2-list__item {
+  min-height: 74px;
+  padding: 14px;
+}
+
+.scripts-v2-list__item strong {
+  font-size: 1rem;
+}
+
+.scripts-v2-list__item small {
+  font-size: 0.84rem;
+}
+
+.scripts-v2-document textarea {
+  min-height: 410px;
+  padding: 20px;
+  font-size: 1rem;
+}
+
+.scripts-v2-assistant button {
+  min-height: 82px;
+}
+
+.scripts-v2-assistant button strong {
+  font-size: 0.98rem;
+}
+
+.scripts-v2-assistant button small {
+  font-size: 0.83rem;
+}
+
+/* ========================================================
+   Calendar
+   ======================================================== */
+
+.calendar-v2-toolbar {
+  gap: 12px;
+}
+
+.calendar-v2-period h3 {
+  font-size: 1.45rem;
+}
+
+.calendar-v2-month,
+.calendar-v2-week,
+.calendar-v2-day {
+  font-size: 0.95rem;
+}
+
+.calendar-v2-month__weekday,
+.calendar-v2-week__day-header {
+  min-height: 46px;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.calendar-v2-month__day {
+  min-height: 150px;
+  padding: 10px;
+}
+
+.calendar-v2-content-card {
+  min-height: 48px;
+  padding: 8px 10px;
+  font-size: 0.82rem;
+}
+
+.calendar-v2-content-card strong {
+  font-size: 0.87rem;
+}
+
+/* ========================================================
+   AI Studio
+   ======================================================== */
+
+.ai-studio-kpis {
+  gap: 16px;
+}
+
+.ai-studio-kpis article {
+  min-height: 140px;
+  padding: 20px;
+}
+
+.ai-studio-kpis article strong {
+  font-size: 2.1rem;
+}
+
+.ai-studio-kpis article small {
+  font-size: 0.85rem;
+}
+
+.ai-studio-kpis article p {
+  font-size: 0.88rem;
+}
+
+.ai-runtime-navigation__item {
+  min-height: 58px;
+  padding: 10px;
+}
+
+.ai-runtime-navigation__item strong {
+  font-size: 0.78rem;
+}
+
+.ai-runtime-navigation__item small {
+  font-size: 0.72rem;
+}
+
+.ai-runtime-panel {
+  padding: 22px;
+}
+
+.ai-runtime-panel__identity h3 {
+  font-size: 1.35rem;
+}
+
+.ai-runtime-panel__identity span {
+  font-size: 0.78rem;
+}
+
+.ai-runtime-panel__count {
+  font-size: 2rem;
+}
+
+.ai-runtime-provider {
+  min-height: 84px;
+  padding: 14px;
+}
+
+.ai-runtime-provider strong {
+  font-size: 0.94rem;
+}
+
+.ai-runtime-provider small {
+  font-size: 0.8rem;
+}
+
+.ai-runtime-provider__actions button {
+  min-height: 38px;
+  padding: 7px 11px;
+  font-size: 0.74rem;
+}
+
+.ai-runtime-execution-center {
+  padding: 22px;
+}
+
+.ai-runtime-execution-center > header h3 {
+  font-size: 1.35rem;
+}
+
+.ai-runtime-execution-item {
+  min-height: 76px;
+  padding: 14px;
+}
+
+.ai-runtime-execution-item__content strong {
+  font-size: 0.92rem;
+}
+
+.ai-runtime-execution-item__content small,
+.ai-runtime-execution-item__content span {
+  font-size: 0.76rem;
+}
+
+/* ========================================================
+   Dialogs
+   ======================================================== */
+
+dialog,
+.creator-dialog,
+.modal,
+.dialog-panel {
+  font-size: 1rem;
+}
+
+.creator-dialog h2,
+.modal h2,
+.dialog-panel h2 {
+  font-size: 1.65rem;
+}
+
+.creator-dialog label,
+.modal label,
+.dialog-panel label {
+  font-size: 0.94rem;
+}
+
+.creator-dialog input,
+.creator-dialog select,
+.creator-dialog textarea,
+.modal input,
+.modal select,
+.modal textarea,
+.dialog-panel input,
+.dialog-panel select,
+.dialog-panel textarea {
+  min-height: 48px;
+  font-size: 1rem;
+}
+
+/* ========================================================
+   RTL refinements
+   ======================================================== */
+
+[dir="rtl"] body {
+  letter-spacing: 0;
+}
+
+[dir="rtl"] button,
+[dir="rtl"] input,
+[dir="rtl"] select,
+[dir="rtl"] textarea {
+  letter-spacing: 0;
+}
+
+[dir="rtl"] .dashboard-v2,
+[dir="rtl"] .projects-v2,
+[dir="rtl"] .scripts-v2,
+[dir="rtl"] .calendar-v2,
+[dir="rtl"] .ai-studio {
+  line-height: 1.65;
+}
+
+/* ========================================================
+   Responsive adjustments
+   ======================================================== */
+
+@media (max-width: 1280px) {
+  html {
+    font-size: 16px;
+  }
+
+  :root {
+    --creatoros-sidebar-item-height: 50px;
+    --creatoros-topbar-height: 70px;
+  }
+}
+
+@media (max-width: 900px) {
+  html {
+    font-size: 15.5px;
+  }
+
+  .dashboard-v2__header h2,
+  .projects-v2-page-header h2,
+  .scripts-v2-page-header h2,
+  .calendar-v2-header h2,
+  .ai-studio-page-header h2 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 15px;
+  }
+
+  :root {
+    --creatoros-control-height: 44px;
+    --creatoros-sidebar-item-height: 48px;
+  }
+
+  .creator-main,
+  .creator-workspace,
+  .creator-content {
+    padding-inline: 14px;
+  }
+}
+
+/* CREATOROS BALANCED TYPOGRAPHY START */
+
+/* منع أي تكبير شامل يكسر Grid وFlex */
+#root {
+  zoom: 1 !important;
+  transform: none !important;
+  width: 100% !important;
+}
+
+/* الحجم الأساسي */
+html {
+  font-size: 17px !important;
+}
+
+body {
+  font-size: 1rem !important;
+  line-height: 1.6 !important;
+}
+
+/* ========================================================
+   Sidebar
+   ======================================================== */
+
+.creator-sidebar {
+  min-width: 240px !important;
+  width: 240px !important;
+}
+
+.creator-sidebar nav button,
+.creator-sidebar nav a,
+.creator-sidebar__item,
+.creator-sidebar__link {
+  min-height: 50px !important;
+  padding: 10px 14px !important;
+  font-size: 1rem !important;
+  line-height: 1.35 !important;
+}
+
+.creator-sidebar__brand strong,
+.creator-sidebar__brand h1,
+.creator-sidebar__brand h2 {
+  font-size: 1.18rem !important;
+}
+
+.creator-sidebar__brand small,
+.creator-sidebar__section-label,
+.creator-sidebar__group-title {
+  font-size: 0.76rem !important;
+}
+
+/* ========================================================
+   Top bar
+   ======================================================== */
+
+.creator-header,
+.creator-topbar {
+  min-height: 70px !important;
+}
+
+.creator-header input,
+.creator-topbar input {
+  min-height: 44px !important;
+  font-size: 0.96rem !important;
+}
+
+.creator-header button,
+.creator-topbar button {
+  min-height: 42px !important;
+  font-size: 0.92rem !important;
+}
+
+/* ========================================================
+   Page titles
+   ======================================================== */
+
+.dashboard-v2__header h2,
+.projects-v2-page-header h2,
+.scripts-v2-page-header h2,
+.calendar-v2-header h2,
+.ai-studio-page-header h2 {
+  font-size: 2.1rem !important;
+  line-height: 1.2 !important;
+}
+
+.dashboard-v2__header p,
+.projects-v2-page-header p,
+.scripts-v2-page-header p,
+.calendar-v2-header p,
+.ai-studio-page-header p {
+  font-size: 1rem !important;
+  line-height: 1.65 !important;
+}
+
+/* ========================================================
+   Dashboard metric cards
+   ======================================================== */
+
+.dashboard-v2__metrics {
+  gap: 16px !important;
+}
+
+.dashboard-v2__metrics article,
+.dashboard-v2-metric-card {
+  min-height: 145px !important;
+  padding: 20px !important;
+}
+
+.dashboard-v2__metrics article h3,
+.dashboard-v2-metric-card h3,
+.dashboard-v2-metric-card__title {
+  font-size: 1rem !important;
+  line-height: 1.35 !important;
+}
+
+.dashboard-v2__metrics article strong,
+.dashboard-v2-metric-card__value {
+  font-size: 2.55rem !important;
+  line-height: 1 !important;
+}
+
+.dashboard-v2__metrics article p,
+.dashboard-v2-metric-card__description {
+  font-size: 0.9rem !important;
+  line-height: 1.5 !important;
+}
+
+.dashboard-v2__metrics article small,
+.dashboard-v2-metric-card__trend {
+  font-size: 0.8rem !important;
+}
+
+/* منع النص الضخم داخل بطاقات الإحصائيات */
+.dashboard-v2__metrics article * {
+  max-width: 100% !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+}
+
+/* ========================================================
+   Dashboard panels
+   ======================================================== */
+
+.dashboard-v2-panel {
+  padding: 20px !important;
+}
+
+.dashboard-v2-panel__header h3 {
+  font-size: 1.25rem !important;
+}
+
+.dashboard-v2-panel__header span {
+  font-size: 0.72rem !important;
+}
+
+/* ========================================================
+   Intelligence cards
+   ======================================================== */
+
+.dashboard-intelligence-grid,
+.dashboard-v2-intelligence__metrics,
+.dashboard-intelligence__metrics {
+  gap: 12px !important;
+}
+
+.dashboard-intelligence-card,
+.dashboard-v2-intelligence__metric,
+.dashboard-intelligence__metric {
+  min-height: 100px !important;
+  padding: 16px !important;
+}
+
+.dashboard-intelligence-card strong,
+.dashboard-v2-intelligence__metric strong,
+.dashboard-intelligence__metric strong {
+  font-size: 0.98rem !important;
+  line-height: 1.4 !important;
+}
+
+.dashboard-intelligence-card b,
+.dashboard-v2-intelligence__metric b,
+.dashboard-intelligence__metric b {
+  font-size: 1.7rem !important;
+  line-height: 1 !important;
+}
+
+.dashboard-intelligence-card small,
+.dashboard-v2-intelligence__metric small,
+.dashboard-intelligence__metric small {
+  font-size: 0.8rem !important;
+}
+
+.dashboard-intelligence-card__status,
+.dashboard-v2-intelligence__status,
+.dashboard-intelligence__status {
+  min-height: 26px !important;
+  padding: 4px 9px !important;
+  font-size: 0.75rem !important;
+}
+
+/* ========================================================
+   Quick actions
+   ======================================================== */
+
+.dashboard-v2-quick-actions button,
+.dashboard-v2-quick-action {
+  min-height: 82px !important;
+  padding: 14px !important;
+}
+
+.dashboard-v2-quick-actions strong,
+.dashboard-v2-quick-action strong {
+  font-size: 0.96rem !important;
+}
+
+.dashboard-v2-quick-actions small,
+.dashboard-v2-quick-action small {
+  font-size: 0.8rem !important;
+}
+
+/* ========================================================
+   Shared controls
+   ======================================================== */
+
+.dashboard-v2 button,
+.projects-v2 button,
+.scripts-v2 button,
+.calendar-v2 button,
+.ai-studio button {
+  min-height: 44px !important;
+  padding: 9px 14px !important;
+  font-size: 0.92rem !important;
+}
+
+/* ========================================================
+   Projects / Scripts / Calendar / AI Studio
+   ======================================================== */
+
+.projects-v2-table th,
+.projects-v2-table td {
+  font-size: 0.92rem !important;
+}
+
+.scripts-v2-list__item strong,
+.projects-v2-kanban-card strong {
+  font-size: 0.96rem !important;
+}
+
+.scripts-v2-list__item small,
+.projects-v2-kanban-card small {
+  font-size: 0.8rem !important;
+}
+
+.calendar-v2-content-card,
+.calendar-v2-content-card strong {
+  font-size: 0.82rem !important;
+}
+
+.ai-studio-kpis article {
+  min-height: 130px !important;
+  padding: 18px !important;
+}
+
+.ai-studio-kpis article strong {
+  font-size: 2rem !important;
+}
+
+.ai-runtime-provider strong {
+  font-size: 0.92rem !important;
+}
+
+.ai-runtime-provider small {
+  font-size: 0.78rem !important;
+}
+
+/* ========================================================
+   Responsive
+   ======================================================== */
+
+@media (max-width: 1280px) {
+  html {
+    font-size: 16px !important;
+  }
+
+  .creator-sidebar {
+    min-width: 220px !important;
+    width: 220px !important;
+  }
+}
+
+/* CREATOROS BALANCED TYPOGRAPHY END */
+

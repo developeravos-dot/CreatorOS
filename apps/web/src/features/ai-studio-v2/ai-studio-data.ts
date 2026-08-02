@@ -48,7 +48,7 @@ export const defaultAIStudioAgents: AIStudioAgent[] = [
     name: "Script Agent",
     role: "Script Production",
     icon: "✎",
-    status: "running",
+    status: "active",
     model: "Claude Writing",
     tasks: 5,
     successRate: 97,
@@ -209,3 +209,6 @@ export const defaultLogs: AIStudioLog[] = [
     timestamp: "09:18:22",
   },
 ];
+
+
+

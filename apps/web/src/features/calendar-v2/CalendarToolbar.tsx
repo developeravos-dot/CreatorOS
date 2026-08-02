@@ -26,13 +26,16 @@ export default function CalendarToolbar({
   search,
   status,
   projectId,
+  platform,
   viewMode,
   statuses,
+  platforms,
   projects,
   busy,
   onSearchChange,
   onStatusChange,
   onProjectChange,
+  onPlatformChange,
   onViewChange,
   onCreate,
 }: CalendarToolbarProps) {
@@ -120,5 +123,6 @@ export default function CalendarToolbar({
     </div>
   );
 }
+
 
 

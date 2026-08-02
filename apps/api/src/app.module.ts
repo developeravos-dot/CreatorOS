@@ -52,8 +52,10 @@ import { NoveltyGenerationModule } from './enterprise/intelligence/novelty-gener
 import { InfiniteUniverseModule } from './enterprise/infinite-universe/infinite-universe.module';
 import { SponsorshipIntelligenceModule } from "./enterprise/business-intelligence/sponsorship/sponsorship-intelligence.module";
 import { SponsorshipBusinessIntelligenceModule } from "./enterprise/sponsorship-business-intelligence/sponsorship-business-intelligence.module";
+import { AiStudioRuntimeModule } from "./enterprise/ai-studio-runtime";
 @Module({
   imports: [
+    AiStudioRuntimeModule,
     SponsorshipBusinessIntelligenceModule,
     SponsorshipIntelligenceModule,
     AiFoundationModule,
@@ -109,6 +111,7 @@ import { SponsorshipBusinessIntelligenceModule } from "./enterprise/sponsorship-
   providers: [],
 })
 export class AppModule {}
+
 
 
 

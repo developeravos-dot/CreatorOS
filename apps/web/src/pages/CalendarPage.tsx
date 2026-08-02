@@ -111,6 +111,7 @@ export default function CalendarPage({
   }, [
     normalizedItems,
     projectId,
+    platform,
     search,
     status,
   ]);
@@ -185,8 +186,10 @@ export default function CalendarPage({
         search={search}
         status={status}
         projectId={projectId}
+        platform={platform}
         viewMode={viewMode}
         statuses={statuses}
+        platforms={platforms}
         projects={projects.map((project) => ({
           id: String(project.id),
           name: project.name,
@@ -195,6 +198,7 @@ export default function CalendarPage({
         onSearchChange={setSearch}
         onStatusChange={setStatus}
         onProjectChange={setProjectId}
+        onPlatformChange={setPlatform}
         onViewChange={setViewMode}
         onCreate={() => void onCreate()}
       />
@@ -282,5 +286,6 @@ export default function CalendarPage({
     </div>
   );
 }
+
 
 

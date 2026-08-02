@@ -426,3 +426,108 @@
 .dashboard-v2-system-list__offline {
   color: #fb7185;
 }
+/* ========================================================
+   DASHBOARD INTELLIGENCE SPACING FIX
+   ======================================================== */
+
+.dashboard-v2-intelligence,
+.dashboard-intelligence,
+.dashboard-intelligence-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.dashboard-v2-intelligence__header,
+.dashboard-intelligence__header,
+.dashboard-intelligence-panel > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.dashboard-v2-intelligence__metrics,
+.dashboard-intelligence__metrics,
+.dashboard-intelligence-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.dashboard-v2-intelligence__metric,
+.dashboard-intelligence__metric,
+.dashboard-intelligence-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 14px;
+  row-gap: 6px;
+  min-height: 88px;
+  padding: 14px 16px;
+}
+
+.dashboard-v2-intelligence__metric > div,
+.dashboard-intelligence__metric > div,
+.dashboard-intelligence-card > div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.dashboard-v2-intelligence__metric strong,
+.dashboard-intelligence__metric strong,
+.dashboard-intelligence-card strong {
+  line-height: 1.35;
+}
+
+.dashboard-v2-intelligence__metric span,
+.dashboard-v2-intelligence__metric small,
+.dashboard-intelligence__metric span,
+.dashboard-intelligence__metric small,
+.dashboard-intelligence-card span,
+.dashboard-intelligence-card small {
+  line-height: 1.45;
+}
+
+.dashboard-v2-intelligence__metric b,
+.dashboard-intelligence__metric b,
+.dashboard-intelligence-card b {
+  min-width: 42px;
+  text-align: center;
+  font-size: 1.35rem;
+}
+
+.dashboard-v2-intelligence__status,
+.dashboard-intelligence__status,
+.dashboard-intelligence-card__status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  min-height: 24px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+[dir="rtl"] .dashboard-v2-intelligence__metric,
+[dir="rtl"] .dashboard-intelligence__metric,
+[dir="rtl"] .dashboard-intelligence-card {
+  text-align: right;
+}
+
+@media (max-width: 1100px) {
+  .dashboard-v2-intelligence__metrics,
+  .dashboard-intelligence__metrics,
+  .dashboard-intelligence-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .dashboard-v2-intelligence__metrics,
+  .dashboard-intelligence__metrics,
+  .dashboard-intelligence-grid {
+    grid-template-columns: 1fr;
+  }
+}

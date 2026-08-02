@@ -923,3 +923,543 @@
     white-space: normal;
   }
 }
+/* ========================================================
+   AI Studio Runtime — Live Backend Integration
+   ======================================================== */
+
+.ai-runtime-live {
+  display: grid;
+  gap: 18px;
+}
+
+.ai-runtime-connection {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 12px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.54);
+}
+
+.ai-runtime-connection > span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.ai-runtime-connection--online > span {
+  background: #34d399;
+  box-shadow: 0 0 14px rgba(52, 211, 153, 0.66);
+}
+
+.ai-runtime-connection--degraded > span {
+  background: #f59e0b;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.55);
+}
+
+.ai-runtime-connection > div {
+  display: grid;
+  gap: 1px;
+}
+
+.ai-runtime-connection strong {
+  color: #e2e8f0;
+  font-size: 0.72rem;
+}
+
+.ai-runtime-connection small {
+  color: #64748b;
+  font-size: 0.61rem;
+}
+
+.ai-runtime-navigation {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(90px, 1fr));
+  gap: 7px;
+  overflow-x: auto;
+  padding: 5px;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 16px;
+  background: rgba(2, 6, 23, 0.28);
+}
+
+.ai-runtime-navigation__item {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  min-width: 98px;
+  min-height: 48px;
+  padding: 7px 8px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: transparent;
+  color: #94a3b8;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.ai-runtime-navigation__item:hover,
+.ai-runtime-navigation__item--active {
+  border-color: rgba(129, 140, 248, 0.3);
+  background: rgba(99, 102, 241, 0.11);
+  color: #f8fafc;
+}
+
+.ai-runtime-navigation__item > span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(99, 102, 241, 0.12);
+  color: #a5b4fc;
+}
+
+.ai-runtime-navigation__item > div {
+  display: grid;
+}
+
+.ai-runtime-navigation__item strong {
+  font-size: 0.67rem;
+}
+
+.ai-runtime-navigation__item small {
+  color: #818cf8;
+  font-size: 0.62rem;
+}
+
+.ai-runtime-panel {
+  padding: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  border-radius: 19px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(15, 23, 42, 0.88),
+      rgba(17, 24, 39, 0.72)
+    );
+}
+
+.ai-runtime-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.ai-runtime-panel__identity {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.ai-runtime-panel__icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(99, 102, 241, 0.13);
+  color: #a5b4fc;
+  font-size: 1.1rem;
+}
+
+.ai-runtime-panel__identity > div {
+  display: grid;
+  gap: 2px;
+}
+
+.ai-runtime-panel__identity span {
+  color: #64748b;
+  font-size: 0.65rem;
+}
+
+.ai-runtime-panel__identity h3 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 1rem;
+}
+
+.ai-runtime-panel__count {
+  color: #c7d2fe;
+  font-size: 1.5rem;
+}
+
+.ai-runtime-panel__search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 13px;
+  padding: 0 11px;
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  border-radius: 11px;
+  background: rgba(2, 6, 23, 0.32);
+}
+
+.ai-runtime-panel__search input {
+  width: 100%;
+  min-height: 40px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #e2e8f0;
+}
+
+.ai-runtime-provider-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.ai-runtime-provider {
+  display: grid;
+  grid-template-columns: 9px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  padding: 11px;
+  border: 1px solid rgba(148, 163, 184, 0.09);
+  border-radius: 11px;
+  background: rgba(2, 6, 23, 0.24);
+}
+
+.ai-runtime-provider__status {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.ai-runtime-provider__status--online {
+  background: #34d399;
+}
+
+.ai-runtime-provider__status--offline {
+  background: #ef4444;
+}
+
+.ai-runtime-provider > div {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.ai-runtime-provider strong,
+.ai-runtime-provider small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ai-runtime-provider strong {
+  color: #e2e8f0;
+  font-size: 0.74rem;
+}
+
+.ai-runtime-provider small {
+  color: #64748b;
+  font-size: 0.63rem;
+}
+
+.ai-runtime-provider__scope {
+  padding: 3px 6px;
+  border-radius: 6px;
+  background: rgba(99, 102, 241, 0.09);
+  color: #818cf8;
+  font-size: 0.58rem;
+}
+
+.ai-runtime-panel__expand {
+  width: 100%;
+  margin-top: 11px;
+  padding: 9px;
+  border: 1px solid rgba(129, 140, 248, 0.2);
+  border-radius: 10px;
+  background: rgba(99, 102, 241, 0.07);
+  color: #a5b4fc;
+  cursor: pointer;
+}
+
+.ai-runtime-capability-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.ai-runtime-capability-grid button {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  padding: 11px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.52);
+  color: #cbd5e1;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.ai-runtime-capability-grid button:hover {
+  border-color: rgba(129, 140, 248, 0.3);
+  transform: translateY(-1px);
+}
+
+.ai-runtime-capability-grid button > span {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: rgba(99, 102, 241, 0.11);
+  color: #a5b4fc;
+}
+
+.ai-runtime-capability-grid button > div {
+  display: grid;
+  gap: 2px;
+}
+
+.ai-runtime-capability-grid small {
+  color: #64748b;
+  font-size: 0.57rem;
+}
+
+.ai-runtime-capability-grid strong {
+  font-size: 0.7rem;
+}
+
+.ai-runtime-capability-grid b {
+  color: #c7d2fe;
+  font-size: 0.85rem;
+}
+
+.ai-runtime-state {
+  display: grid;
+  place-items: center;
+  min-height: 430px;
+  padding: 40px;
+  text-align: center;
+}
+
+.ai-runtime-state h2,
+.ai-runtime-state p {
+  margin: 5px 0;
+}
+
+.ai-runtime-state p {
+  color: #94a3b8;
+}
+
+.ai-runtime-state__spinner {
+  width: 42px;
+  height: 42px;
+  border: 3px solid rgba(129, 140, 248, 0.16);
+  border-top-color: #818cf8;
+  border-radius: 50%;
+  animation: ai-runtime-spin 0.8s linear infinite;
+}
+
+@keyframes ai-runtime-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ai-runtime-warning {
+  display: flex;
+  gap: 8px;
+  padding: 10px 13px;
+  border: 1px solid rgba(245, 158, 11, 0.23);
+  border-radius: 11px;
+  background: rgba(245, 158, 11, 0.07);
+  color: #fbbf24;
+  font-size: 0.72rem;
+}
+
+@media (max-width: 1180px) {
+  .ai-runtime-capability-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .ai-runtime-provider-list {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-runtime-capability-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.ai-runtime-provider {
+  grid-template-columns: 9px minmax(0, 1fr) auto;
+}
+
+.ai-runtime-provider__actions {
+  grid-column: 2 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.ai-runtime-provider__actions button {
+  padding: 5px 9px;
+  border: 1px solid rgba(129, 140, 248, 0.2);
+  border-radius: 7px;
+  background: rgba(99, 102, 241, 0.07);
+  color: #a5b4fc;
+  font: inherit;
+  font-size: 0.61rem;
+  cursor: pointer;
+}
+
+.ai-runtime-provider__actions button.primary {
+  border-color: rgba(52, 211, 153, 0.24);
+  background: rgba(52, 211, 153, 0.08);
+  color: #6ee7b7;
+}
+
+.ai-runtime-provider__actions button:disabled {
+  cursor: wait;
+  opacity: 0.5;
+}
+
+.ai-runtime-execution-center {
+  padding: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  border-radius: 19px;
+  background: rgba(15, 23, 42, 0.72);
+}
+
+.ai-runtime-execution-center > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 13px;
+}
+
+.ai-runtime-execution-center > header div {
+  display: grid;
+  gap: 2px;
+}
+
+.ai-runtime-execution-center > header span {
+  color: #64748b;
+  font-size: 0.63rem;
+}
+
+.ai-runtime-execution-center > header h3 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 1rem;
+}
+
+.ai-runtime-execution-center > header > strong {
+  color: #c7d2fe;
+  font-size: 1.4rem;
+}
+
+.ai-runtime-execution-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ai-runtime-execution-item {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 11px;
+  border: 1px solid rgba(148, 163, 184, 0.09);
+  border-radius: 11px;
+  background: rgba(2, 6, 23, 0.25);
+}
+
+.ai-runtime-execution-item__status {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.ai-runtime-execution-item__status--completed {
+  background: #34d399;
+}
+
+.ai-runtime-execution-item__status--failed {
+  background: #ef4444;
+}
+
+.ai-runtime-execution-item__status--awaiting_approval {
+  background: #f59e0b;
+}
+
+.ai-runtime-execution-item__content {
+  display: grid;
+  gap: 2px;
+}
+
+.ai-runtime-execution-item__content strong {
+  color: #e2e8f0;
+  font-size: 0.73rem;
+}
+
+.ai-runtime-execution-item__content small,
+.ai-runtime-execution-item__content span {
+  color: #64748b;
+  font-size: 0.61rem;
+}
+
+.ai-runtime-execution-item__state {
+  padding: 4px 7px;
+  border-radius: 7px;
+  background: rgba(99, 102, 241, 0.09);
+  color: #a5b4fc;
+  font-size: 0.59rem;
+}
+
+.ai-runtime-execution-item__actions {
+  display: flex;
+  gap: 6px;
+}
+
+.ai-runtime-execution-item__actions button {
+  padding: 6px 9px;
+  border-radius: 7px;
+  font: inherit;
+  font-size: 0.61rem;
+  cursor: pointer;
+}
+
+.ai-runtime-execution-item__actions .approve {
+  border: 1px solid rgba(52, 211, 153, 0.27);
+  background: rgba(52, 211, 153, 0.09);
+  color: #6ee7b7;
+}
+
+.ai-runtime-execution-item__actions .reject {
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  background: rgba(248, 113, 113, 0.08);
+  color: #fca5a5;
+}
+
+.ai-runtime-execution-empty {
+  padding: 24px;
+  color: #64748b;
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .ai-runtime-execution-item {
+    grid-template-columns: 8px minmax(0, 1fr);
+  }
+
+  .ai-runtime-execution-item__state,
+  .ai-runtime-execution-item__actions {
+    grid-column: 2;
+  }
+}

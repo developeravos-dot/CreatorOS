@@ -27,8 +27,24 @@ interface DashboardPageProps {
   onCreatePrompt: () => Promise<void>;
 }
 
-function getSystemStatusLabel(value: string): string {
+function normalizeSystemStatus(value: string): string {
   const normalized = value.toLowerCase();
+
+  if (
+    normalized.includes("disconnected") ||
+    normalized.includes("offline") ||
+    normalized.includes("unavailable")
+  ) {
+    return "disconnected";
+  }
+
+  if (
+    normalized.includes("persistent") ||
+    normalized.includes("database") ||
+    normalized.includes("storage")
+  ) {
+    return "persistent";
+  }
 
   if (
     normalized.includes("operational") ||
@@ -36,12 +52,11 @@ function getSystemStatusLabel(value: string): string {
     normalized.includes("ready") ||
     normalized.includes("connected")
   ) {
-    return "Operational";
+    return "operational";
   }
 
   return value;
 }
-
 export default function DashboardPage({
   dashboard,
   connected,
@@ -53,7 +68,27 @@ export default function DashboardPage({
 }: DashboardPageProps) {
 
   const { t } = useTranslation();
-  const chartValues = useMemo(
+
+  function getLocalizedSystemStatus(value: string): string {
+    const status = normalizeSystemStatus(value);
+
+    if (status === "operational") {
+      return t("dashboard.operational");
+    }
+
+    if (status === "persistent") {
+      return t("dashboard.persistent");
+    }
+
+    if (status === "disconnected") {
+      return t("dashboard.disconnected");
+    }
+
+    return value;
+  }
+
+
+const chartValues = useMemo(
     () => [
       dashboard.metrics.projects,
       dashboard.metrics.activeProjects,
@@ -82,7 +117,7 @@ export default function DashboardPage({
         description: `${
           platformLabels[project.platform]
         } · ${statusLabels[project.status]}`,
-        time: "Project",
+        time: t("dashboard.activityProject"),
       }));
 
     const scriptActivities: DashboardActivity[] = dashboard.scripts
@@ -92,7 +127,7 @@ export default function DashboardPage({
         icon: "✎",
         title: script.title,
         description: scriptStatusLabels[script.status],
-        time: "Script",
+        time: t("dashboard.activityScript"),
       }));
 
     return [...projectActivities, ...scriptActivities].slice(0, 5);
@@ -153,32 +188,34 @@ export default function DashboardPage({
   const operationalSystems = [
     {
       label: t("dashboard.backendApi"),
-      value: connected ? "Connected" : "Disconnected",
+      value: connected
+        ? t("dashboard.connected")
+        : t("dashboard.disconnected"),
       healthy: connected,
     },
     {
       label: "Project Engine",
-      value: getSystemStatusLabel(dashboard.system.projectEngine),
+      value: getLocalizedSystemStatus(dashboard.system.projectEngine),
       healthy: true,
     },
     {
       label: "Script Engine",
-      value: getSystemStatusLabel(dashboard.system.scriptEngine),
+      value: getLocalizedSystemStatus(dashboard.system.scriptEngine),
       healthy: true,
     },
     {
       label: "Calendar Engine",
-      value: getSystemStatusLabel(dashboard.system.calendarEngine),
+      value: getLocalizedSystemStatus(dashboard.system.calendarEngine),
       healthy: true,
     },
     {
       label: "Prompt Engine",
-      value: getSystemStatusLabel(dashboard.system.promptEngine),
+      value: getLocalizedSystemStatus(dashboard.system.promptEngine),
       healthy: true,
     },
     {
       label: t("dashboard.storage"),
-      value: getSystemStatusLabel(dashboard.system.storage),
+      value: getLocalizedSystemStatus(dashboard.system.storage),
       healthy: true,
     },
   ];
@@ -197,10 +234,7 @@ export default function DashboardPage({
         <div>
           <span>{t("app.name")}</span>
           <h2>{t("dashboard.title")}</h2>
-          <p>
-            Monitor projects, scripts, publishing operations and the
-            CreatorOS production infrastructure from one workspace.
-          </p>
+          <p>{t("dashboard.subtitle")}</p>
         </div>
 
         <div className="dashboard-v2__header-actions">
@@ -230,7 +264,7 @@ export default function DashboardPage({
           value={dashboard.metrics.projects}
           description={t("dashboard.totalWorkspaces")}
           icon="▦"
-          trend={`${dashboard.metrics.activeProjects} active`}
+          trend={`${dashboard.metrics.activeProjects} ${t("dashboard.active")}`}
           status="positive"
         />
 
@@ -359,6 +393,11 @@ export default function DashboardPage({
     </div>
   );
 }
+
+
+
+
+
 
 
 

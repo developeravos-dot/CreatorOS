@@ -9,6 +9,7 @@ export type {
   PipelineStep,
   PipelineStepStatus,
   StudioAgent,
+  StudioRun,
 } from "./types";
 
 
