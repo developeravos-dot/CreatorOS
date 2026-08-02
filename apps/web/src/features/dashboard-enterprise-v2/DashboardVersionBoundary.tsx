@@ -24,6 +24,10 @@ interface DashboardVersionBoundaryProps {
   legacy: ReactNode;
 
   onRefresh?: () => void;
+  onCreateProject?: () => void;
+  onCreateScript?: () => void;
+  onScheduleContent?: () => void;
+  onCreatePrompt?: () => void;
 }
 
 export default function DashboardVersionBoundary({
@@ -34,6 +38,10 @@ export default function DashboardVersionBoundary({
   error = null,
   legacy,
   onRefresh,
+  onCreateProject,
+  onCreateScript,
+  onScheduleContent,
+  onCreatePrompt,
 }: DashboardVersionBoundaryProps) {
   const {
     isEnterpriseV2,
@@ -61,6 +69,18 @@ export default function DashboardVersionBoundary({
           refreshing={refreshing}
           error={error}
           onRefresh={onRefresh}
+          onCreateProject={
+            onCreateProject
+          }
+          onCreateScript={
+            onCreateScript
+          }
+          onScheduleContent={
+            onScheduleContent
+          }
+          onCreatePrompt={
+            onCreatePrompt
+          }
         />
       ) : (
         legacy

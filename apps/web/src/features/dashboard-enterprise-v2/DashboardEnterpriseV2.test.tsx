@@ -2,9 +2,11 @@
   describe,
   expect,
   it,
+  vi,
 } from "vitest";
 
 import {
+  fireEvent,
   render,
   screen,
 } from "@testing-library/react";
@@ -18,16 +20,18 @@ import DashboardEnterpriseV2 from "./DashboardEnterpriseV2";
 const dashboard:
   EnterpriseDashboard = {
   metrics: {
-    projects: 3,
-    activeProjects: 2,
-    scripts: 6,
-    scheduledContent: 2,
-    prompts: 4,
+    projects: 1,
+    activeProjects: 1,
+    scripts: 1,
+    scheduledContent: 0,
+    prompts: 1,
   },
+
   projects: [],
   scripts: [],
   calendar: [],
   prompts: [],
+
   system: {
     projectEngine:
       "operational",
@@ -46,13 +50,11 @@ describe(
   "DashboardEnterpriseV2",
   () => {
     it(
-      "renders foundation and KPI intelligence",
+      "renders foundation, intelligence and command center",
       () => {
         render(
           <DashboardEnterpriseV2
-            dashboard={
-              dashboard
-            }
+            dashboard={dashboard}
             connected
           />,
         );
@@ -82,27 +84,56 @@ describe(
             "heading",
             {
               name:
-                "Performance trends",
+                "Operational command center",
             },
-          ),
-        ).toBeInTheDocument();
-
-        expect(
-          screen.getByText(
-            "Enterprise connected",
           ),
         ).toBeInTheDocument();
       },
     );
 
     it(
-      "does not render charts while loading",
+      "runs schedule command",
+      () => {
+        const onScheduleContent =
+          vi.fn();
+
+        render(
+          <DashboardEnterpriseV2
+            dashboard={dashboard}
+            connected
+            onScheduleContent={
+              onScheduleContent
+            }
+          />,
+        );
+
+        const scheduleButtons =
+          screen.getAllByRole(
+            "button",
+            {
+              name:
+                /Schedule content/,
+            },
+          );
+
+        fireEvent.click(
+          scheduleButtons[0]!,
+        );
+
+        expect(
+          onScheduleContent,
+        ).toHaveBeenCalledTimes(
+          1,
+        );
+      },
+    );
+
+    it(
+      "does not render intelligence while loading",
       () => {
         render(
           <DashboardEnterpriseV2
-            dashboard={
-              dashboard
-            }
+            dashboard={dashboard}
             connected
             loading
           />,
@@ -117,27 +148,16 @@ describe(
             },
           ),
         ).not.toBeInTheDocument();
-      },
-    );
-
-    it(
-      "uses refreshing state for KPI intelligence",
-      () => {
-        render(
-          <DashboardEnterpriseV2
-            dashboard={
-              dashboard
-            }
-            connected
-            refreshing
-          />,
-        );
 
         expect(
-          screen.getByText(
-            "Building KPI intelligence...",
+          screen.queryByRole(
+            "heading",
+            {
+              name:
+                "Operational command center",
+            },
           ),
-        ).toBeInTheDocument();
+        ).not.toBeInTheDocument();
       },
     );
   },
