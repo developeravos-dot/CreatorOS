@@ -46,7 +46,7 @@ describe(
   "DashboardEnterpriseV2",
   () => {
     it(
-      "builds and renders a foundation snapshot",
+      "renders foundation and KPI intelligence",
       () => {
         render(
           <DashboardEnterpriseV2
@@ -68,14 +68,74 @@ describe(
         ).toBeInTheDocument();
 
         expect(
-          screen.getByText(
-            "3",
+          screen.getByRole(
+            "heading",
+            {
+              name:
+                "KPI intelligence",
+            },
+          ),
+        ).toBeInTheDocument();
+
+        expect(
+          screen.getByRole(
+            "heading",
+            {
+              name:
+                "Performance trends",
+            },
           ),
         ).toBeInTheDocument();
 
         expect(
           screen.getByText(
             "Enterprise connected",
+          ),
+        ).toBeInTheDocument();
+      },
+    );
+
+    it(
+      "does not render charts while loading",
+      () => {
+        render(
+          <DashboardEnterpriseV2
+            dashboard={
+              dashboard
+            }
+            connected
+            loading
+          />,
+        );
+
+        expect(
+          screen.queryByRole(
+            "heading",
+            {
+              name:
+                "KPI intelligence",
+            },
+          ),
+        ).not.toBeInTheDocument();
+      },
+    );
+
+    it(
+      "uses refreshing state for KPI intelligence",
+      () => {
+        render(
+          <DashboardEnterpriseV2
+            dashboard={
+              dashboard
+            }
+            connected
+            refreshing
+          />,
+        );
+
+        expect(
+          screen.getByText(
+            "Building KPI intelligence...",
           ),
         ).toBeInTheDocument();
       },

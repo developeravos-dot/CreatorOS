@@ -12,3 +12,5 @@ export * from "./dashboard-version";
 export {
   default as DashboardVersionBoundary,
 } from "./DashboardVersionBoundary";
+export * from "./intelligence";
+export * from "./charts";
