@@ -1,4 +1,5 @@
 ﻿import { useMemo, useState } from "react";
+import { useTranslation } from "../hooks";
 import type { EnterpriseProject } from "../enterprise-api";
 import {
   ProjectDetailsPanel,
@@ -73,8 +74,8 @@ export default function ProjectsPage({
     <div className="projects-v2">
       <header className="projects-v2-header">
         <div>
-          <span>PROJECTS WORKSPACE</span>
-          <h2>Content Projects</h2>
+          <span>{t("projects.workspace")}</span>
+          <h2>{t("projects.title")}</h2>
           <p>
             Organize, search and manage all CreatorOS production
             workspaces from one operational view.
@@ -84,12 +85,12 @@ export default function ProjectsPage({
         <div className="projects-v2-header__stats">
           <div>
             <strong>{projects.length}</strong>
-            <span>Total projects</span>
+            <span>{t("projects.total")}</span>
           </div>
 
           <div>
             <strong>{filteredProjects.length}</strong>
-            <span>Visible results</span>
+            <span>{t("projects.visible")}</span>
           </div>
         </div>
       </header>
@@ -139,3 +140,7 @@ export default function ProjectsPage({
     </div>
   );
 }
+
+
+
+

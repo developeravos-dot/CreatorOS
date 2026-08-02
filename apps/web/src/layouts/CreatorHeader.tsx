@@ -1,4 +1,6 @@
-﻿interface CreatorHeaderProps {
+﻿import { useTranslation } from "../hooks";
+
+interface CreatorHeaderProps {
   title: string;
   loading: boolean;
   busy: boolean;
@@ -13,20 +15,22 @@ export default function CreatorHeader({
   onRefresh,
   onMobileOpen,
 }: CreatorHeaderProps) {
+
+  const { t } = useTranslation();
   return (
     <header className="creator-header">
       <div className="creator-header__left">
         <button
           type="button"
           className="creator-header__mobile-menu"
-          aria-label="Open navigation"
+          aria-label={t("navigation.open")}
           onClick={onMobileOpen}
         >
           ☰
         </button>
 
         <div className="creator-header__title">
-          <span>CreatorOS Enterprise</span>
+          <span>{t("app.name")}</span>
           <h1>{title}</h1>
         </div>
       </div>
@@ -37,7 +41,7 @@ export default function CreatorHeader({
 
           <input
             type="search"
-            placeholder="Search CreatorOS..."
+            placeholder={t("header.search")}
           />
 
           <kbd>Ctrl K</kbd>
@@ -45,15 +49,15 @@ export default function CreatorHeader({
 
         <span className="creator-header__connection">
           <span className="creator-header__connection-dot" />
-          Production
+          {t("header.production")}
         </span>
 
         <button
           type="button"
           className="creator-header__refresh"
           disabled={loading || busy}
-          aria-label="Refresh dashboard"
-          title="Refresh dashboard"
+          aria-label={t("header.refresh")}
+          title={t("header.refresh")}
           onClick={onRefresh}
         >
           {loading || busy ? "…" : "↻"}
@@ -63,11 +67,13 @@ export default function CreatorHeader({
           <span className="creator-header__avatar">K</span>
 
           <div className="creator-header__profile-text">
-            <strong>Workspace Admin</strong>
-            <span>CreatorOS Enterprise</span>
+            <strong>{t("header.admin")}</strong>
+            <span>{t("app.name")}</span>
           </div>
         </div>
       </div>
     </header>
   );
 }
+
+

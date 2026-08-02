@@ -1,4 +1,5 @@
 ﻿import type { EnterpriseProject } from "../../enterprise-api";
+import { useTranslation } from "../../hooks";
 import {
   platformLabels,
   statusLabels,
@@ -21,11 +22,13 @@ export default function ProjectsTable({
   onStatus,
   onDelete,
 }: ProjectsTableProps) {
+
+  const { t } = useTranslation();
   if (projects.length === 0) {
     return (
       <div className="projects-v2-empty">
-        <strong>No projects found</strong>
-        <span>Adjust the filters or create a new project.</span>
+        <strong>{t("projects.noProjects")}</strong>
+        <span>{t("projects.adjustFilters")}</span>
       </div>
     );
   }
@@ -35,11 +38,11 @@ export default function ProjectsTable({
       <table className="projects-v2-table">
         <thead>
           <tr>
-            <th>Project</th>
-            <th>Platform</th>
-            <th>Status</th>
-            <th>ID</th>
-            <th aria-label="Actions" />
+            <th>{t("projects.project")}</th>
+            <th>{t("projects.platform")}</th>
+            <th>{t("projects.status")}</th>
+            <th>{t("projects.id")}</th>
+            <th aria-label={t("projects.actions")} />
           </tr>
         </thead>
 
@@ -60,7 +63,7 @@ export default function ProjectsTable({
 
                   <div>
                     <strong>{project.name}</strong>
-                    <small>CreatorOS project</small>
+                    <small>{t("projects.creatorProject")}</small>
                   </div>
                 </div>
               </td>
@@ -89,7 +92,7 @@ export default function ProjectsTable({
                       onStatus(project);
                     }}
                   >
-                    Update status
+                    {t("projects.updateStatus")}
                   </button>
 
                   <button
@@ -112,3 +115,4 @@ export default function ProjectsTable({
     </div>
   );
 }
+

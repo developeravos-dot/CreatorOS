@@ -1,6 +1,7 @@
-import React from "react";
+﻿import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
+import { LocalizationProvider } from "./localization/LocalizationProvider";
 import "./index.css";
 import DialogProvider from "./components/dialogs/DialogProvider";
 
@@ -9,7 +10,7 @@ ReactDOM.createRoot(
 ).render(
   <React.StrictMode>
     <DialogProvider>
-      <App />
+      <LocalizationProvider><App /></LocalizationProvider>
     </DialogProvider>
   </React.StrictMode>,
 );

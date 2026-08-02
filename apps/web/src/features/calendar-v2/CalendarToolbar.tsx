@@ -1,11 +1,14 @@
 ﻿import type { CalendarViewMode } from "./calendar-utils";
+import { useTranslation } from "../../hooks";
 
 interface CalendarToolbarProps {
   search: string;
   status: string;
   projectId: string;
+  platform: string;
   viewMode: CalendarViewMode;
   statuses: string[];
+  platforms: string[];
   projects: Array<{
     id: string;
     name: string;
@@ -14,6 +17,7 @@ interface CalendarToolbarProps {
   onSearchChange: (value: string) => void;
   onStatusChange: (value: string) => void;
   onProjectChange: (value: string) => void;
+  onPlatformChange: (value: string) => void;
   onViewChange: (value: CalendarViewMode) => void;
   onCreate: () => void;
 }
@@ -32,6 +36,7 @@ export default function CalendarToolbar({
   onViewChange,
   onCreate,
 }: CalendarToolbarProps) {
+  const { t } = useTranslation();
   return (
     <div className="calendar-v2-toolbar">
       <label className="calendar-v2-search">
@@ -40,17 +45,17 @@ export default function CalendarToolbar({
         <input
           type="search"
           value={search}
-          placeholder="Search scheduled content..."
+          placeholder={t("calendar.search")}
           onChange={(event) => onSearchChange(event.target.value)}
         />
       </label>
 
       <select
         value={projectId}
-        aria-label="Filter by project"
+        aria-label={t("calendar.filterProject")}
         onChange={(event) => onProjectChange(event.target.value)}
       >
-        <option value="all">All projects</option>
+        <option value="all">{t("calendar.allProjects")}</option>
 
         {projects.map((project) => (
           <option value={project.id} key={project.id}>
@@ -61,10 +66,10 @@ export default function CalendarToolbar({
 
       <select
         value={status}
-        aria-label="Filter by status"
+        aria-label={t("calendar.filterStatus")}
         onChange={(event) => onStatusChange(event.target.value)}
       >
-        <option value="all">All statuses</option>
+        <option value="all">{t("calendar.allStatuses")}</option>
 
         {statuses.map((item) => (
           <option value={item} key={item}>
@@ -73,15 +78,33 @@ export default function CalendarToolbar({
         ))}
       </select>
 
+
+      <select
+        value={platform}
+        aria-label={t("calendar.filterPlatform")}
+        onChange={(event) =>
+          onPlatformChange(event.target.value)
+        }
+      >
+        <option value="all">
+          {t("calendar.allPlatforms")}
+        </option>
+
+        {platforms.map((item) => (
+          <option value={item} key={item}>
+            {item}
+          </option>
+        ))}
+      </select>
       <div className="calendar-v2-view-switch">
-        {(["month", "week", "timeline"] as const).map((mode) => (
+        {(["month", "week", "day", "timeline"] as const).map((mode) => (
           <button
             type="button"
-            key={mode}
+            key={t(`calendar.view.${mode}`)}
             className={viewMode === mode ? "active" : ""}
             onClick={() => onViewChange(mode)}
           >
-            {mode}
+            {t(`calendar.view.${mode}`)}
           </button>
         ))}
       </div>
@@ -92,8 +115,10 @@ export default function CalendarToolbar({
         disabled={busy}
         onClick={onCreate}
       >
-        ＋ Schedule Content
+        ＋ {t("calendar.scheduleContent")}
       </button>
     </div>
   );
 }
+
+

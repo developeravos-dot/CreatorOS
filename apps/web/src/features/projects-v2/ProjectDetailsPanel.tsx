@@ -1,4 +1,5 @@
 ﻿import type { EnterpriseProject } from "../../enterprise-api";
+import { useTranslation } from "../../hooks";
 import {
   platformLabels,
   statusLabels,
@@ -19,6 +20,8 @@ export default function ProjectDetailsPanel({
   onStatus,
   onDelete,
 }: ProjectDetailsPanelProps) {
+
+  const { t } = useTranslation();
   if (!project) {
     return null;
   }
@@ -34,7 +37,7 @@ export default function ProjectDetailsPanel({
       >
         <header className="projects-v2-details__header">
           <div>
-            <span>PROJECT DETAILS</span>
+            <span>{t("projects.details")}</span>
             <h2>{project.name}</h2>
           </div>
 
@@ -54,14 +57,14 @@ export default function ProjectDetailsPanel({
 
         <dl className="projects-v2-details__list">
           <div>
-            <dt>Platform</dt>
+            <dt>{t("projects.platform")}</dt>
             <dd>
               {platformLabels[project.platform] ?? project.platform}
             </dd>
           </div>
 
           <div>
-            <dt>Status</dt>
+            <dt>{t("projects.status")}</dt>
             <dd>
               {statusLabels[project.status] ?? project.status}
             </dd>
@@ -91,7 +94,7 @@ export default function ProjectDetailsPanel({
             disabled={busy}
             onClick={() => onStatus(project)}
           >
-            Update status
+            {t("projects.updateStatus")}
           </button>
 
           <button
@@ -100,10 +103,11 @@ export default function ProjectDetailsPanel({
             disabled={busy}
             onClick={() => onDelete(project)}
           >
-            Delete project
+            {t("projects.deleteProject")}
           </button>
         </footer>
       </aside>
     </div>
   );
 }
+

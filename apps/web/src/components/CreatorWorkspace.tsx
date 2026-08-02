@@ -6,7 +6,7 @@
 
 import type { CreatorView } from "../layouts";
 
-import AIContentStudioPage from "../pages/AIContentStudioPage";
+import AIStudioEnterprisePage from "../pages/AIStudioEnterprisePage";
 import CalendarPage from "../pages/CalendarPage";
 import DashboardPage from "../pages/DashboardPage";
 import ProjectsPage from "../pages/ProjectsPage";
@@ -101,9 +101,10 @@ export default function CreatorWorkspace(
       );
 
     case "ai-content":
-      return <AIContentStudioPage />;
+      return <AIStudioEnterprisePage />;
 
     default:
       return null;
   }
 }
+

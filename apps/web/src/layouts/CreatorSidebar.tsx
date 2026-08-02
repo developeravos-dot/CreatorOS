@@ -1,4 +1,5 @@
 ﻿import type { CreatorView } from "./creatorView";
+import { useTranslation } from "../hooks";
 
 interface CreatorSidebarProps {
   view: CreatorView;
@@ -19,41 +20,41 @@ const navigationGroups: Array<{
   }>;
 }> = [
   {
-    label: "COMMAND CENTER",
+    label:  "navigation.commandCenter" ,
     items: [
       {
         view: "dashboard",
-        label: "Dashboard",
+        label:  "navigation.dashboard" ,
         icon: "⌂",
       },
       {
         view: "projects",
-        label: "Projects",
+        label:  "navigation.projects" ,
         icon: "▦",
       },
       {
         view: "scripts",
-        label: "Scripts",
+        label:  "navigation.scripts" ,
         icon: "✎",
       },
       {
         view: "calendar",
-        label: "Content Calendar",
+        label:  "navigation.calendar" ,
         icon: "▣",
       },
     ],
   },
   {
-    label: "INTELLIGENCE",
+    label:  "navigation.intelligence" ,
     items: [
       {
         view: "ai-content",
-        label: "AI Content Studio",
+        label:  "navigation.aiStudio" ,
         icon: "✦",
       },
       {
         view: "prompts",
-        label: "Prompt Library",
+        label:  "navigation.prompts" ,
         icon: "◇",
       },
     ],
@@ -68,6 +69,8 @@ export default function CreatorSidebar({
   onMobileClose,
   onViewChange,
 }: CreatorSidebarProps) {
+
+  const { t } = useTranslation();
   function selectView(nextView: CreatorView) {
     onViewChange(nextView);
     onMobileClose?.();
@@ -88,8 +91,8 @@ export default function CreatorSidebar({
           className="creator-sidebar__collapse"
           aria-label={
             collapsed
-              ? "Expand navigation"
-              : "Collapse navigation"
+              ? t("navigation.expand")
+              : t("navigation.collapse")
           }
           onClick={onCollapse}
         >
@@ -99,15 +102,15 @@ export default function CreatorSidebar({
 
       <nav
         className="creator-sidebar__navigation"
-        aria-label="CreatorOS navigation"
+        aria-label={t("navigation.aria")}
       >
         {navigationGroups.map((group) => (
           <section
             className="creator-sidebar__section"
-            key={group.label}
+            key={t(group.label)}
           >
             <p className="creator-sidebar__section-title">
-              {group.label}
+              {t(group.label)}
             </p>
 
             <div className="creator-sidebar__items">
@@ -133,7 +136,7 @@ export default function CreatorSidebar({
                     </span>
 
                     <span className="creator-sidebar__label">
-                      {item.label}
+                      {t(item.label)}
                     </span>
                   </button>
                 );
@@ -159,14 +162,14 @@ export default function CreatorSidebar({
           <div className="creator-sidebar__status-text">
             <strong>
               {connected
-                ? "System operational"
-                : "System disconnected"}
+                ? t("system.operational")
+                : t("system.disconnected")}
             </strong>
 
             <span>
               {connected
-                ? "Frontend and backend connected"
-                : "Backend connection unavailable"}
+                ? t("system.connected")
+                : t("system.backendUnavailable")}
             </span>
           </div>
         </div>
@@ -174,3 +177,7 @@ export default function CreatorSidebar({
     </div>
   );
 }
+
+
+
+

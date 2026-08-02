@@ -5,7 +5,7 @@
 
 type GenericRecord = Record<string, unknown>;
 
-export type CalendarViewMode = "month" | "week" | "timeline";
+export type CalendarViewMode = "month" | "week" | "day" | "timeline";
 
 export interface CalendarDisplayItem {
   source: EnterpriseCalendarItem;
@@ -142,3 +142,4 @@ export function getDateKey(date: Date): string {
 
   return `${year}-${month}-${day}`;
 }
+

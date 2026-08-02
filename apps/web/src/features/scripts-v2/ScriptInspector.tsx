@@ -1,4 +1,5 @@
 ﻿import type { EnterpriseScript } from "../../enterprise-api";
+import { useTranslation } from "../../hooks";
 import { scriptStatusLabels } from "../../utils/contentLabels";
 
 interface ScriptInspectorProps {
@@ -20,11 +21,13 @@ function displayValue(value: unknown): string {
 export default function ScriptInspector({
   script,
 }: ScriptInspectorProps) {
+
+  const { t } = useTranslation();
   if (!script) {
     return (
       <aside className="scripts-v2-inspector">
         <div className="scripts-v2-inspector__empty">
-          Select a script to view its information.
+          {t("scripts.selectToView")}
         </div>
       </aside>
     );
@@ -37,8 +40,8 @@ export default function ScriptInspector({
   return (
     <aside className="scripts-v2-inspector">
       <header>
-        <span>SCRIPT DETAILS</span>
-        <h3>Information</h3>
+        <span>{t("scripts.details")}</span>
+        <h3>{t("scripts.information")}</h3>
       </header>
 
       <div className="scripts-v2-inspector__identity">
@@ -52,7 +55,7 @@ export default function ScriptInspector({
 
       <dl className="scripts-v2-inspector__metadata">
         <div>
-          <dt>Status</dt>
+          <dt>{t("scripts.status")}</dt>
           <dd>
             {scriptStatusLabels[script.status] ?? script.status}
           </dd>
@@ -68,19 +71,20 @@ export default function ScriptInspector({
 
       <section className="scripts-v2-history">
         <header>
-          <span>VERSION HISTORY</span>
-          <strong>Current version</strong>
+          <span>{t("scripts.versionHistory")}</span>
+          <strong>{t("scripts.currentVersion")}</strong>
         </header>
 
         <div className="scripts-v2-history__item">
           <span>✓</span>
 
           <div>
-            <strong>Current server version</strong>
-            <small>Loaded from CreatorOS backend</small>
+            <strong>{t("scripts.currentServerVersion")}</strong>
+            <small>{t("scripts.loadedBackend")}</small>
           </div>
         </div>
       </section>
     </aside>
   );
 }
+

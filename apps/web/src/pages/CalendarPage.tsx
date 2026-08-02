@@ -2,13 +2,17 @@
   useMemo,
   useState,
 } from "react";
+import { useTranslation } from "../hooks";
 import type {
   EnterpriseCalendarItem,
   EnterpriseProject,
 } from "../enterprise-api";
 import {
   CalendarDetailsPanel,
+  CalendarDayView,
   CalendarMonthView,
+  CalendarPublishingQueue,
+  CalendarSchedulingSuggestions,
   CalendarTimelineView,
   CalendarToolbar,
   CalendarWeekView,
@@ -31,9 +35,11 @@ export default function CalendarPage({
   busy,
   onCreate,
 }: CalendarPageProps) {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [projectId, setProjectId] = useState("all");
+  const [platform, setPlatform] = useState("all");
   const [viewMode, setViewMode] =
     useState<CalendarViewMode>("month");
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -71,6 +77,18 @@ export default function CalendarPage({
     [normalizedItems],
   );
 
+
+  const platforms = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          normalizedItems
+            .map((item) => item.platform)
+            .filter(Boolean),
+        ),
+      ),
+    [normalizedItems],
+  );
   const filteredItems = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
 
@@ -137,8 +155,8 @@ export default function CalendarPage({
     <div className="calendar-v2">
       <header className="calendar-v2-header">
         <div>
-          <span>CONTENT CALENDAR</span>
-          <h2>Publishing Operations</h2>
+          <span>{t("calendar.workspace")}</span>
+          <h2>{t("calendar.title")}</h2>
           <p>
             Plan, inspect and organize scheduled CreatorOS content across
             projects and platforms.
@@ -148,17 +166,17 @@ export default function CalendarPage({
         <div className="calendar-v2-header__stats">
           <div>
             <strong>{items.length}</strong>
-            <span>Total items</span>
+            <span>{t("calendar.totalItems")}</span>
           </div>
 
           <div>
             <strong>{datedItems.length}</strong>
-            <span>Scheduled</span>
+            <span>{t("calendar.scheduled")}</span>
           </div>
 
           <div>
             <strong>{undatedItems}</strong>
-            <span>Without date</span>
+            <span>{t("calendar.withoutDate")}</span>
           </div>
         </div>
       </header>
@@ -190,7 +208,7 @@ export default function CalendarPage({
         </button>
 
         <div>
-          <span>CURRENT PERIOD</span>
+          <span>{t("calendar.currentPeriod")}</span>
           <h3>{periodTitle}</h3>
         </div>
 
@@ -229,6 +247,15 @@ export default function CalendarPage({
           />
         ) : null}
 
+
+        {viewMode === "day" ? (
+          <CalendarDayView
+            currentDate={currentDate}
+            items={filteredItems}
+            onSelect={setSelectedItem}
+            onLocalMove={moveItemLocally}
+          />
+        ) : null}
         {viewMode === "timeline" ? (
           <CalendarTimelineView
             items={filteredItems}
@@ -237,6 +264,17 @@ export default function CalendarPage({
         ) : null}
       </section>
 
+
+      <section className="calendar-v2-enterprise-grid">
+        <CalendarPublishingQueue
+          items={filteredItems}
+          onSelect={setSelectedItem}
+        />
+
+        <CalendarSchedulingSuggestions
+          items={filteredItems}
+        />
+      </section>
       <CalendarDetailsPanel
         item={selectedItem}
         onClose={() => setSelectedItem(null)}
@@ -244,3 +282,5 @@ export default function CalendarPage({
     </div>
   );
 }
+
+

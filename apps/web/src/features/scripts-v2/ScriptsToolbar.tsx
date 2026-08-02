@@ -1,4 +1,6 @@
-﻿interface ScriptsToolbarProps {
+﻿import { useTranslation } from "../../hooks";
+
+interface ScriptsToolbarProps {
   search: string;
   status: string;
   statuses: string[];
@@ -17,6 +19,8 @@ export default function ScriptsToolbar({
   onStatusChange,
   onCreate,
 }: ScriptsToolbarProps) {
+
+  const { t } = useTranslation();
   return (
     <div className="scripts-v2-toolbar">
       <label className="scripts-v2-search">
@@ -25,17 +29,17 @@ export default function ScriptsToolbar({
         <input
           type="search"
           value={search}
-          placeholder="Search scripts..."
+          placeholder={t("scripts.search")}
           onChange={(event) => onSearchChange(event.target.value)}
         />
       </label>
 
       <select
         value={status}
-        aria-label="Filter scripts by status"
+        aria-label={t("scripts.filterStatus")}
         onChange={(event) => onStatusChange(event.target.value)}
       >
-        <option value="all">All statuses</option>
+        <option value="all">{t("scripts.allStatuses")}</option>
 
         {statuses.map((item) => (
           <option value={item} key={item}>
@@ -50,8 +54,9 @@ export default function ScriptsToolbar({
         disabled={busy}
         onClick={onCreate}
       >
-        ＋ New Script
+        ＋ {t("actions.newScript")}
       </button>
     </div>
   );
 }
+

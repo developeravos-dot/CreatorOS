@@ -1,4 +1,6 @@
-﻿interface ProjectsToolbarProps {
+﻿import { useTranslation } from "../../hooks";
+
+interface ProjectsToolbarProps {
   search: string;
   platform: string;
   status: string;
@@ -27,6 +29,8 @@ export default function ProjectsToolbar({
   onViewModeChange,
   onCreate,
 }: ProjectsToolbarProps) {
+
+  const { t } = useTranslation();
   return (
     <div className="projects-v2-toolbar">
       <label className="projects-v2-search">
@@ -35,17 +39,17 @@ export default function ProjectsToolbar({
         <input
           type="search"
           value={search}
-          placeholder="Search projects..."
+          placeholder={t("projects.search")}
           onChange={(event) => onSearchChange(event.target.value)}
         />
       </label>
 
       <select
         value={platform}
-        aria-label="Filter by platform"
+        aria-label={t("projects.filterPlatform")}
         onChange={(event) => onPlatformChange(event.target.value)}
       >
-        <option value="all">All platforms</option>
+        <option value="all">{t("projects.allPlatforms")}</option>
 
         {platforms.map((item) => (
           <option value={item} key={item}>
@@ -56,10 +60,10 @@ export default function ProjectsToolbar({
 
       <select
         value={status}
-        aria-label="Filter by status"
+        aria-label={t("projects.filterStatus")}
         onChange={(event) => onStatusChange(event.target.value)}
       >
-        <option value="all">All statuses</option>
+        <option value="all">{t("projects.allStatuses")}</option>
 
         {statuses.map((item) => (
           <option value={item} key={item}>
@@ -92,8 +96,9 @@ export default function ProjectsToolbar({
         disabled={disabled}
         onClick={onCreate}
       >
-        ＋ New Project
+        ＋ {t("actions.newProject")}
       </button>
     </div>
   );
 }
+

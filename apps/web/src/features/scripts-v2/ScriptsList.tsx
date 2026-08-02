@@ -1,4 +1,5 @@
 ﻿import type { EnterpriseScript } from "../../enterprise-api";
+import { useTranslation } from "../../hooks";
 import { scriptStatusLabels } from "../../utils/contentLabels";
 
 interface ScriptsListProps {
@@ -12,11 +13,13 @@ export default function ScriptsList({
   selectedId,
   onSelect,
 }: ScriptsListProps) {
+
+  const { t } = useTranslation();
   if (scripts.length === 0) {
     return (
       <div className="scripts-v2-empty">
-        <strong>No scripts found</strong>
-        <span>Create a script or change the current filters.</span>
+        <strong>{t("scripts.noScripts")}</strong>
+        <span>{t("scripts.changeFilters")}</span>
       </div>
     );
   }
@@ -55,3 +58,4 @@ export default function ScriptsList({
     </div>
   );
 }
+

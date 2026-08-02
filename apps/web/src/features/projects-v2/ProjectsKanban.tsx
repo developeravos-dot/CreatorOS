@@ -1,4 +1,5 @@
 ﻿import type { EnterpriseProject } from "../../enterprise-api";
+import { useTranslation } from "../../hooks";
 import {
   platformLabels,
   statusLabels,
@@ -17,6 +18,8 @@ export default function ProjectsKanban({
   onSelect,
   onStatus,
 }: ProjectsKanbanProps) {
+
+  const { t } = useTranslation();
   const statusGroups = Array.from(
     new Set(projects.map((project) => project.status)),
   );
@@ -24,8 +27,8 @@ export default function ProjectsKanban({
   if (projects.length === 0) {
     return (
       <div className="projects-v2-empty">
-        <strong>No projects found</strong>
-        <span>Adjust the filters or create a new project.</span>
+        <strong>{t("projects.noProjects")}</strong>
+        <span>{t("projects.adjustFilters")}</span>
       </div>
     );
   }
@@ -88,3 +91,4 @@ export default function ProjectsKanban({
     </div>
   );
 }
+

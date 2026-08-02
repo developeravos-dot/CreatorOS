@@ -1,4 +1,5 @@
 ﻿import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "../hooks";
 import type {
   EnterpriseProject,
   EnterpriseScript,
@@ -28,6 +29,8 @@ export default function ScriptsPage({
   onEdit,
   onStatus,
 }: ScriptsPageProps) {
+
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [selectedScript, setSelectedScript] =
@@ -71,8 +74,8 @@ export default function ScriptsPage({
     <div className="scripts-v2">
       <header className="scripts-v2-page-header">
         <div>
-          <span>SCRIPTS WORKSPACE</span>
-          <h2>Production Scripts</h2>
+          <span>{t("scripts.workspace")}</span>
+          <h2>{t("scripts.title")}</h2>
           <p>
             Write, review and manage every CreatorOS script from one
             focused production environment.
@@ -82,12 +85,12 @@ export default function ScriptsPage({
         <div className="scripts-v2-page-header__stats">
           <div>
             <strong>{scripts.length}</strong>
-            <span>Total scripts</span>
+            <span>{t("scripts.total")}</span>
           </div>
 
           <div>
             <strong>{projects.length}</strong>
-            <span>Available projects</span>
+            <span>{t("scripts.availableProjects")}</span>
           </div>
         </div>
       </header>
@@ -106,8 +109,8 @@ export default function ScriptsPage({
         <aside className="scripts-v2-library">
           <header>
             <div>
-              <span>SCRIPT LIBRARY</span>
-              <h3>All scripts</h3>
+              <span>{t("scripts.library")}</span>
+              <h3>{t("scripts.allScripts")}</h3>
             </div>
 
             <small>{filteredScripts.length}</small>
@@ -132,3 +135,4 @@ export default function ScriptsPage({
     </div>
   );
 }
+

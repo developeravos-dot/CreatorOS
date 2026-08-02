@@ -1,7 +1,9 @@
 ﻿import { useMemo } from "react";
+import { useTranslation } from "../hooks";
 import type { EnterpriseDashboard } from "../enterprise-api";
 import {
   DashboardActivityFeed,
+  DashboardIntelligencePanel,
   DashboardChart,
   DashboardMetricCard,
   DashboardQuickActions,
@@ -49,6 +51,8 @@ export default function DashboardPage({
   onSchedule,
   onCreatePrompt,
 }: DashboardPageProps) {
+
+  const { t } = useTranslation();
   const chartValues = useMemo(
     () => [
       dashboard.metrics.projects,
@@ -61,11 +65,11 @@ export default function DashboardPage({
   );
 
   const chartLabels = [
-    "Projects",
-    "Active",
-    "Scripts",
-    "Calendar",
-    "Prompts",
+    t("navigation.projects"),
+    t("dashboard.active"),
+    t("navigation.scripts"),
+    t("navigation.calendar"),
+    t("navigation.prompts"),
   ];
 
   const activities = useMemo<DashboardActivity[]>(() => {
@@ -99,8 +103,8 @@ export default function DashboardPage({
       {
         id: "create-project",
         icon: "＋",
-        title: "Create project",
-        description: "Start a new content workspace",
+        title: t("quickActions.createProject"),
+        description: t("quickActions.startWorkspace"),
         disabled: busy,
         onClick: () => {
           void onCreateProject();
@@ -109,8 +113,8 @@ export default function DashboardPage({
       {
         id: "create-script",
         icon: "✎",
-        title: "Create script",
-        description: "Add a script to a project",
+        title: t("quickActions.createScript"),
+        description: t("quickActions.addScript"),
         disabled: busy,
         onClick: () => {
           void onCreateScript();
@@ -119,8 +123,8 @@ export default function DashboardPage({
       {
         id: "schedule-content",
         icon: "▣",
-        title: "Schedule content",
-        description: "Add a publishing date",
+        title: t("quickActions.scheduleContent"),
+        description: t("quickActions.addPublishDate"),
         disabled: busy,
         onClick: () => {
           void onSchedule();
@@ -129,8 +133,8 @@ export default function DashboardPage({
       {
         id: "create-prompt",
         icon: "✦",
-        title: "Create AI prompt",
-        description: "Save an intelligent template",
+        title: t("quickActions.createPrompt"),
+        description: t("quickActions.saveTemplate"),
         disabled: busy,
         onClick: () => {
           void onCreatePrompt();
@@ -148,7 +152,7 @@ export default function DashboardPage({
 
   const operationalSystems = [
     {
-      label: "Backend API",
+      label: t("dashboard.backendApi"),
       value: connected ? "Connected" : "Disconnected",
       healthy: connected,
     },
@@ -173,7 +177,7 @@ export default function DashboardPage({
       healthy: true,
     },
     {
-      label: "Storage",
+      label: t("dashboard.storage"),
       value: getSystemStatusLabel(dashboard.system.storage),
       healthy: true,
     },
@@ -191,8 +195,8 @@ export default function DashboardPage({
     <div className="dashboard-v2">
       <header className="dashboard-v2__header">
         <div>
-          <span>CREATOROS ENTERPRISE</span>
-          <h2>Command Center</h2>
+          <span>{t("app.name")}</span>
+          <h2>{t("dashboard.title")}</h2>
           <p>
             Monitor projects, scripts, publishing operations and the
             CreatorOS production infrastructure from one workspace.
@@ -206,7 +210,7 @@ export default function DashboardPage({
             disabled={busy}
             onClick={() => void onSchedule()}
           >
-            Schedule
+            {t("actions.schedule")}
           </button>
 
           <button
@@ -215,36 +219,36 @@ export default function DashboardPage({
             disabled={busy}
             onClick={() => void onCreateProject()}
           >
-            ＋ New Project
+            ＋ {t("actions.newProject")}
           </button>
         </div>
       </header>
 
       <section className="dashboard-v2__metrics">
         <DashboardMetricCard
-          title="Projects"
+          title={t("navigation.projects")}
           value={dashboard.metrics.projects}
-          description="Total content workspaces"
+          description={t("dashboard.totalWorkspaces")}
           icon="▦"
           trend={`${dashboard.metrics.activeProjects} active`}
           status="positive"
         />
 
         <DashboardMetricCard
-          title="Scripts"
+          title={t("navigation.scripts")}
           value={dashboard.metrics.scripts}
-          description="Scripts stored on the server"
+          description={t("dashboard.scriptsStored")}
           icon="✎"
-          trend="Production assets"
+          trend={t("dashboard.productionAssets")}
           status="neutral"
         />
 
         <DashboardMetricCard
-          title="Scheduled Content"
+          title={t("dashboard.scheduledContent")}
           value={dashboard.metrics.scheduledContent}
-          description="Publishing calendar items"
+          description={t("dashboard.calendarItems")}
           icon="▣"
-          trend="Calendar pipeline"
+          trend={t("dashboard.calendarPipeline")}
           status={
             dashboard.metrics.scheduledContent > 0
               ? "positive"
@@ -253,21 +257,23 @@ export default function DashboardPage({
         />
 
         <DashboardMetricCard
-          title="AI Prompts"
+          title={t("dashboard.aiPrompts")}
           value={dashboard.metrics.prompts}
-          description="Reusable intelligent templates"
+          description={t("dashboard.promptTemplates")}
           icon="✦"
-          trend="AI workspace"
+          trend={t("dashboard.aiWorkspace")}
           status="neutral"
         />
       </section>
+
+      <DashboardIntelligencePanel />
 
       <section className="dashboard-v2__grid">
         <article className="dashboard-v2-panel">
           <header className="dashboard-v2-panel__header">
             <div>
-              <span>PRODUCTION OVERVIEW</span>
-              <h3>Workspace distribution</h3>
+              <span>{t("dashboard.productionOverview")}</span>
+              <h3>{t("dashboard.workspaceDistribution")}</h3>
             </div>
           </header>
 
@@ -280,8 +286,8 @@ export default function DashboardPage({
         <article className="dashboard-v2-panel">
           <header className="dashboard-v2-panel__header">
             <div>
-              <span>QUICK ACTIONS</span>
-              <h3>Start creating</h3>
+              <span>{t("quickActions.title")}</span>
+              <h3>{t("quickActions.subtitle")}</h3>
             </div>
           </header>
 
@@ -291,8 +297,8 @@ export default function DashboardPage({
         <article className="dashboard-v2-panel">
           <header className="dashboard-v2-panel__header">
             <div>
-              <span>RECENT ACTIVITY</span>
-              <h3>Latest workspace items</h3>
+              <span>{t("dashboard.recentActivity")}</span>
+              <h3>{t("dashboard.latestItems")}</h3>
             </div>
           </header>
 
@@ -302,8 +308,8 @@ export default function DashboardPage({
         <article className="dashboard-v2-panel">
           <header className="dashboard-v2-panel__header">
             <div>
-              <span>SYSTEM STATUS</span>
-              <h3>Operational health</h3>
+              <span>{t("dashboard.systemStatus")}</span>
+              <h3>{t("dashboard.operationalHealth")}</h3>
             </div>
           </header>
 
@@ -325,7 +331,7 @@ export default function DashboardPage({
               <div>
                 <strong>{systemHealth}%</strong>
                 <span>
-                  {connected ? "Healthy" : "Attention"}
+                  {connected ? t("dashboard.healthy") : t("dashboard.attention")}
                 </span>
               </div>
             </div>
@@ -353,3 +359,17 @@ export default function DashboardPage({
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -8,3 +8,4 @@ export type { DashboardMetricCardProps } from "./DashboardMetricCard";
 
 export { default as DashboardQuickActions } from "./DashboardQuickActions";
 export type { DashboardQuickAction } from "./DashboardQuickActions";
+export { default as DashboardIntelligencePanel } from "./DashboardIntelligencePanel";
