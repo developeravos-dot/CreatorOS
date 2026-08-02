@@ -2,7 +2,6 @@
   describe,
   expect,
   it,
-  vi,
 } from "vitest";
 
 import {
@@ -50,7 +49,7 @@ describe(
   "DashboardEnterpriseV2",
   () => {
     it(
-      "renders foundation, intelligence and command center",
+      "renders all personalized sections",
       () => {
         render(
           <DashboardEnterpriseV2
@@ -92,44 +91,81 @@ describe(
     );
 
     it(
-      "runs schedule command",
+      "opens personalization drawer",
       () => {
-        const onScheduleContent =
-          vi.fn();
-
         render(
           <DashboardEnterpriseV2
             dashboard={dashboard}
             connected
-            onScheduleContent={
-              onScheduleContent
-            }
           />,
         );
 
-        const scheduleButtons =
-          screen.getAllByRole(
+        fireEvent.click(
+          screen.getByRole(
             "button",
             {
               name:
-                /Schedule content/,
+                "Personalize dashboard",
             },
-          );
-
-        fireEvent.click(
-          scheduleButtons[0]!,
+          ),
         );
 
         expect(
-          onScheduleContent,
-        ).toHaveBeenCalledTimes(
-          1,
-        );
+          screen.getByRole(
+            "dialog",
+            {
+              name:
+                "Dashboard personalization",
+            },
+          ),
+        ).toBeInTheDocument();
       },
     );
 
     it(
-      "does not render intelligence while loading",
+      "hides a dashboard section",
+      () => {
+        render(
+          <DashboardEnterpriseV2
+            dashboard={dashboard}
+            connected
+          />,
+        );
+
+        fireEvent.click(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Personalize dashboard",
+            },
+          ),
+        );
+
+        fireEvent.click(
+          screen.getByRole(
+            "checkbox",
+            {
+              name:
+                "KPI intelligence",
+            },
+          ),
+        );
+
+        expect(
+          screen.queryByRole(
+            "heading",
+            {
+              name:
+                "KPI intelligence",
+            },
+          ),
+        ).not.toBeInTheDocument();
+      },
+    );
+
+    it(
+      "does not render optional sections while loading",
       () => {
         render(
           <DashboardEnterpriseV2

@@ -16,3 +16,4 @@ export * from "./intelligence";
 export * from "./charts";
 export * from "./activity";
 export * from "./command-center";
+export * from "./personalization";
