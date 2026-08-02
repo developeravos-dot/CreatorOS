@@ -1,5 +1,12 @@
-export type Platform = "YouTube" | "TikTok";
-export type ContentPlatform = Platform | "Both";
+﻿import { creatorClient } from "./api/core/client";
+
+export type Platform =
+  | "YouTube"
+  | "TikTok";
+
+export type ContentPlatform =
+  | Platform
+  | "Both";
 
 export type Channel = {
   id: string;
@@ -39,32 +46,17 @@ export type DashboardState = {
   };
 };
 
-const API_BASE =
-  localStorage.getItem("creatoros-api-url") || "";
-
-async function request<T>(
-  path: string,
-  options?: RequestInit,
-): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(options?.headers || {}),
-    },
-    ...options,
-  });
-
-  if (!response.ok) {
-    const message = await response.text();
-    throw new Error(message || `API request failed: ${response.status}`);
-  }
-
-  return response.json() as Promise<T>;
-}
-
+/**
+ * Compatibility facade.
+ *
+ * New code should import clients and services
+ * from "./api".
+ */
 export const creatorApi = {
   getDashboard() {
-    return request<DashboardState>("/creator/dashboard");
+    return creatorClient.get<DashboardState>(
+      "/dashboard",
+    );
   },
 
   addChannel(input: {
@@ -72,16 +64,18 @@ export const creatorApi = {
     platform: Platform;
     category: string;
   }) {
-    return request<Channel>("/creator/channels", {
-      method: "POST",
-      body: JSON.stringify(input),
-    });
+    return creatorClient.post<Channel>(
+      "/channels",
+      input,
+    );
   },
 
   removeChannel(id: string) {
-    return request<{ success: true }>(`/creator/channels/${id}`, {
-      method: "DELETE",
-    });
+    return creatorClient.delete<{
+      success: true;
+    }>(
+      `/channels/${encodeURIComponent(id)}`,
+    );
   },
 
   addContent(input: {
@@ -89,21 +83,23 @@ export const creatorApi = {
     platform: ContentPlatform;
     format: string;
   }) {
-    return request<ContentItem>("/creator/content", {
-      method: "POST",
-      body: JSON.stringify(input),
-    });
+    return creatorClient.post<ContentItem>(
+      "/content",
+      input,
+    );
   },
 
   advanceContent(id: string) {
-    return request<ContentItem>(`/creator/content/${id}/advance`, {
-      method: "PATCH",
-    });
+    return creatorClient.patch<ContentItem>(
+      `/content/${encodeURIComponent(id)}/advance`,
+    );
   },
 
   removeContent(id: string) {
-    return request<{ success: true }>(`/creator/content/${id}`, {
-      method: "DELETE",
-    });
+    return creatorClient.delete<{
+      success: true;
+    }>(
+      `/content/${encodeURIComponent(id)}`,
+    );
   },
 };

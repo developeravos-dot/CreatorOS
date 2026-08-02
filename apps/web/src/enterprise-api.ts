@@ -1,3 +1,7 @@
+import { enterpriseClient } from "./api/core/client";
+import {
+  ApiError,
+} from "./api/core/errors";
 export type EnterprisePlatform = "YouTube" | "TikTok" | "Both";
 export type ProjectStatus = "planning" | "active" | "paused" | "completed";
 export type ScriptStatus = "draft" | "review" | "approved" | "production";
@@ -62,8 +66,6 @@ export interface EnterpriseDashboard {
   };
 }
 
-const API_BASE = "/api/v1/enterprise";
-
 export class EnterpriseApiError extends Error {
   readonly status: number;
   readonly url: string;
@@ -76,182 +78,56 @@ export class EnterpriseApiError extends Error {
     payload?: unknown,
   ) {
     super(message);
+
     this.name = "EnterpriseApiError";
     this.status = status;
     this.url = url;
     this.payload = payload;
   }
 }
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    !Array.isArray(value)
-  );
-}
-
-function extractErrorMessage(
-  payload: unknown,
-  fallback: string,
-): string {
-  if (!isRecord(payload)) {
-    return fallback;
-  }
-
-  const message = payload.message;
-
-  if (Array.isArray(message)) {
-    const validMessages = message.filter(
-      (item): item is string => typeof item === "string",
-    );
-
-    if (validMessages.length > 0) {
-      return validMessages.join("ØŒ ");
-    }
-  }
-
-  if (typeof message === "string" && message.trim()) {
-    return message;
-  }
-
-  if (
-    typeof payload.error === "string" &&
-    payload.error.trim()
-  ) {
-    return payload.error;
-  }
-
-  return fallback;
-}
-
-function unwrapPayload<T>(payload: unknown): T {
-  if (
-    isRecord(payload) &&
-    payload.success === false
-  ) {
-    throw new EnterpriseApiError(
-      extractErrorMessage(
-        payload,
-        "Ø£Ø¹Ø§Ø¯ Ø§Ù„Ø®Ø§Ø¯Ù… Ø§Ø³ØªØ¬Ø§Ø¨Ø© ØºÙŠØ± Ù†Ø§Ø¬Ø­Ø©.",
-      ),
-      200,
-      "response-validation",
-      payload,
-    );
-  }
-
-  /*
-   * ÙŠØ¯Ø¹Ù… Ø¹Ù‚Ø¯ÙŠÙ† Ø¨ØµÙˆØ±Ø© Ù†Ø¸ÙŠÙØ©:
-   *
-   * 1. Ø§Ø³ØªØ¬Ø§Ø¨Ø© Ù…Ø¨Ø§Ø´Ø±Ø©:
-   *    { projects, scripts, calendar, ... }
-   *
-   * 2. Ø§Ø³ØªØ¬Ø§Ø¨Ø© Ù…ØºÙ„ÙØ©:
-   *    { success: true, data: { ... } }
-   */
-  if (
-    isRecord(payload) &&
-    "data" in payload &&
-    payload.data !== undefined
-  ) {
-    return payload.data as T;
-  }
-
-  return payload as T;
-}
-
 async function request<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
-  const normalizedPath = path.startsWith("/")
-    ? path
-    : `/${path}`;
+  const method =
+    options.method?.toUpperCase() ?? "GET";
 
-  const url = `${API_BASE}${normalizedPath}`;
+  let body: unknown = undefined;
 
-  const controller = new AbortController();
-  const timeoutId = window.setTimeout(
-    () => controller.abort(),
-    15000,
-  );
-
-  let response: Response;
+  if (
+    typeof options.body === "string" &&
+    options.body.trim()
+  ) {
+    try {
+      body = JSON.parse(options.body);
+    } catch {
+      body = options.body;
+    }
+  } else {
+    body = options.body;
+  }
 
   try {
-    response = await fetch(url, {
-      ...options,
-      signal: controller.signal,
-      headers: {
-        Accept: "application/json",
-        ...(options.body
-          ? { "Content-Type": "application/json; charset=utf-8" }
-          : {}),
-        ...options.headers,
+    return await enterpriseClient.request<T>(
+      path,
+      {
+        ...options,
+        method,
+        body,
       },
-    });
+    );
   } catch (error) {
-    if (
-      error instanceof DOMException &&
-      error.name === "AbortError"
-    ) {
+    if (error instanceof ApiError) {
       throw new EnterpriseApiError(
-        "Ø§Ù†ØªÙ‡Øª Ù…Ù‡Ù„Ø© Ø§Ù„Ø§ØªØµØ§Ù„ Ø¨Ø§Ù„Ø®Ø§Ø¯Ù….",
-        0,
-        url,
+        error.message,
+        error.status,
+        error.url,
+        error.payload,
       );
     }
 
-    throw new EnterpriseApiError(
-      error instanceof Error
-        ? `ØªØ¹Ø°Ø± Ø§Ù„Ø§ØªØµØ§Ù„ Ø¨Ø®Ø§Ø¯Ù… CreatorOS: ${error.message}`
-        : "ØªØ¹Ø°Ø± Ø§Ù„Ø§ØªØµØ§Ù„ Ø¨Ø®Ø§Ø¯Ù… CreatorOS.",
-      0,
-      url,
-    );
-  } finally {
-    window.clearTimeout(timeoutId);
+    throw error;
   }
-
-  const rawBody = await response.text();
-
-  let payload: unknown = null;
-
-  if (rawBody.trim()) {
-    try {
-      payload = JSON.parse(rawBody) as unknown;
-    } catch {
-      throw new EnterpriseApiError(
-        `Ø§Ù„Ø®Ø§Ø¯Ù… Ø£Ø¹Ø§Ø¯ Ù…Ø­ØªÙˆÙ‰ ØºÙŠØ± ØµØ§Ù„Ø­ Ø¨Ø¯Ù„ JSON. Ø§Ù„Ø±Ø§Ø¨Ø·: ${url}`,
-        response.status,
-        url,
-        rawBody.slice(0, 500),
-      );
-    }
-  }
-
-  if (!response.ok) {
-    throw new EnterpriseApiError(
-      extractErrorMessage(
-        payload,
-        `ÙØ´Ù„ Ø§Ù„Ø·Ù„Ø¨ Ø¨Ø±Ù…Ø² HTTP ${response.status}.`,
-      ),
-      response.status,
-      url,
-      payload,
-    );
-  }
-
-  if (payload === null) {
-    throw new EnterpriseApiError(
-      "Ø£Ø¹Ø§Ø¯ Ø§Ù„Ø®Ø§Ø¯Ù… Ø§Ø³ØªØ¬Ø§Ø¨Ø© ÙØ§Ø±ØºØ©.",
-      response.status,
-      url,
-    );
-  }
-
-  return unwrapPayload<T>(payload);
 }
 
 
@@ -329,7 +205,7 @@ export const enterpriseApi = {
   },
 
   dashboard() {
-    return request<EnterpriseDashboard>("/dashboard");
+    return enterpriseClient.get<EnterpriseDashboard>("/dashboard");
   },
 
   createProject(input: {

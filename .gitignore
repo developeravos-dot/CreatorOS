@@ -10,3 +10,5 @@ Thumbs.db
 .vscode/
 .idea/
 .pnpm-store/
+
+**/tsconfig.tsbuildinfo

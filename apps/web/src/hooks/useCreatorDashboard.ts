@@ -1,17 +1,31 @@
 ﻿import {
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
 
-import {
-  enterpriseApi,
-  type EnterpriseDashboard,
+import type {
+  EnterpriseDashboard,
 } from "../enterprise-api";
 
-import { queryClient } from "../api/data-engine/QueryClient";
+import {
+  dashboardApi,
+} from "../api/services/dashboard";
 
-const emptyDashboard: EnterpriseDashboard = {
+import {
+  isApiError,
+} from "../api/core/errors";
+
+import {
+  queryClient,
+} from "../api/data-engine/QueryClient";
+
+import {
+  apiQueryKeys,
+} from "../api/data-engine/queryKeys";
+
+const EMPTY_DASHBOARD: EnterpriseDashboard = {
   projects: [],
   scripts: [],
   calendar: [],
@@ -24,17 +38,35 @@ const emptyDashboard: EnterpriseDashboard = {
     prompts: 0,
   },
   system: {
-    projectEngine: "loading",
-    scriptEngine: "loading",
-    calendarEngine: "loading",
-    promptEngine: "loading",
-    storage: "loading",
+    projectEngine: "unknown",
+    scriptEngine: "unknown",
+    calendarEngine: "unknown",
+    promptEngine: "unknown",
+    storage: "unknown",
   },
 };
 
+function getErrorMessage(
+  error: unknown,
+): string {
+  if (isApiError(error)) {
+    return error.message;
+  }
+
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return "حدث خطأ غير متوقع أثناء الاتصال بالخادم.";
+}
+
 export function useCreatorDashboard() {
+  const mountedRef = useRef(true);
+
   const [dashboard, setDashboard] =
-    useState<EnterpriseDashboard>(emptyDashboard);
+    useState<EnterpriseDashboard>(
+      EMPTY_DASHBOARD,
+    );
 
   const [connected, setConnected] =
     useState(false);
@@ -51,75 +83,112 @@ export function useCreatorDashboard() {
   const [error, setError] =
     useState("");
 
-  const loadDashboard = useCallback(async () => {
-    setLoading(true);
-    setError("");
+  const loadDashboard = useCallback(
+    async (force = false): Promise<void> => {
+      if (force) {
+        queryClient.invalidate(
+          apiQueryKeys.enterpriseDashboard,
+        );
 
-    try {
-      const [health, data] = await Promise.all([
-        enterpriseApi.health(),
-        queryClient.fetch(
-          "dashboard",
-          () => enterpriseApi.dashboard(),
-          10000,
-        ),
-      ]);
+        queryClient.invalidate(
+          apiQueryKeys.enterpriseHealth,
+        );
+      }
 
-      setConnected(
-        Boolean(health.success) &&
+      setLoading(true);
+      setError("");
+
+      try {
+        const [
+          nextDashboard,
+          health,
+        ] = await Promise.all([
+          queryClient.fetch(
+            apiQueryKeys.enterpriseDashboard,
+            () => dashboardApi.getDashboard(),
+            force ? 0 : 15_000,
+          ),
+          queryClient.fetch(
+            apiQueryKeys.enterpriseHealth,
+            () => dashboardApi.getHealth(),
+            force ? 0 : 15_000,
+          ),
+        ]);
+
+        if (!mountedRef.current) {
+          return;
+        }
+
+        setDashboard(nextDashboard);
+
+        setConnected(
+          health.success === true &&
           health.status === "operational",
-      );
+        );
+      } catch (loadError) {
+        if (!mountedRef.current) {
+          return;
+        }
 
-      setDashboard(data);
-    } catch (currentError) {
-      setConnected(false);
+        setConnected(false);
 
-      setError(
-        currentError instanceof Error
-          ? currentError.message
-          : "تعذر الاتصال بخادم CreatorOS.",
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void loadDashboard();
-  }, [loadDashboard]);
+        setError(
+          getErrorMessage(loadError),
+        );
+      } finally {
+        if (mountedRef.current) {
+          setLoading(false);
+        }
+      }
+    },
+    [],
+  );
 
   const runAction = useCallback(
     async (
       action: () => Promise<unknown>,
       successMessage: string,
-    ) => {
+    ): Promise<void> => {
       setBusy(true);
       setError("");
       setMessage("");
 
       try {
         await action();
-        setMessage(successMessage);
-        queryClient.invalidate("dashboard");
 
-        await loadDashboard();
-      } catch (currentError) {
-        setError(
-          currentError instanceof Error
-            ? currentError.message
-            : "حدث خطأ غير متوقع.",
+        queryClient.invalidate(
+          apiQueryKeys.enterpriseDashboard,
         );
+
+        await loadDashboard(true);
+
+        if (mountedRef.current) {
+          setMessage(successMessage);
+        }
+      } catch (actionError) {
+        if (mountedRef.current) {
+          setError(
+            getErrorMessage(actionError),
+          );
+        }
       } finally {
-        setBusy(false);
+        if (mountedRef.current) {
+          setBusy(false);
+        }
       }
     },
     [loadDashboard],
   );
 
-  const clearFeedback = useCallback(() => {
-    setMessage("");
-    setError("");
-  }, []);
+  useEffect(() => {
+    mountedRef.current = true;
+
+    void loadDashboard();
+
+    return () => {
+      mountedRef.current = false;
+    };
+  }, [loadDashboard]);
 
   return {
     dashboard,
@@ -130,11 +199,8 @@ export function useCreatorDashboard() {
     error,
     setError,
     setMessage,
-    loadDashboard,
+    loadDashboard: () =>
+      loadDashboard(true),
     runAction,
-    clearFeedback,
   };
 }
-
-
-

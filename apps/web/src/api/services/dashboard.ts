@@ -1,17 +1,19 @@
-﻿import { apiClient } from "../core/client";
+﻿import { enterpriseClient } from "../core/client";
+import type {
+  EnterpriseDashboard,
+} from "../../enterprise-api";
 
-export const dashboardApi={
+export const dashboardApi = {
+  getDashboard() {
+    return enterpriseClient.get<EnterpriseDashboard>(
+      "/dashboard",
+    );
+  },
 
-    getDashboard(){
-
-        return apiClient.get("/enterprise/dashboard");
-
-    },
-
-    getHealth(){
-
-        return apiClient.get("/enterprise/health");
-
-    },
-
+  getHealth() {
+    return enterpriseClient.get<{
+      success: boolean;
+      status: string;
+    }>("/health");
+  },
 };

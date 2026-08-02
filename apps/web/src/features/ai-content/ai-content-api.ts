@@ -1,4 +1,11 @@
-export type Platform = 'YouTube' | 'TikTok' | 'Both';
+﻿import {
+  enterpriseClient,
+} from "../../api/core/client";
+
+export type Platform =
+  | "YouTube"
+  | "TikTok"
+  | "Both";
 
 export interface ProductionPackageRequest {
   topic: string;
@@ -72,40 +79,11 @@ export interface ProductionPackageResponse {
   qualityChecklist: string[];
 }
 
-interface ApiErrorResponse {
-  message?: string | string[];
-}
-
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '') ??
-  'http://localhost:3000';
-
-export async function createProductionPackage(
+export function createProductionPackage(
   input: ProductionPackageRequest,
 ): Promise<ProductionPackageResponse> {
-  const response = await fetch(
-    `${API_BASE_URL}/api/v1/enterprise/ai-content/production-package`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-      },
-      body: JSON.stringify(input),
-    },
+  return enterpriseClient.post<ProductionPackageResponse>(
+    "/ai-content/production-package",
+    input,
   );
-
-  const payload = (await response.json()) as
-    | ProductionPackageResponse
-    | ApiErrorResponse;
-
-  if (!response.ok) {
-    const errorPayload = payload as ApiErrorResponse;
-    const message = Array.isArray(errorPayload.message)
-      ? errorPayload.message.join('، ')
-      : errorPayload.message;
-
-    throw new Error(message || `فشل الطلب برمز ${response.status}`);
-  }
-
-  return payload as ProductionPackageResponse;
 }

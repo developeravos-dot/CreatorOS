@@ -1,9 +1,9 @@
-﻿import type {
+import {
+  enterpriseClient,
+} from "../../api/core/client";
+import type {
   AIOrganizationState,
 } from "./ai-organization-types";
-
-const apiBase =
-  "/api/v1/enterprise/ai-organization/persistence";
 
 export interface AIOrganizationWorkspaceRecord {
   id: string;
@@ -23,43 +23,28 @@ export interface SaveAIOrganizationWorkspaceInput {
 
 async function request<T>(
   path: string,
-  init?: RequestInit,
+  init: RequestInit = {},
 ): Promise<T> {
-  const response = await fetch(
-    `${apiBase}${path}`,
+  let body: unknown = undefined;
+
+  if (
+    typeof init.body === "string" &&
+    init.body.trim()
+  ) {
+    try {
+      body = JSON.parse(init.body);
+    } catch {
+      body = init.body;
+    }
+  }
+
+  return enterpriseClient.request<T>(
+    `/ai-organization/persistence${path}`,
     {
       ...init,
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        ...init?.headers,
-      },
+      body,
     },
   );
-
-  if (!response.ok) {
-    const body = await response
-      .json()
-      .catch(() => null);
-
-    const error = new Error(
-      body?.message ??
-        `AI Organization request failed: ${response.status}`,
-    );
-
-    Object.assign(error, {
-      status: response.status,
-      body,
-    });
-
-    throw error;
-  }
-
-  if (response.status === 204) {
-    return undefined as T;
-  }
-
-  return response.json() as Promise<T>;
 }
 
 export async function loadAIOrganizationWorkspace(

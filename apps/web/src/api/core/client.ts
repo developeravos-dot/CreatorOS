@@ -1,57 +1,153 @@
-﻿import { http } from "./http";
+﻿import {
+  http,
+  type HttpRequestOptions,
+} from "./http";
 
-const API_BASE =
-  import.meta.env.VITE_API_URL ??
-  "http://localhost:3000/api/v1";
+export interface ApiClient {
+  request<T>(
+    path: string,
+    options?: HttpRequestOptions,
+  ): Promise<T>;
 
-export const apiClient = {
+  get<T>(
+    path: string,
+    options?: HttpRequestOptions,
+  ): Promise<T>;
 
-  get<T>(url:string){
+  post<T>(
+    path: string,
+    body?: unknown,
+    options?: HttpRequestOptions,
+  ): Promise<T>;
 
-    return http<T>(`${API_BASE}${url}`);
+  put<T>(
+    path: string,
+    body?: unknown,
+    options?: HttpRequestOptions,
+  ): Promise<T>;
 
-  },
+  patch<T>(
+    path: string,
+    body?: unknown,
+    options?: HttpRequestOptions,
+  ): Promise<T>;
 
-  post<T>(url:string,body:unknown){
+  delete<T>(
+    path: string,
+    options?: HttpRequestOptions,
+  ): Promise<T>;
+}
 
-    return http<T>(`${API_BASE}${url}`,{
+function joinPaths(
+  prefix: string,
+  path: string,
+): string {
+  const normalizedPrefix = prefix
+    ? `/${prefix.replace(/^\/+|\/+$/g, "")}`
+    : "";
 
-      method:"POST",
+  const normalizedPath = path
+    ? `/${path.replace(/^\/+/, "")}`
+    : "";
 
-      headers:{
-        "Content-Type":"application/json",
-      },
+  return `${normalizedPrefix}${normalizedPath}`;
+}
 
-      body:JSON.stringify(body),
+export function createApiClient(
+  prefix = "",
+): ApiClient {
+  const resolvePath = (path: string) =>
+    joinPaths(prefix, path);
 
-    });
+  return {
+    request<T>(
+      path: string,
+      options?: HttpRequestOptions,
+    ) {
+      return http<T>(
+        resolvePath(path),
+        options,
+      );
+    },
 
-  },
+    get<T>(
+      path: string,
+      options?: HttpRequestOptions,
+    ) {
+      return http<T>(
+        resolvePath(path),
+        {
+          ...options,
+          method: "GET",
+        },
+      );
+    },
 
-  put<T>(url:string,body:unknown){
+    post<T>(
+      path: string,
+      body?: unknown,
+      options?: HttpRequestOptions,
+    ) {
+      return http<T>(
+        resolvePath(path),
+        {
+          ...options,
+          method: "POST",
+          body,
+        },
+      );
+    },
 
-    return http<T>(`${API_BASE}${url}`,{
+    put<T>(
+      path: string,
+      body?: unknown,
+      options?: HttpRequestOptions,
+    ) {
+      return http<T>(
+        resolvePath(path),
+        {
+          ...options,
+          method: "PUT",
+          body,
+        },
+      );
+    },
 
-      method:"PUT",
+    patch<T>(
+      path: string,
+      body?: unknown,
+      options?: HttpRequestOptions,
+    ) {
+      return http<T>(
+        resolvePath(path),
+        {
+          ...options,
+          method: "PATCH",
+          body,
+        },
+      );
+    },
 
-      headers:{
-        "Content-Type":"application/json",
-      },
+    delete<T>(
+      path: string,
+      options?: HttpRequestOptions,
+    ) {
+      return http<T>(
+        resolvePath(path),
+        {
+          ...options,
+          method: "DELETE",
+        },
+      );
+    },
+  };
+}
 
-      body:JSON.stringify(body),
+export const apiClient =
+  createApiClient();
 
-    });
+export const creatorClient =
+  createApiClient("/creator");
 
-  },
-
-  delete<T>(url:string){
-
-    return http<T>(`${API_BASE}${url}`,{
-
-      method:"DELETE",
-
-    });
-
-  },
-
-};
+export const enterpriseClient =
+  createApiClient("/enterprise");
