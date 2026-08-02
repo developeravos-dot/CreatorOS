@@ -1,4 +1,4 @@
-﻿import {
+import {
   useCallback,
   useEffect,
   useRef,
@@ -24,6 +24,10 @@ import {
 import {
   apiQueryKeys,
 } from "../api/data-engine/queryKeys";
+
+import {
+  queryPolicies,
+} from "../api/data-engine/queryPolicies";
 
 const EMPTY_DASHBOARD: EnterpriseDashboard = {
   projects: [],
@@ -57,7 +61,7 @@ function getErrorMessage(
     return error.message;
   }
 
-  return "حدث خطأ غير متوقع أثناء الاتصال بالخادم.";
+  return "Ø­Ø¯Ø« Ø®Ø·Ø£ ØºÙŠØ± Ù…ØªÙˆÙ‚Ø¹ Ø£Ø«Ù†Ø§Ø¡ Ø§Ù„Ø§ØªØµØ§Ù„ Ø¨Ø§Ù„Ø®Ø§Ø¯Ù….";
 }
 
 export function useCreatorDashboard() {
@@ -106,12 +110,12 @@ export function useCreatorDashboard() {
           queryClient.fetch(
             apiQueryKeys.enterpriseDashboard,
             () => dashboardApi.getDashboard(),
-            force ? 0 : 15_000,
+            force ? 0 : queryPolicies.dashboard.staleTime,
           ),
           queryClient.fetch(
             apiQueryKeys.enterpriseHealth,
             () => dashboardApi.getHealth(),
-            force ? 0 : 15_000,
+            force ? 0 : queryPolicies.health.staleTime,
           ),
         ]);
 

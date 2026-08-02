@@ -1,4 +1,4 @@
-﻿import { enterpriseClient } from "../core/client";
+import { enterpriseClient } from "../core/client";
 import type {
   EnterpriseCalendarItem,
   EnterprisePlatform,
@@ -12,7 +12,12 @@ export interface ScheduleContentInput {
 }
 
 export const calendarApi = {
-  schedule(input: ScheduleContentInput) {
+  list() {
+    return enterpriseClient.get<EnterpriseCalendarItem[]>(
+      "/calendar",
+    );
+  },
+schedule(input: ScheduleContentInput) {
     return enterpriseClient.post<EnterpriseCalendarItem>(
       "/calendar",
       input,

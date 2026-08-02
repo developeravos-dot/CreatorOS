@@ -1,4 +1,4 @@
-﻿export { default as CalendarContentCard } from "./CalendarContentCard";
+export { default as CalendarContentCard } from "./CalendarContentCard";
 export { default as CalendarDetailsPanel } from "./CalendarDetailsPanel";
 export { default as CalendarDayView } from "./CalendarDayView";
 export { default as CalendarMonthView } from "./CalendarMonthView";
@@ -18,3 +18,5 @@ export {
 } from "./calendar-utils";
 export { default as CalendarPublishingQueue } from "./CalendarPublishingQueue";
 export { default as CalendarSchedulingSuggestions } from "./CalendarSchedulingSuggestions";
+export * from "./calendar-query";
+export * from "./useCalendarQuery";

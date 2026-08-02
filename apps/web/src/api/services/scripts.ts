@@ -1,4 +1,4 @@
-﻿import { enterpriseClient } from "../core/client";
+import { enterpriseClient } from "../core/client";
 import type {
   EnterpriseScript,
   ScriptStatus,
@@ -17,7 +17,12 @@ export interface UpdateScriptInput {
 }
 
 export const scriptsApi = {
-  create(input: CreateScriptInput) {
+  list() {
+    return enterpriseClient.get<EnterpriseScript[]>(
+      "/scripts",
+    );
+  },
+create(input: CreateScriptInput) {
     return enterpriseClient.post<EnterpriseScript>(
       "/scripts",
       input,

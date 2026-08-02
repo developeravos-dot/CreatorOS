@@ -1,4 +1,4 @@
-﻿import {
+import {
   useCallback,
   useState,
 } from "react";
@@ -27,6 +27,18 @@ import {
   scriptsApi,
 } from "../api/services/scripts";
 
+
+import {
+  invalidateProjects,
+} from "../features/projects-v2/projects-query";
+
+import {
+  invalidateScripts,
+} from "../features/scripts-v2/scripts-query";
+
+import {
+  invalidateCalendar,
+} from "../features/calendar-v2/calendar-query";
 interface UseCreatorOperationsOptions {
   dashboard: EnterpriseDashboard;
   setError: (value: string) => void;
@@ -95,7 +107,7 @@ export function useCreatorOperations({
 
       if (dashboard.projects.length === 0) {
         setError(
-          "أنشئ مشروعًا أولًا قبل إضافة سكربت.",
+          "Ã˜Â£Ã™â€ Ã˜Â´Ã˜Â¦ Ã™â€¦Ã˜Â´Ã˜Â±Ã™Ë†Ã˜Â¹Ã™â€¹Ã˜Â§ Ã˜Â£Ã™Ë†Ã™â€žÃ™â€¹Ã˜Â§ Ã™â€šÃ˜Â¨Ã™â€ž Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© Ã˜Â³Ã™Æ’Ã˜Â±Ã˜Â¨Ã˜Âª.",
         );
 
         return;
@@ -112,7 +124,7 @@ export function useCreatorOperations({
 
       if (dashboard.projects.length === 0) {
         setError(
-          "أنشئ مشروعًا أولًا قبل جدولة المحتوى.",
+          "Ã˜Â£Ã™â€ Ã˜Â´Ã˜Â¦ Ã™â€¦Ã˜Â´Ã˜Â±Ã™Ë†Ã˜Â¹Ã™â€¹Ã˜Â§ Ã˜Â£Ã™Ë†Ã™â€žÃ™â€¹Ã˜Â§ Ã™â€šÃ˜Â¨Ã™â€ž Ã˜Â¬Ã˜Â¯Ã™Ë†Ã™â€žÃ˜Â© Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â­Ã˜ÂªÃ™Ë†Ã™â€°.",
         );
 
         return;
@@ -179,9 +191,10 @@ export function useCreatorOperations({
     }): Promise<void> => {
       await runAction(
         () => projectsApi.create(input),
-        "تم إنشاء المشروع بنجاح.",
+        "Ã˜ÂªÃ™â€¦ Ã˜Â¥Ã™â€ Ã˜Â´Ã˜Â§Ã˜Â¡ Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â´Ã˜Â±Ã™Ë†Ã˜Â¹ Ã˜Â¨Ã™â€ Ã˜Â¬Ã˜Â§Ã˜Â­.",
       );
 
+      invalidateProjects();
       setCreateProjectDialogOpen(false);
     },
     [runAction],
@@ -195,7 +208,7 @@ export function useCreatorOperations({
     }): Promise<void> => {
       await runAction(
         () => scriptsApi.create(input),
-        "تم إنشاء السكربت بنجاح.",
+        "Ã˜ÂªÃ™â€¦ Ã˜Â¥Ã™â€ Ã˜Â´Ã˜Â§Ã˜Â¡ Ã˜Â§Ã™â€žÃ˜Â³Ã™Æ’Ã˜Â±Ã˜Â¨Ã˜Âª Ã˜Â¨Ã™â€ Ã˜Â¬Ã˜Â§Ã˜Â­.",
       );
 
       setCreateScriptDialogOpen(false);
@@ -212,7 +225,7 @@ export function useCreatorOperations({
     }): Promise<void> => {
       await runAction(
         () => calendarApi.schedule(input),
-        "تمت جدولة المحتوى بنجاح.",
+        "Ã˜ÂªÃ™â€¦Ã˜Âª Ã˜Â¬Ã˜Â¯Ã™Ë†Ã™â€žÃ˜Â© Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â­Ã˜ÂªÃ™Ë†Ã™â€° Ã˜Â¨Ã™â€ Ã˜Â¬Ã˜Â§Ã˜Â­.",
       );
 
       setScheduleContentDialogOpen(false);
@@ -228,7 +241,7 @@ export function useCreatorOperations({
     }): Promise<void> => {
       await runAction(
         () => promptsApi.create(input),
-        "تم إنشاء القالب الذكي بنجاح.",
+        "Ã˜ÂªÃ™â€¦ Ã˜Â¥Ã™â€ Ã˜Â´Ã˜Â§Ã˜Â¡ Ã˜Â§Ã™â€žÃ™â€šÃ˜Â§Ã™â€žÃ˜Â¨ Ã˜Â§Ã™â€žÃ˜Â°Ã™Æ’Ã™Å  Ã˜Â¨Ã™â€ Ã˜Â¬Ã˜Â§Ã˜Â­.",
       );
 
       setCreatePromptDialogOpen(false);
@@ -250,9 +263,10 @@ export function useCreatorOperations({
             selectedProjectForStatus.id,
             input.status,
           ),
-        "تم تحديث حالة المشروع.",
+        "Ã˜ÂªÃ™â€¦ Ã˜ÂªÃ˜Â­Ã˜Â¯Ã™Å Ã˜Â« Ã˜Â­Ã˜Â§Ã™â€žÃ˜Â© Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â´Ã˜Â±Ã™Ë†Ã˜Â¹.",
       );
 
+      invalidateProjects();
       setSelectedProjectForStatus(null);
     },
     [runAction, selectedProjectForStatus],
@@ -269,9 +283,10 @@ export function useCreatorOperations({
           projectsApi.delete(
             selectedProjectForDelete.id,
           ),
-        "تم حذف المشروع.",
+        "Ã˜ÂªÃ™â€¦ Ã˜Â­Ã˜Â°Ã™Â Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â´Ã˜Â±Ã™Ë†Ã˜Â¹.",
       );
 
+      invalidateProjects();
       setSelectedProjectForDelete(null);
     },
     [runAction, selectedProjectForDelete],
@@ -293,7 +308,7 @@ export function useCreatorOperations({
               status: input.status,
             },
           ),
-        "تم تحديث مرحلة السكربت.",
+        "Ã˜ÂªÃ™â€¦ Ã˜ÂªÃ˜Â­Ã˜Â¯Ã™Å Ã˜Â« Ã™â€¦Ã˜Â±Ã˜Â­Ã™â€žÃ˜Â© Ã˜Â§Ã™â€žÃ˜Â³Ã™Æ’Ã˜Â±Ã˜Â¨Ã˜Âª.",
       );
 
       setSelectedScriptForStatus(null);
@@ -316,7 +331,7 @@ export function useCreatorOperations({
             selectedScriptForEdit.id,
             input,
           ),
-        "تم حفظ تعديلات السكربت.",
+        "Ã˜ÂªÃ™â€¦ Ã˜Â­Ã™ÂÃ˜Â¸ Ã˜ÂªÃ˜Â¹Ã˜Â¯Ã™Å Ã™â€žÃ˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ˜Â³Ã™Æ’Ã˜Â±Ã˜Â¨Ã˜Âª.",
       );
 
       setSelectedScriptForEdit(null);

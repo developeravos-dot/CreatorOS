@@ -1,4 +1,4 @@
-﻿import { enterpriseClient } from "../core/client";
+import { enterpriseClient } from "../core/client";
 import type {
   EnterprisePlatform,
   EnterpriseProject,
@@ -12,7 +12,12 @@ export interface CreateProjectInput {
 }
 
 export const projectsApi = {
-  create(input: CreateProjectInput) {
+  list() {
+    return enterpriseClient.get<EnterpriseProject[]>(
+      "/projects",
+    );
+  },
+create(input: CreateProjectInput) {
     return enterpriseClient.post<EnterpriseProject>(
       "/projects",
       input,

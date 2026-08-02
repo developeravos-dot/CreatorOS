@@ -502,3 +502,39 @@
     grid-column: auto;
   }
 }
+
+.projects-v2-query-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.projects-v2-query-status > div {
+  display: grid;
+  gap: 4px;
+}
+
+.projects-v2-query-status strong {
+  font-size: 13px;
+}
+
+.projects-v2-query-status span {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.projects-v2-query-status button {
+  min-width: 96px;
+}
+
+.projects-v2-query-error {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  color: #fca5a5;
+}
