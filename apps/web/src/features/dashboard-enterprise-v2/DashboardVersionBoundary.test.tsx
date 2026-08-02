@@ -25,10 +25,12 @@ const dashboard:
     scheduledContent: 1,
     prompts: 1,
   },
+
   projects: [],
   scripts: [],
   calendar: [],
   prompts: [],
+
   system: {
     projectEngine:
       "operational",
@@ -48,7 +50,7 @@ describe(
   () => {
     it(
       "renders Dashboard 2.0 by default",
-      () => {
+      async () => {
         render(
           <DashboardVersionBoundary
             dashboard={dashboard}
@@ -70,12 +72,22 @@ describe(
             },
           ),
         ).toBeInTheDocument();
+
+        expect(
+          await screen.findByRole(
+            "heading",
+            {
+              name:
+                "KPI intelligence",
+            },
+          ),
+        ).toBeInTheDocument();
       },
     );
 
     it(
       "switches to the legacy dashboard",
-      () => {
+      async () => {
         render(
           <DashboardVersionBoundary
             dashboard={dashboard}
@@ -88,12 +100,22 @@ describe(
           />,
         );
 
+        expect(
+          await screen.findByRole(
+            "heading",
+            {
+              name:
+                "KPI intelligence",
+            },
+          ),
+        ).toBeInTheDocument();
+
         fireEvent.click(
           screen.getByRole(
             "button",
             {
               name:
-                "Switch to legacy dashboard",
+                /legacy/i,
             },
           ),
         );

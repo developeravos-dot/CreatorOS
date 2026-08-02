@@ -1,4 +1,4 @@
-﻿import {
+import {
   describe,
   expect,
   it,
@@ -8,6 +8,7 @@ import {
   fireEvent,
   render,
   screen,
+  waitFor,
 } from "@testing-library/react";
 
 import type {
@@ -50,7 +51,7 @@ describe(
   () => {
     it(
       "renders all personalized sections",
-      () => {
+      async () => {
         render(
           <DashboardEnterpriseV2
             dashboard={dashboard}
@@ -69,7 +70,7 @@ describe(
         ).toBeInTheDocument();
 
         expect(
-          screen.getByRole(
+          await screen.findByRole(
             "heading",
             {
               name:
@@ -79,7 +80,7 @@ describe(
         ).toBeInTheDocument();
 
         expect(
-          screen.getByRole(
+          await screen.findByRole(
             "heading",
             {
               name:
@@ -92,7 +93,7 @@ describe(
 
     it(
       "opens personalization drawer",
-      () => {
+      async () => {
         render(
           <DashboardEnterpriseV2
             dashboard={dashboard}
@@ -111,7 +112,7 @@ describe(
         );
 
         expect(
-          screen.getByRole(
+          await screen.findByRole(
             "dialog",
             {
               name:
@@ -124,7 +125,7 @@ describe(
 
     it(
       "hides a dashboard section",
-      () => {
+      async () => {
         render(
           <DashboardEnterpriseV2
             dashboard={dashboard}
@@ -143,7 +144,7 @@ describe(
         );
 
         fireEvent.click(
-          screen.getByRole(
+          await screen.findByRole(
             "checkbox",
             {
               name:
@@ -152,21 +153,23 @@ describe(
           ),
         );
 
-        expect(
-          screen.queryByRole(
-            "heading",
-            {
-              name:
-                "KPI intelligence",
-            },
-          ),
-        ).not.toBeInTheDocument();
+        await waitFor(() => {
+          expect(
+            screen.queryByRole(
+              "heading",
+              {
+                name:
+                  "KPI intelligence",
+              },
+            ),
+          ).not.toBeInTheDocument();
+        });
       },
     );
 
     it(
       "does not render optional sections while loading",
-      () => {
+      async () => {
         render(
           <DashboardEnterpriseV2
             dashboard={dashboard}
@@ -175,15 +178,17 @@ describe(
           />,
         );
 
-        expect(
-          screen.queryByRole(
-            "heading",
-            {
-              name:
-                "KPI intelligence",
-            },
-          ),
-        ).not.toBeInTheDocument();
+        await waitFor(() => {
+          expect(
+            screen.queryByRole(
+              "heading",
+              {
+                name:
+                  "KPI intelligence",
+              },
+            ),
+          ).not.toBeInTheDocument();
+        });
 
         expect(
           screen.queryByRole(

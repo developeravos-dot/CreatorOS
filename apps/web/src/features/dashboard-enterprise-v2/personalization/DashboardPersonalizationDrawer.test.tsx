@@ -1,4 +1,4 @@
-﻿import {
+import {
   describe,
   expect,
   it,
@@ -34,7 +34,20 @@ describe(
             }
             savedViews={[]}
             activeViewId={null}
-            onClose={
+                        accessibility={{
+              reducedMotion: false,
+              highContrast: false,
+              announceUpdates: true,
+            }}
+            onReducedMotionChange={
+              vi.fn()
+            }
+            onHighContrastChange={
+              vi.fn()
+            }
+            onAnnounceUpdatesChange={
+              vi.fn()
+            }onClose={
               vi.fn()
             }
             onDensityChange={
@@ -92,7 +105,20 @@ describe(
             }
             savedViews={[]}
             activeViewId={null}
-            onClose={
+                        accessibility={{
+              reducedMotion: false,
+              highContrast: false,
+              announceUpdates: true,
+            }}
+            onReducedMotionChange={
+              vi.fn()
+            }
+            onHighContrastChange={
+              vi.fn()
+            }
+            onAnnounceUpdatesChange={
+              vi.fn()
+            }onClose={
               onClose
             }
             onDensityChange={
@@ -170,7 +196,20 @@ describe(
             }
             savedViews={[]}
             activeViewId={null}
-            onClose={
+                        accessibility={{
+              reducedMotion: false,
+              highContrast: false,
+              announceUpdates: true,
+            }}
+            onReducedMotionChange={
+              vi.fn()
+            }
+            onHighContrastChange={
+              vi.fn()
+            }
+            onAnnounceUpdatesChange={
+              vi.fn()
+            }onClose={
               onClose
             }
             onDensityChange={

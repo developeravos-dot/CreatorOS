@@ -1,7 +1,13 @@
-﻿import DashboardDensitySelector from "./DashboardDensitySelector";
+import DashboardAccessibilityControls from "../accessibility/DashboardAccessibilityControls";
+
+import DashboardDensitySelector from "./DashboardDensitySelector";
 import DashboardLayoutModeSelector from "./DashboardLayoutModeSelector";
 import DashboardSavedViewsPanel from "./DashboardSavedViewsPanel";
 import DashboardSectionManager from "./DashboardSectionManager";
+
+import type {
+  DashboardAccessibilityPreferences,
+} from "../accessibility/dashboard-accessibility-types";
 
 import type {
   DashboardDensity,
@@ -26,6 +32,21 @@ interface DashboardPersonalizationPanelProps {
 
   activeViewId:
     string | null;
+
+  accessibility:
+    DashboardAccessibilityPreferences;
+
+  onReducedMotionChange: (
+    value: boolean,
+  ) => void;
+
+  onHighContrastChange: (
+    value: boolean,
+  ) => void;
+
+  onAnnounceUpdatesChange: (
+    value: boolean,
+  ) => void;
 
   onDensityChange: (
     value:
@@ -74,6 +95,10 @@ export default function DashboardPersonalizationPanel({
   sections,
   savedViews,
   activeViewId,
+  accessibility,
+  onReducedMotionChange,
+  onHighContrastChange,
+  onAnnounceUpdatesChange,
   onDensityChange,
   onLayoutModeChange,
   onToggleSection,
@@ -146,6 +171,21 @@ export default function DashboardPersonalizationPanel({
           }
         />
       </section>
+
+      <DashboardAccessibilityControls
+        preferences={
+          accessibility
+        }
+        onReducedMotionChange={
+          onReducedMotionChange
+        }
+        onHighContrastChange={
+          onHighContrastChange
+        }
+        onAnnounceUpdatesChange={
+          onAnnounceUpdatesChange
+        }
+      />
 
       <section>
         <h3>

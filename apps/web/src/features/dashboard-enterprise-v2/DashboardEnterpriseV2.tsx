@@ -1,4 +1,5 @@
-﻿import {
+import {
+  useEffect,
   useState,
 } from "react";
 
@@ -6,14 +7,22 @@ import type {
   EnterpriseDashboard,
 } from "../../enterprise-api";
 
-import DashboardIntelligenceOverview from "./charts/DashboardIntelligenceOverview";
 import DashboardFoundationShell from "./components/DashboardFoundationShell";
-import DashboardCommandCenterOverview from "./command-center/DashboardCommandCenterOverview";
 
 import type {
   DashboardOperationalAlert,
   DashboardQuickCommand,
 } from "./command-center/dashboard-command-center-types";
+
+import {
+  announceDashboardUpdate,
+} from "./accessibility/dashboard-accessibility-store";
+
+import DashboardLiveRegion from "./accessibility/DashboardLiveRegion";
+
+import {
+  useDashboardAccessibility,
+} from "./hooks/useDashboardAccessibility";
 
 import {
   useDashboardCharts,
@@ -31,8 +40,25 @@ import {
   useDashboardPersonalization,
 } from "./hooks/useDashboardPersonalization";
 
+import {
+  useDashboardPerformance,
+} from "./hooks/useDashboardPerformance";
+
+import {
+  useDashboardRenderMeasurement,
+} from "./hooks/useDashboardRenderMeasurement";
+
+import DashboardErrorBoundary from "./performance/DashboardErrorBoundary";
+import DashboardLazySection from "./performance/DashboardLazySection";
+import DashboardPerformancePanel from "./performance/DashboardPerformancePanel";
+
+import {
+  LazyDashboardCommandCenterOverview,
+  LazyDashboardIntelligenceOverview,
+  LazyDashboardPersonalizationDrawer,
+} from "./performance/dashboard-lazy-components";
+
 import DashboardPersonalizationButton from "./personalization/DashboardPersonalizationButton";
-import DashboardPersonalizationDrawer from "./personalization/DashboardPersonalizationDrawer";
 
 import type {
   DashboardSectionId,
@@ -71,6 +97,10 @@ export default function DashboardEnterpriseV2({
     setPersonalizationOpen,
   ] = useState(false);
 
+  useDashboardRenderMeasurement(
+    "dashboard-enterprise-v2",
+  );
+
   const foundation =
     useDashboardFoundation({
       dashboard,
@@ -98,10 +128,50 @@ export default function DashboardEnterpriseV2({
   const personalization =
     useDashboardPersonalization();
 
+  const accessibility =
+    useDashboardAccessibility();
+
+  const performanceSnapshot =
+    useDashboardPerformance({
+      componentCount: 120,
+      estimatedBundleKb: 478,
+    });
+
+  useEffect(
+    () => {
+      if (refreshing) {
+        announceDashboardUpdate(
+          "Dashboard refresh started.",
+        );
+      }
+    },
+    [
+      refreshing,
+    ],
+  );
+
+  useEffect(
+    () => {
+      if (!refreshing && !loading) {
+        announceDashboardUpdate(
+          "Dashboard data is ready.",
+        );
+      }
+    },
+    [
+      loading,
+      refreshing,
+    ],
+  );
+
   const runCommand = (
     command:
       DashboardQuickCommand,
   ): void => {
+    announceDashboardUpdate(
+      `${command.label} selected.`,
+    );
+
     switch (command.id) {
       case "create-project":
         onCreateProject?.();
@@ -125,6 +195,14 @@ export default function DashboardEnterpriseV2({
     alert:
       DashboardOperationalAlert,
   ): void => {
+    announceDashboardUpdate(
+      `${alert.title} action selected.`,
+      alert.severity ===
+        "critical"
+        ? "assertive"
+        : "polite",
+    );
+
     switch (alert.id) {
       case "api-disconnected":
         onRefresh?.();
@@ -176,19 +254,23 @@ export default function DashboardEnterpriseV2({
         }
 
         return (
-          <DashboardIntelligenceOverview
+          <DashboardLazySection
             key="intelligence"
-            snapshot={
-              chartSnapshot
-            }
-            period={period}
-            loading={
-              refreshing
-            }
-            onPeriodChange={
-              setPeriod
-            }
-          />
+            label="KPI intelligence"
+          >
+            <LazyDashboardIntelligenceOverview
+              snapshot={
+                chartSnapshot
+              }
+              period={period}
+              loading={
+                refreshing
+              }
+              onPeriodChange={
+                setPeriod
+              }
+            />
+          </DashboardLazySection>
         );
 
       case "command-center":
@@ -200,18 +282,22 @@ export default function DashboardEnterpriseV2({
         }
 
         return (
-          <DashboardCommandCenterOverview
+          <DashboardLazySection
             key="command-center"
-            snapshot={
-              commandCenter
-            }
-            onCommand={
-              runCommand
-            }
-            onAlertAction={
-              runAlertAction
-            }
-          />
+            label="operational command center"
+          >
+            <LazyDashboardCommandCenterOverview
+              snapshot={
+                commandCenter
+              }
+              onCommand={
+                runCommand
+              }
+              onAlertAction={
+                runAlertAction
+              }
+            />
+          </DashboardLazySection>
         );
     }
   };
@@ -222,8 +308,18 @@ export default function DashboardEnterpriseV2({
         "dashboard-enterprise-v2-personalized",
         `dashboard-enterprise-v2-personalized--${personalization.preferences.density}`,
         `dashboard-enterprise-v2-personalized--${personalization.preferences.layoutMode}`,
-      ].join(" ")}
+        accessibility.preferences.reducedMotion
+          ? "dashboard-enterprise-v2-personalized--reduced-motion"
+          : "",
+        accessibility.preferences.highContrast
+          ? "dashboard-enterprise-v2-personalized--high-contrast"
+          : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
+      <DashboardLiveRegion />
+
       <div className="dashboard-enterprise-v2-personalized__toolbar">
         <div>
           <span>
@@ -247,76 +343,104 @@ export default function DashboardEnterpriseV2({
         />
       </div>
 
-      <div className="dashboard-enterprise-v2-stack">
-        {personalization.visibleSections.map(
-          (section) =>
-            renderSection(
-              section.id,
-            ),
-        )}
-      </div>
+      <DashboardErrorBoundary>
+        <div className="dashboard-enterprise-v2-stack">
+          {personalization.visibleSections.map(
+            (section) =>
+              renderSection(
+                section.id,
+              ),
+          )}
+        </div>
+      </DashboardErrorBoundary>
 
-      <DashboardPersonalizationDrawer
-        open={
-          personalizationOpen
-        }
-        density={
-          personalization.preferences
-            .density
-        }
-        layoutMode={
-          personalization.preferences
-            .layoutMode
-        }
-        sections={
-          personalization.preferences
-            .sections
-        }
-        savedViews={
-          personalization.savedViews
-        }
-        activeViewId={
-          personalization.activeViewId
-        }
-        onClose={() =>
-          setPersonalizationOpen(
-            false,
-          )
-        }
-        onDensityChange={
-          personalization.setDensity
-        }
-        onLayoutModeChange={
-          personalization.setLayoutMode
-        }
-        onToggleSection={
-          personalization.toggleSection
-        }
-        onMoveSection={
-          personalization.moveSection
-        }
-        onReset={
-          personalization.resetPreferences
-        }
-        onSaveView={(
-          name,
-          description,
-        ) => {
-          personalization.saveView(
-            name,
-            description,
-          );
-        }}
-        onApplyView={
-          personalization.applyView
-        }
-        onUpdateActiveView={
-          personalization.updateActiveView
-        }
-        onDeleteView={
-          personalization.deleteView
+      <DashboardPerformancePanel
+        snapshot={
+          performanceSnapshot
         }
       />
+
+      <DashboardLazySection
+        label="dashboard personalization"
+      >
+        <LazyDashboardPersonalizationDrawer
+          open={
+            personalizationOpen
+          }
+          density={
+            personalization.preferences
+              .density
+          }
+          layoutMode={
+            personalization.preferences
+              .layoutMode
+          }
+          sections={
+            personalization.preferences
+              .sections
+          }
+          savedViews={
+            personalization.savedViews
+          }
+          activeViewId={
+            personalization.activeViewId
+          }
+          accessibility={
+            accessibility.preferences
+          }
+          onReducedMotionChange={
+            accessibility.setReducedMotion
+          }
+          onHighContrastChange={
+            accessibility.setHighContrast
+          }
+          onAnnounceUpdatesChange={
+            accessibility.setAnnounceUpdates
+          }
+          onClose={() =>
+            setPersonalizationOpen(
+              false,
+            )
+          }
+          onDensityChange={
+            personalization.setDensity
+          }
+          onLayoutModeChange={
+            personalization.setLayoutMode
+          }
+          onToggleSection={
+            personalization.toggleSection
+          }
+          onMoveSection={
+            personalization.moveSection
+          }
+          onReset={
+            personalization.resetPreferences
+          }
+          onSaveView={(
+            name,
+            description,
+          ) => {
+            personalization.saveView(
+              name,
+              description,
+            );
+
+            announceDashboardUpdate(
+              "Dashboard view saved.",
+            );
+          }}
+          onApplyView={
+            personalization.applyView
+          }
+          onUpdateActiveView={
+            personalization.updateActiveView
+          }
+          onDeleteView={
+            personalization.deleteView
+          }
+        />
+      </DashboardLazySection>
     </div>
   );
 }

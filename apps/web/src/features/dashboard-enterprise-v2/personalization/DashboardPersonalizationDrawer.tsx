@@ -1,8 +1,17 @@
-﻿import {
+import {
   useEffect,
+  useRef,
 } from "react";
 
+import {
+  useDashboardFocusTrap,
+} from "../accessibility/useDashboardFocusTrap";
+
 import DashboardPersonalizationPanel from "./DashboardPersonalizationPanel";
+
+import type {
+  DashboardAccessibilityPreferences,
+} from "../accessibility/dashboard-accessibility-types";
 
 import type {
   DashboardDensity,
@@ -29,6 +38,21 @@ interface DashboardPersonalizationDrawerProps {
 
   activeViewId:
     string | null;
+
+  accessibility:
+    DashboardAccessibilityPreferences;
+
+  onReducedMotionChange: (
+    value: boolean,
+  ) => void;
+
+  onHighContrastChange: (
+    value: boolean,
+  ) => void;
+
+  onAnnounceUpdatesChange: (
+    value: boolean,
+  ) => void;
 
   onClose: () => void;
 
@@ -80,6 +104,10 @@ export default function DashboardPersonalizationDrawer({
   sections,
   savedViews,
   activeViewId,
+  accessibility,
+  onReducedMotionChange,
+  onHighContrastChange,
+  onAnnounceUpdatesChange,
   onClose,
   onDensityChange,
   onLayoutModeChange,
@@ -91,6 +119,16 @@ export default function DashboardPersonalizationDrawer({
   onUpdateActiveView,
   onDeleteView,
 }: DashboardPersonalizationDrawerProps) {
+  const panelRef =
+    useRef<HTMLElement | null>(
+      null,
+    );
+
+  useDashboardFocusTrap(
+    panelRef,
+    open,
+  );
+
   useEffect(
     () => {
       if (!open) {
@@ -142,6 +180,7 @@ export default function DashboardPersonalizationDrawer({
       />
 
       <aside
+        ref={panelRef}
         className="dashboard-personalization-drawer__panel"
         role="dialog"
         aria-modal="true"
@@ -157,7 +196,7 @@ export default function DashboardPersonalizationDrawer({
             aria-label="Close dashboard personalization"
             onClick={onClose}
           >
-            ×
+            Ã—
           </button>
         </div>
 
@@ -173,6 +212,18 @@ export default function DashboardPersonalizationDrawer({
             }
             activeViewId={
               activeViewId
+            }
+            accessibility={
+              accessibility
+            }
+            onReducedMotionChange={
+              onReducedMotionChange
+            }
+            onHighContrastChange={
+              onHighContrastChange
+            }
+            onAnnounceUpdatesChange={
+              onAnnounceUpdatesChange
             }
             onDensityChange={
               onDensityChange

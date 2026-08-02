@@ -1,4 +1,4 @@
-﻿import {
+import {
   describe,
   expect,
   it,
@@ -54,7 +54,20 @@ describe(
             }
             savedViews={[]}
             activeViewId={null}
-            onDensityChange={
+                        accessibility={{
+              reducedMotion: false,
+              highContrast: false,
+              announceUpdates: true,
+            }}
+            onReducedMotionChange={
+              vi.fn()
+            }
+            onHighContrastChange={
+              vi.fn()
+            }
+            onAnnounceUpdatesChange={
+              vi.fn()
+            }onDensityChange={
               onDensityChange
             }
             onLayoutModeChange={
@@ -136,7 +149,20 @@ describe(
             }
             savedViews={[]}
             activeViewId={null}
-            onDensityChange={
+                        accessibility={{
+              reducedMotion: false,
+              highContrast: false,
+              announceUpdates: true,
+            }}
+            onReducedMotionChange={
+              vi.fn()
+            }
+            onHighContrastChange={
+              vi.fn()
+            }
+            onAnnounceUpdatesChange={
+              vi.fn()
+            }onDensityChange={
               vi.fn()
             }
             onLayoutModeChange={
@@ -217,7 +243,20 @@ describe(
             }
             savedViews={[]}
             activeViewId={null}
-            onDensityChange={
+                        accessibility={{
+              reducedMotion: false,
+              highContrast: false,
+              announceUpdates: true,
+            }}
+            onReducedMotionChange={
+              vi.fn()
+            }
+            onHighContrastChange={
+              vi.fn()
+            }
+            onAnnounceUpdatesChange={
+              vi.fn()
+            }onDensityChange={
               vi.fn()
             }
             onLayoutModeChange={
@@ -313,7 +352,20 @@ describe(
             activeViewId={
               savedView.id
             }
-            onDensityChange={
+                        accessibility={{
+              reducedMotion: false,
+              highContrast: false,
+              announceUpdates: true,
+            }}
+            onReducedMotionChange={
+              vi.fn()
+            }
+            onHighContrastChange={
+              vi.fn()
+            }
+            onAnnounceUpdatesChange={
+              vi.fn()
+            }onDensityChange={
               vi.fn()
             }
             onLayoutModeChange={

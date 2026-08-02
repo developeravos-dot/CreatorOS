@@ -17,3 +17,5 @@ export * from "./charts";
 export * from "./activity";
 export * from "./command-center";
 export * from "./personalization";
+export * from "./performance";
+export * from "./accessibility";
