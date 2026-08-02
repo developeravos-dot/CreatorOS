@@ -471,7 +471,11 @@ export const ModelName = {
   MediaCompetitor: 'MediaCompetitor',
   MediaAudienceProfile: 'MediaAudienceProfile',
   MediaOpportunity: 'MediaOpportunity',
-  AiOrganizationWorkspaceState: 'AiOrganizationWorkspaceState'
+  AiOrganizationWorkspaceState: 'AiOrganizationWorkspaceState',
+  ExecutionSession: 'ExecutionSession',
+  ExecutionJob: 'ExecutionJob',
+  ExecutionStep: 'ExecutionStep',
+  ExecutionResult: 'ExecutionResult'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -487,7 +491,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "runtimePlugin" | "blueprint" | "blueprintVersion" | "approvalGate" | "executionPlan" | "knowledgeNode" | "knowledgeEdge" | "capability" | "organizationUnit" | "agent" | "integration" | "auditLog" | "creatorUser" | "creatorRole" | "creatorPermission" | "creatorUserRole" | "creatorRolePermission" | "creatorRefreshToken" | "creatorOutboxEvent" | "creatorIdempotencyKey" | "creatorJobRun" | "creatorUserProfile" | "creatorSession" | "creatorApiKey" | "creatorPersonalAccessToken" | "governancePolicy" | "governanceDecision" | "governanceRisk" | "governanceComplianceRule" | "governanceAssessment" | "governanceChangeRequest" | "opsService" | "opsIncident" | "opsRunbook" | "opsSla" | "opsDeployment" | "integrationEndpoint" | "integrationEventDefinition" | "integrationEvent" | "integrationWebhook" | "integrationDelivery" | "integrationSaga" | "knowledgeSource" | "knowledgeEvidence" | "knowledgeInsight" | "agentTeam" | "agentTeamMember" | "agentMission" | "agentMissionAssignment" | "agentDecision" | "eventTopic" | "eventSubscription" | "eventMessage" | "eventDelivery" | "eventDeadLetter" | "eventReplay" | "obsMetric" | "obsHealthCheck" | "obsLogEntry" | "obsTraceSpan" | "obsAlertRule" | "obsAlertEvent" | "productionPlan" | "mediaProject" | "mediaChannelFamily" | "mediaChannel" | "mediaContentIdea" | "mediaHumanApproval" | "mediaDomainEvent" | "mediaResearch" | "mediaTrend" | "mediaCompetitor" | "mediaAudienceProfile" | "mediaOpportunity" | "aiOrganizationWorkspaceState"
+    modelProps: "runtimePlugin" | "blueprint" | "blueprintVersion" | "approvalGate" | "executionPlan" | "knowledgeNode" | "knowledgeEdge" | "capability" | "organizationUnit" | "agent" | "integration" | "auditLog" | "creatorUser" | "creatorRole" | "creatorPermission" | "creatorUserRole" | "creatorRolePermission" | "creatorRefreshToken" | "creatorOutboxEvent" | "creatorIdempotencyKey" | "creatorJobRun" | "creatorUserProfile" | "creatorSession" | "creatorApiKey" | "creatorPersonalAccessToken" | "governancePolicy" | "governanceDecision" | "governanceRisk" | "governanceComplianceRule" | "governanceAssessment" | "governanceChangeRequest" | "opsService" | "opsIncident" | "opsRunbook" | "opsSla" | "opsDeployment" | "integrationEndpoint" | "integrationEventDefinition" | "integrationEvent" | "integrationWebhook" | "integrationDelivery" | "integrationSaga" | "knowledgeSource" | "knowledgeEvidence" | "knowledgeInsight" | "agentTeam" | "agentTeamMember" | "agentMission" | "agentMissionAssignment" | "agentDecision" | "eventTopic" | "eventSubscription" | "eventMessage" | "eventDelivery" | "eventDeadLetter" | "eventReplay" | "obsMetric" | "obsHealthCheck" | "obsLogEntry" | "obsTraceSpan" | "obsAlertRule" | "obsAlertEvent" | "productionPlan" | "mediaProject" | "mediaChannelFamily" | "mediaChannel" | "mediaContentIdea" | "mediaHumanApproval" | "mediaDomainEvent" | "mediaResearch" | "mediaTrend" | "mediaCompetitor" | "mediaAudienceProfile" | "mediaOpportunity" | "aiOrganizationWorkspaceState" | "executionSession" | "executionJob" | "executionStep" | "executionResult"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -6041,6 +6045,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ExecutionSession: {
+      payload: Prisma.$ExecutionSessionPayload<ExtArgs>
+      fields: Prisma.ExecutionSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExecutionSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExecutionSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.ExecutionSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExecutionSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionSessionPayload>
+        }
+        findMany: {
+          args: Prisma.ExecutionSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionSessionPayload>[]
+        }
+        create: {
+          args: Prisma.ExecutionSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionSessionPayload>
+        }
+        createMany: {
+          args: Prisma.ExecutionSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ExecutionSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.ExecutionSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionSessionPayload>
+        }
+        update: {
+          args: Prisma.ExecutionSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.ExecutionSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExecutionSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ExecutionSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.ExecutionSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.ExecutionSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExecutionSession>
+        }
+        groupBy: {
+          args: Prisma.ExecutionSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExecutionSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExecutionSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExecutionSessionCountAggregateOutputType> | number
+        }
+      }
+    }
+    ExecutionJob: {
+      payload: Prisma.$ExecutionJobPayload<ExtArgs>
+      fields: Prisma.ExecutionJobFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExecutionJobFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionJobPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExecutionJobFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionJobPayload>
+        }
+        findFirst: {
+          args: Prisma.ExecutionJobFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionJobPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExecutionJobFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionJobPayload>
+        }
+        findMany: {
+          args: Prisma.ExecutionJobFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionJobPayload>[]
+        }
+        create: {
+          args: Prisma.ExecutionJobCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionJobPayload>
+        }
+        createMany: {
+          args: Prisma.ExecutionJobCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ExecutionJobCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionJobPayload>[]
+        }
+        delete: {
+          args: Prisma.ExecutionJobDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionJobPayload>
+        }
+        update: {
+          args: Prisma.ExecutionJobUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionJobPayload>
+        }
+        deleteMany: {
+          args: Prisma.ExecutionJobDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExecutionJobUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ExecutionJobUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionJobPayload>[]
+        }
+        upsert: {
+          args: Prisma.ExecutionJobUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionJobPayload>
+        }
+        aggregate: {
+          args: Prisma.ExecutionJobAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExecutionJob>
+        }
+        groupBy: {
+          args: Prisma.ExecutionJobGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExecutionJobGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExecutionJobCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExecutionJobCountAggregateOutputType> | number
+        }
+      }
+    }
+    ExecutionStep: {
+      payload: Prisma.$ExecutionStepPayload<ExtArgs>
+      fields: Prisma.ExecutionStepFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExecutionStepFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionStepPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExecutionStepFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionStepPayload>
+        }
+        findFirst: {
+          args: Prisma.ExecutionStepFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionStepPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExecutionStepFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionStepPayload>
+        }
+        findMany: {
+          args: Prisma.ExecutionStepFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionStepPayload>[]
+        }
+        create: {
+          args: Prisma.ExecutionStepCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionStepPayload>
+        }
+        createMany: {
+          args: Prisma.ExecutionStepCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ExecutionStepCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionStepPayload>[]
+        }
+        delete: {
+          args: Prisma.ExecutionStepDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionStepPayload>
+        }
+        update: {
+          args: Prisma.ExecutionStepUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionStepPayload>
+        }
+        deleteMany: {
+          args: Prisma.ExecutionStepDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExecutionStepUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ExecutionStepUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionStepPayload>[]
+        }
+        upsert: {
+          args: Prisma.ExecutionStepUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionStepPayload>
+        }
+        aggregate: {
+          args: Prisma.ExecutionStepAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExecutionStep>
+        }
+        groupBy: {
+          args: Prisma.ExecutionStepGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExecutionStepGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExecutionStepCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExecutionStepCountAggregateOutputType> | number
+        }
+      }
+    }
+    ExecutionResult: {
+      payload: Prisma.$ExecutionResultPayload<ExtArgs>
+      fields: Prisma.ExecutionResultFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExecutionResultFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionResultPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExecutionResultFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionResultPayload>
+        }
+        findFirst: {
+          args: Prisma.ExecutionResultFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionResultPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExecutionResultFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionResultPayload>
+        }
+        findMany: {
+          args: Prisma.ExecutionResultFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionResultPayload>[]
+        }
+        create: {
+          args: Prisma.ExecutionResultCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionResultPayload>
+        }
+        createMany: {
+          args: Prisma.ExecutionResultCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ExecutionResultCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionResultPayload>[]
+        }
+        delete: {
+          args: Prisma.ExecutionResultDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionResultPayload>
+        }
+        update: {
+          args: Prisma.ExecutionResultUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionResultPayload>
+        }
+        deleteMany: {
+          args: Prisma.ExecutionResultDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExecutionResultUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ExecutionResultUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionResultPayload>[]
+        }
+        upsert: {
+          args: Prisma.ExecutionResultUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExecutionResultPayload>
+        }
+        aggregate: {
+          args: Prisma.ExecutionResultAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExecutionResult>
+        }
+        groupBy: {
+          args: Prisma.ExecutionResultGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExecutionResultGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExecutionResultCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExecutionResultCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -7306,6 +7606,116 @@ export const AiOrganizationWorkspaceStateScalarFieldEnum = {
 export type AiOrganizationWorkspaceStateScalarFieldEnum = (typeof AiOrganizationWorkspaceStateScalarFieldEnum)[keyof typeof AiOrganizationWorkspaceStateScalarFieldEnum]
 
 
+export const ExecutionSessionScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  projectId: 'projectId',
+  sessionKey: 'sessionKey',
+  name: 'name',
+  objective: 'objective',
+  status: 'status',
+  progress: 'progress',
+  requiresHumanApproval: 'requiresHumanApproval',
+  approvedBy: 'approvedBy',
+  approvedAt: 'approvedAt',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  failedAt: 'failedAt',
+  cancelledAt: 'cancelledAt',
+  metadata: 'metadata',
+  context: 'context',
+  finalOutput: 'finalOutput',
+  errorMessage: 'errorMessage',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExecutionSessionScalarFieldEnum = (typeof ExecutionSessionScalarFieldEnum)[keyof typeof ExecutionSessionScalarFieldEnum]
+
+
+export const ExecutionJobScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  jobKey: 'jobKey',
+  name: 'name',
+  description: 'description',
+  assignedAgentId: 'assignedAgentId',
+  runtimeProviderId: 'runtimeProviderId',
+  capability: 'capability',
+  status: 'status',
+  priority: 'priority',
+  sequence: 'sequence',
+  progress: 'progress',
+  retryCount: 'retryCount',
+  maxRetries: 'maxRetries',
+  requiresApproval: 'requiresApproval',
+  approvedBy: 'approvedBy',
+  approvedAt: 'approvedAt',
+  input: 'input',
+  output: 'output',
+  metadata: 'metadata',
+  errorMessage: 'errorMessage',
+  scheduledAt: 'scheduledAt',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  failedAt: 'failedAt',
+  cancelledAt: 'cancelledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExecutionJobScalarFieldEnum = (typeof ExecutionJobScalarFieldEnum)[keyof typeof ExecutionJobScalarFieldEnum]
+
+
+export const ExecutionStepScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  stepKey: 'stepKey',
+  name: 'name',
+  description: 'description',
+  sequence: 'sequence',
+  status: 'status',
+  runtimeProviderId: 'runtimeProviderId',
+  operation: 'operation',
+  progress: 'progress',
+  retryCount: 'retryCount',
+  maxRetries: 'maxRetries',
+  requiresApproval: 'requiresApproval',
+  approvedBy: 'approvedBy',
+  approvedAt: 'approvedAt',
+  input: 'input',
+  output: 'output',
+  metadata: 'metadata',
+  errorMessage: 'errorMessage',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  failedAt: 'failedAt',
+  cancelledAt: 'cancelledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExecutionStepScalarFieldEnum = (typeof ExecutionStepScalarFieldEnum)[keyof typeof ExecutionStepScalarFieldEnum]
+
+
+export const ExecutionResultScalarFieldEnum = {
+  id: 'id',
+  stepId: 'stepId',
+  resultType: 'resultType',
+  success: 'success',
+  output: 'output',
+  logs: 'logs',
+  metrics: 'metrics',
+  artifacts: 'artifacts',
+  errorCode: 'errorCode',
+  errorMessage: 'errorMessage',
+  durationMs: 'durationMs',
+  createdAt: 'createdAt'
+} as const
+
+export type ExecutionResultScalarFieldEnum = (typeof ExecutionResultScalarFieldEnum)[keyof typeof ExecutionResultScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -8166,6 +8576,10 @@ export type GlobalOmitConfig = {
   mediaAudienceProfile?: Prisma.MediaAudienceProfileOmit
   mediaOpportunity?: Prisma.MediaOpportunityOmit
   aiOrganizationWorkspaceState?: Prisma.AiOrganizationWorkspaceStateOmit
+  executionSession?: Prisma.ExecutionSessionOmit
+  executionJob?: Prisma.ExecutionJobOmit
+  executionStep?: Prisma.ExecutionStepOmit
+  executionResult?: Prisma.ExecutionResultOmit
 }
 
 /* Types for Logging */

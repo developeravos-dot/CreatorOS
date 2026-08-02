@@ -228,6 +228,7 @@ export type AiOrganizationWorkspaceStateWhereInput = {
   state?: Prisma.JsonFilter<"AiOrganizationWorkspaceState">
   createdAt?: Prisma.DateTimeFilter<"AiOrganizationWorkspaceState"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AiOrganizationWorkspaceState"> | Date | string
+  executionSessions?: Prisma.ExecutionSessionListRelationFilter
 }
 
 export type AiOrganizationWorkspaceStateOrderByWithRelationInput = {
@@ -238,6 +239,7 @@ export type AiOrganizationWorkspaceStateOrderByWithRelationInput = {
   state?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  executionSessions?: Prisma.ExecutionSessionOrderByRelationAggregateInput
 }
 
 export type AiOrganizationWorkspaceStateWhereUniqueInput = Prisma.AtLeast<{
@@ -251,6 +253,7 @@ export type AiOrganizationWorkspaceStateWhereUniqueInput = Prisma.AtLeast<{
   state?: Prisma.JsonFilter<"AiOrganizationWorkspaceState">
   createdAt?: Prisma.DateTimeFilter<"AiOrganizationWorkspaceState"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AiOrganizationWorkspaceState"> | Date | string
+  executionSessions?: Prisma.ExecutionSessionListRelationFilter
 }, "id" | "workspaceKey">
 
 export type AiOrganizationWorkspaceStateOrderByWithAggregationInput = {
@@ -289,6 +292,7 @@ export type AiOrganizationWorkspaceStateCreateInput = {
   state: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  executionSessions?: Prisma.ExecutionSessionCreateNestedManyWithoutWorkspaceInput
 }
 
 export type AiOrganizationWorkspaceStateUncheckedCreateInput = {
@@ -299,6 +303,7 @@ export type AiOrganizationWorkspaceStateUncheckedCreateInput = {
   state: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  executionSessions?: Prisma.ExecutionSessionUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type AiOrganizationWorkspaceStateUpdateInput = {
@@ -309,6 +314,7 @@ export type AiOrganizationWorkspaceStateUpdateInput = {
   state?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  executionSessions?: Prisma.ExecutionSessionUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type AiOrganizationWorkspaceStateUncheckedUpdateInput = {
@@ -319,6 +325,7 @@ export type AiOrganizationWorkspaceStateUncheckedUpdateInput = {
   state?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  executionSessions?: Prisma.ExecutionSessionUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type AiOrganizationWorkspaceStateCreateManyInput = {
@@ -387,6 +394,110 @@ export type AiOrganizationWorkspaceStateSumOrderByAggregateInput = {
   version?: Prisma.SortOrder
 }
 
+export type AiOrganizationWorkspaceStateScalarRelationFilter = {
+  is?: Prisma.AiOrganizationWorkspaceStateWhereInput
+  isNot?: Prisma.AiOrganizationWorkspaceStateWhereInput
+}
+
+export type AiOrganizationWorkspaceStateCreateNestedOneWithoutExecutionSessionsInput = {
+  create?: Prisma.XOR<Prisma.AiOrganizationWorkspaceStateCreateWithoutExecutionSessionsInput, Prisma.AiOrganizationWorkspaceStateUncheckedCreateWithoutExecutionSessionsInput>
+  connectOrCreate?: Prisma.AiOrganizationWorkspaceStateCreateOrConnectWithoutExecutionSessionsInput
+  connect?: Prisma.AiOrganizationWorkspaceStateWhereUniqueInput
+}
+
+export type AiOrganizationWorkspaceStateUpdateOneRequiredWithoutExecutionSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.AiOrganizationWorkspaceStateCreateWithoutExecutionSessionsInput, Prisma.AiOrganizationWorkspaceStateUncheckedCreateWithoutExecutionSessionsInput>
+  connectOrCreate?: Prisma.AiOrganizationWorkspaceStateCreateOrConnectWithoutExecutionSessionsInput
+  upsert?: Prisma.AiOrganizationWorkspaceStateUpsertWithoutExecutionSessionsInput
+  connect?: Prisma.AiOrganizationWorkspaceStateWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AiOrganizationWorkspaceStateUpdateToOneWithWhereWithoutExecutionSessionsInput, Prisma.AiOrganizationWorkspaceStateUpdateWithoutExecutionSessionsInput>, Prisma.AiOrganizationWorkspaceStateUncheckedUpdateWithoutExecutionSessionsInput>
+}
+
+export type AiOrganizationWorkspaceStateCreateWithoutExecutionSessionsInput = {
+  id?: string
+  workspaceKey: string
+  projectId?: string | null
+  version?: number
+  state: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type AiOrganizationWorkspaceStateUncheckedCreateWithoutExecutionSessionsInput = {
+  id?: string
+  workspaceKey: string
+  projectId?: string | null
+  version?: number
+  state: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type AiOrganizationWorkspaceStateCreateOrConnectWithoutExecutionSessionsInput = {
+  where: Prisma.AiOrganizationWorkspaceStateWhereUniqueInput
+  create: Prisma.XOR<Prisma.AiOrganizationWorkspaceStateCreateWithoutExecutionSessionsInput, Prisma.AiOrganizationWorkspaceStateUncheckedCreateWithoutExecutionSessionsInput>
+}
+
+export type AiOrganizationWorkspaceStateUpsertWithoutExecutionSessionsInput = {
+  update: Prisma.XOR<Prisma.AiOrganizationWorkspaceStateUpdateWithoutExecutionSessionsInput, Prisma.AiOrganizationWorkspaceStateUncheckedUpdateWithoutExecutionSessionsInput>
+  create: Prisma.XOR<Prisma.AiOrganizationWorkspaceStateCreateWithoutExecutionSessionsInput, Prisma.AiOrganizationWorkspaceStateUncheckedCreateWithoutExecutionSessionsInput>
+  where?: Prisma.AiOrganizationWorkspaceStateWhereInput
+}
+
+export type AiOrganizationWorkspaceStateUpdateToOneWithWhereWithoutExecutionSessionsInput = {
+  where?: Prisma.AiOrganizationWorkspaceStateWhereInput
+  data: Prisma.XOR<Prisma.AiOrganizationWorkspaceStateUpdateWithoutExecutionSessionsInput, Prisma.AiOrganizationWorkspaceStateUncheckedUpdateWithoutExecutionSessionsInput>
+}
+
+export type AiOrganizationWorkspaceStateUpdateWithoutExecutionSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  state?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type AiOrganizationWorkspaceStateUncheckedUpdateWithoutExecutionSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  state?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+
+/**
+ * Count Type AiOrganizationWorkspaceStateCountOutputType
+ */
+
+export type AiOrganizationWorkspaceStateCountOutputType = {
+  executionSessions: number
+}
+
+export type AiOrganizationWorkspaceStateCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  executionSessions?: boolean | AiOrganizationWorkspaceStateCountOutputTypeCountExecutionSessionsArgs
+}
+
+/**
+ * AiOrganizationWorkspaceStateCountOutputType without action
+ */
+export type AiOrganizationWorkspaceStateCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AiOrganizationWorkspaceStateCountOutputType
+   */
+  select?: Prisma.AiOrganizationWorkspaceStateCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * AiOrganizationWorkspaceStateCountOutputType without action
+ */
+export type AiOrganizationWorkspaceStateCountOutputTypeCountExecutionSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExecutionSessionWhereInput
+}
 
 
 export type AiOrganizationWorkspaceStateSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -397,6 +508,8 @@ export type AiOrganizationWorkspaceStateSelect<ExtArgs extends runtime.Types.Ext
   state?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  executionSessions?: boolean | Prisma.AiOrganizationWorkspaceState$executionSessionsArgs<ExtArgs>
+  _count?: boolean | Prisma.AiOrganizationWorkspaceStateCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["aiOrganizationWorkspaceState"]>
 
 export type AiOrganizationWorkspaceStateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -430,10 +543,18 @@ export type AiOrganizationWorkspaceStateSelectScalar = {
 }
 
 export type AiOrganizationWorkspaceStateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceKey" | "projectId" | "version" | "state" | "createdAt" | "updatedAt", ExtArgs["result"]["aiOrganizationWorkspaceState"]>
+export type AiOrganizationWorkspaceStateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  executionSessions?: boolean | Prisma.AiOrganizationWorkspaceState$executionSessionsArgs<ExtArgs>
+  _count?: boolean | Prisma.AiOrganizationWorkspaceStateCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type AiOrganizationWorkspaceStateIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type AiOrganizationWorkspaceStateIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $AiOrganizationWorkspaceStatePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AiOrganizationWorkspaceState"
-  objects: {}
+  objects: {
+    executionSessions: Prisma.$ExecutionSessionPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     workspaceKey: string
@@ -836,6 +957,7 @@ readonly fields: AiOrganizationWorkspaceStateFieldRefs;
  */
 export interface Prisma__AiOrganizationWorkspaceStateClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  executionSessions<T extends Prisma.AiOrganizationWorkspaceState$executionSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AiOrganizationWorkspaceState$executionSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExecutionSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -889,6 +1011,10 @@ export type AiOrganizationWorkspaceStateFindUniqueArgs<ExtArgs extends runtime.T
    */
   omit?: Prisma.AiOrganizationWorkspaceStateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiOrganizationWorkspaceStateInclude<ExtArgs> | null
+  /**
    * Filter, which AiOrganizationWorkspaceState to fetch.
    */
   where: Prisma.AiOrganizationWorkspaceStateWhereUniqueInput
@@ -907,6 +1033,10 @@ export type AiOrganizationWorkspaceStateFindUniqueOrThrowArgs<ExtArgs extends ru
    */
   omit?: Prisma.AiOrganizationWorkspaceStateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiOrganizationWorkspaceStateInclude<ExtArgs> | null
+  /**
    * Filter, which AiOrganizationWorkspaceState to fetch.
    */
   where: Prisma.AiOrganizationWorkspaceStateWhereUniqueInput
@@ -924,6 +1054,10 @@ export type AiOrganizationWorkspaceStateFindFirstArgs<ExtArgs extends runtime.Ty
    * Omit specific fields from the AiOrganizationWorkspaceState
    */
   omit?: Prisma.AiOrganizationWorkspaceStateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiOrganizationWorkspaceStateInclude<ExtArgs> | null
   /**
    * Filter, which AiOrganizationWorkspaceState to fetch.
    */
@@ -973,6 +1107,10 @@ export type AiOrganizationWorkspaceStateFindFirstOrThrowArgs<ExtArgs extends run
    */
   omit?: Prisma.AiOrganizationWorkspaceStateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiOrganizationWorkspaceStateInclude<ExtArgs> | null
+  /**
    * Filter, which AiOrganizationWorkspaceState to fetch.
    */
   where?: Prisma.AiOrganizationWorkspaceStateWhereInput
@@ -1020,6 +1158,10 @@ export type AiOrganizationWorkspaceStateFindManyArgs<ExtArgs extends runtime.Typ
    * Omit specific fields from the AiOrganizationWorkspaceState
    */
   omit?: Prisma.AiOrganizationWorkspaceStateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiOrganizationWorkspaceStateInclude<ExtArgs> | null
   /**
    * Filter, which AiOrganizationWorkspaceStates to fetch.
    */
@@ -1069,6 +1211,10 @@ export type AiOrganizationWorkspaceStateCreateArgs<ExtArgs extends runtime.Types
    */
   omit?: Prisma.AiOrganizationWorkspaceStateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiOrganizationWorkspaceStateInclude<ExtArgs> | null
+  /**
    * The data needed to create a AiOrganizationWorkspaceState.
    */
   data: Prisma.XOR<Prisma.AiOrganizationWorkspaceStateCreateInput, Prisma.AiOrganizationWorkspaceStateUncheckedCreateInput>
@@ -1116,6 +1262,10 @@ export type AiOrganizationWorkspaceStateUpdateArgs<ExtArgs extends runtime.Types
    * Omit specific fields from the AiOrganizationWorkspaceState
    */
   omit?: Prisma.AiOrganizationWorkspaceStateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiOrganizationWorkspaceStateInclude<ExtArgs> | null
   /**
    * The data needed to update a AiOrganizationWorkspaceState.
    */
@@ -1183,6 +1333,10 @@ export type AiOrganizationWorkspaceStateUpsertArgs<ExtArgs extends runtime.Types
    */
   omit?: Prisma.AiOrganizationWorkspaceStateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiOrganizationWorkspaceStateInclude<ExtArgs> | null
+  /**
    * The filter to search for the AiOrganizationWorkspaceState to update in case it exists.
    */
   where: Prisma.AiOrganizationWorkspaceStateWhereUniqueInput
@@ -1209,6 +1363,10 @@ export type AiOrganizationWorkspaceStateDeleteArgs<ExtArgs extends runtime.Types
    */
   omit?: Prisma.AiOrganizationWorkspaceStateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiOrganizationWorkspaceStateInclude<ExtArgs> | null
+  /**
    * Filter which AiOrganizationWorkspaceState to delete.
    */
   where: Prisma.AiOrganizationWorkspaceStateWhereUniqueInput
@@ -1229,6 +1387,30 @@ export type AiOrganizationWorkspaceStateDeleteManyArgs<ExtArgs extends runtime.T
 }
 
 /**
+ * AiOrganizationWorkspaceState.executionSessions
+ */
+export type AiOrganizationWorkspaceState$executionSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ExecutionSession
+   */
+  select?: Prisma.ExecutionSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ExecutionSession
+   */
+  omit?: Prisma.ExecutionSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExecutionSessionInclude<ExtArgs> | null
+  where?: Prisma.ExecutionSessionWhereInput
+  orderBy?: Prisma.ExecutionSessionOrderByWithRelationInput | Prisma.ExecutionSessionOrderByWithRelationInput[]
+  cursor?: Prisma.ExecutionSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ExecutionSessionScalarFieldEnum | Prisma.ExecutionSessionScalarFieldEnum[]
+}
+
+/**
  * AiOrganizationWorkspaceState without action
  */
 export type AiOrganizationWorkspaceStateDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1240,4 +1422,8 @@ export type AiOrganizationWorkspaceStateDefaultArgs<ExtArgs extends runtime.Type
    * Omit specific fields from the AiOrganizationWorkspaceState
    */
   omit?: Prisma.AiOrganizationWorkspaceStateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiOrganizationWorkspaceStateInclude<ExtArgs> | null
 }

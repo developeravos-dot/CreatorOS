@@ -1600,6 +1600,151 @@ model AiOrganizationWorkspaceState {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  executionSessions ExecutionSession[]
+
   @@index([projectId])
   @@index([updatedAt])
+}
+
+// =========================================================
+// CreatorOS AI Team Execution Engine — Pack 6A
+// Execution Domain Foundation
+// =========================================================
+
+model ExecutionSession {
+  id                    String          @id @default(uuid())
+  workspaceId           String
+  projectId             String?
+  sessionKey            String          @unique
+  name                  String
+  objective             String?
+  status                ExecutionStatus @default(PENDING)
+  progress              Int             @default(0)
+  requiresHumanApproval Boolean         @default(false)
+  approvedBy            String?
+  approvedAt            DateTime?
+  startedAt             DateTime?
+  completedAt           DateTime?
+  failedAt              DateTime?
+  cancelledAt           DateTime?
+  metadata              Json?
+  context               Json?
+  finalOutput           Json?
+  errorMessage          String?
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+
+  workspace AiOrganizationWorkspaceState @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  jobs ExecutionJob[]
+
+  @@index([workspaceId])
+  @@index([projectId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+
+model ExecutionJob {
+  id                String          @id @default(uuid())
+  sessionId         String
+  jobKey            String
+  name              String
+  description       String?
+  assignedAgentId   String?
+  runtimeProviderId String?
+  capability        String?
+  status            ExecutionStatus @default(PENDING)
+  priority          Int             @default(0)
+  sequence          Int
+  progress          Int             @default(0)
+  retryCount        Int             @default(0)
+  maxRetries        Int             @default(3)
+  requiresApproval  Boolean         @default(false)
+  approvedBy        String?
+  approvedAt        DateTime?
+  input             Json?
+  output            Json?
+  metadata          Json?
+  errorMessage      String?
+  scheduledAt       DateTime?
+  startedAt         DateTime?
+  completedAt       DateTime?
+  failedAt          DateTime?
+  cancelledAt       DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  session ExecutionSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  steps ExecutionStep[]
+
+  @@unique([sessionId, jobKey])
+  @@index([sessionId])
+  @@index([assignedAgentId])
+  @@index([runtimeProviderId])
+  @@index([capability])
+  @@index([status])
+  @@index([priority])
+  @@index([sequence])
+}
+
+model ExecutionStep {
+  id                String          @id @default(uuid())
+  jobId             String
+  stepKey           String
+  name              String
+  description       String?
+  sequence          Int
+  status            ExecutionStatus @default(PENDING)
+  runtimeProviderId String?
+  operation         String?
+  progress          Int             @default(0)
+  retryCount        Int             @default(0)
+  maxRetries        Int             @default(3)
+  requiresApproval  Boolean         @default(false)
+  approvedBy        String?
+  approvedAt        DateTime?
+  input             Json?
+  output            Json?
+  metadata          Json?
+  errorMessage      String?
+  startedAt         DateTime?
+  completedAt       DateTime?
+  failedAt          DateTime?
+  cancelledAt       DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  job ExecutionJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  results ExecutionResult[]
+
+  @@unique([jobId, stepKey])
+  @@index([jobId])
+  @@index([runtimeProviderId])
+  @@index([status])
+  @@index([sequence])
+}
+
+model ExecutionResult {
+  id           String   @id @default(uuid())
+  stepId       String
+  resultType   String
+  success      Boolean
+  output       Json?
+  logs         Json?
+  metrics      Json?
+  artifacts    Json?
+  errorCode    String?
+  errorMessage String?
+  durationMs   Int?
+  createdAt    DateTime @default(now())
+
+  step ExecutionStep @relation(fields: [stepId], references: [id], onDelete: Cascade)
+
+  @@index([stepId])
+  @@index([resultType])
+  @@index([success])
+  @@index([createdAt])
 }

@@ -392,3 +392,23 @@ export type MediaOpportunity = Prisma.MediaOpportunityModel
  * 
  */
 export type AiOrganizationWorkspaceState = Prisma.AiOrganizationWorkspaceStateModel
+/**
+ * Model ExecutionSession
+ * 
+ */
+export type ExecutionSession = Prisma.ExecutionSessionModel
+/**
+ * Model ExecutionJob
+ * 
+ */
+export type ExecutionJob = Prisma.ExecutionJobModel
+/**
+ * Model ExecutionStep
+ * 
+ */
+export type ExecutionStep = Prisma.ExecutionStepModel
+/**
+ * Model ExecutionResult
+ * 
+ */
+export type ExecutionResult = Prisma.ExecutionResultModel

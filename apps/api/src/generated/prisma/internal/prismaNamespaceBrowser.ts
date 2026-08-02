@@ -125,7 +125,11 @@ export const ModelName = {
   MediaCompetitor: 'MediaCompetitor',
   MediaAudienceProfile: 'MediaAudienceProfile',
   MediaOpportunity: 'MediaOpportunity',
-  AiOrganizationWorkspaceState: 'AiOrganizationWorkspaceState'
+  AiOrganizationWorkspaceState: 'AiOrganizationWorkspaceState',
+  ExecutionSession: 'ExecutionSession',
+  ExecutionJob: 'ExecutionJob',
+  ExecutionStep: 'ExecutionStep',
+  ExecutionResult: 'ExecutionResult'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1368,6 +1372,116 @@ export const AiOrganizationWorkspaceStateScalarFieldEnum = {
 } as const
 
 export type AiOrganizationWorkspaceStateScalarFieldEnum = (typeof AiOrganizationWorkspaceStateScalarFieldEnum)[keyof typeof AiOrganizationWorkspaceStateScalarFieldEnum]
+
+
+export const ExecutionSessionScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  projectId: 'projectId',
+  sessionKey: 'sessionKey',
+  name: 'name',
+  objective: 'objective',
+  status: 'status',
+  progress: 'progress',
+  requiresHumanApproval: 'requiresHumanApproval',
+  approvedBy: 'approvedBy',
+  approvedAt: 'approvedAt',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  failedAt: 'failedAt',
+  cancelledAt: 'cancelledAt',
+  metadata: 'metadata',
+  context: 'context',
+  finalOutput: 'finalOutput',
+  errorMessage: 'errorMessage',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExecutionSessionScalarFieldEnum = (typeof ExecutionSessionScalarFieldEnum)[keyof typeof ExecutionSessionScalarFieldEnum]
+
+
+export const ExecutionJobScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  jobKey: 'jobKey',
+  name: 'name',
+  description: 'description',
+  assignedAgentId: 'assignedAgentId',
+  runtimeProviderId: 'runtimeProviderId',
+  capability: 'capability',
+  status: 'status',
+  priority: 'priority',
+  sequence: 'sequence',
+  progress: 'progress',
+  retryCount: 'retryCount',
+  maxRetries: 'maxRetries',
+  requiresApproval: 'requiresApproval',
+  approvedBy: 'approvedBy',
+  approvedAt: 'approvedAt',
+  input: 'input',
+  output: 'output',
+  metadata: 'metadata',
+  errorMessage: 'errorMessage',
+  scheduledAt: 'scheduledAt',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  failedAt: 'failedAt',
+  cancelledAt: 'cancelledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExecutionJobScalarFieldEnum = (typeof ExecutionJobScalarFieldEnum)[keyof typeof ExecutionJobScalarFieldEnum]
+
+
+export const ExecutionStepScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  stepKey: 'stepKey',
+  name: 'name',
+  description: 'description',
+  sequence: 'sequence',
+  status: 'status',
+  runtimeProviderId: 'runtimeProviderId',
+  operation: 'operation',
+  progress: 'progress',
+  retryCount: 'retryCount',
+  maxRetries: 'maxRetries',
+  requiresApproval: 'requiresApproval',
+  approvedBy: 'approvedBy',
+  approvedAt: 'approvedAt',
+  input: 'input',
+  output: 'output',
+  metadata: 'metadata',
+  errorMessage: 'errorMessage',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  failedAt: 'failedAt',
+  cancelledAt: 'cancelledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExecutionStepScalarFieldEnum = (typeof ExecutionStepScalarFieldEnum)[keyof typeof ExecutionStepScalarFieldEnum]
+
+
+export const ExecutionResultScalarFieldEnum = {
+  id: 'id',
+  stepId: 'stepId',
+  resultType: 'resultType',
+  success: 'success',
+  output: 'output',
+  logs: 'logs',
+  metrics: 'metrics',
+  artifacts: 'artifacts',
+  errorCode: 'errorCode',
+  errorMessage: 'errorMessage',
+  durationMs: 'durationMs',
+  createdAt: 'createdAt'
+} as const
+
+export type ExecutionResultScalarFieldEnum = (typeof ExecutionResultScalarFieldEnum)[keyof typeof ExecutionResultScalarFieldEnum]
 
 
 export const SortOrder = {
