@@ -38,6 +38,12 @@ import {
 import {
   RuntimeExecutionGatewayService,
 } from "./runtime-execution-gateway.service";
+import {
+  ExecutionOrchestratorService,
+} from "./execution-orchestrator.service";
+import {
+  ExecutionJobRunnerService,
+} from "./execution-job-runner.service";
 
 @Module({
   imports: [
@@ -55,6 +61,8 @@ import {
     RuntimeDispatcherService,
     AgentAssignmentService,
     RuntimeExecutionGatewayService,
+    ExecutionOrchestratorService,
+    ExecutionJobRunnerService,
   ],
   exports: [
     AiTeamExecutionService,
@@ -63,6 +71,8 @@ import {
     RuntimeDispatcherService,
     AgentAssignmentService,
     RuntimeExecutionGatewayService,
+    ExecutionOrchestratorService,
+    ExecutionJobRunnerService,
   ],
 })
 export class AiTeamExecutionModule {}

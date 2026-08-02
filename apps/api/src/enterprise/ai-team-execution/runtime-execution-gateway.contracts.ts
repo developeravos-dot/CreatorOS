@@ -23,7 +23,7 @@ export interface RuntimeGatewayExecutionResult {
   sessionId: string;
   providerId: string;
   operation: RuntimeExecutionOperation;
-  success: boolean;
+  success: true;
   resultId: string;
   output: Record<string, unknown>;
   durationMs: number;
