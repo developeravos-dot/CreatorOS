@@ -4,3 +4,4 @@ export * from "./blueprint";
 export * from "./registry";
 export * from "./execution";
 export * from "./validation";
+export * from "./configuration";
