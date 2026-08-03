@@ -2,7 +2,7 @@ import type {
   CapabilityDependencyContract,
   CapabilityDependencyType,
   CapabilityMetadata,
-} from '../../contracts';
+} from '../../../contracts';
 import {
   CapabilitySdkBuilderValidationError,
   normalizeIdentifier,

@@ -2,7 +2,7 @@ import type {
   CapabilityMetadata,
   CapabilityPermission,
   CapabilityResourcePolicyContract,
-} from '../../contracts';
+} from '../../../contracts';
 import {
   CapabilitySdkBuilderValidationError,
 } from '../shared';

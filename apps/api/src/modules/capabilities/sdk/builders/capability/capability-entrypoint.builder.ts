@@ -2,7 +2,7 @@ import type {
   CapabilityEntrypointContract,
   CapabilityMetadata,
   CapabilityRuntime,
-} from '../../contracts';
+} from '../../../contracts';
 import {
   CapabilitySdkBuilderValidationError,
   normalizeText,

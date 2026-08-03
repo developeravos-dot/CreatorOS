@@ -3,11 +3,11 @@ import type {
   CapabilityManifestContract,
   CapabilityPublisherContract,
   CreateCapabilityManifestInput,
-} from '../../manifest';
+} from '../../../manifest';
 import {
   CapabilityManifestFactory,
   createDefaultCapabilityPolicy,
-} from '../../manifest';
+} from '../../../manifest';
 import type {
   CapabilityDependencyContract,
   CapabilityDomain,
@@ -15,7 +15,7 @@ import type {
   CapabilityKind,
   CapabilityMetadata,
   CapabilityResourcePolicyContract,
-} from '../../contracts';
+} from '../../../contracts';
 import {
   CapabilitySdkBuilderValidationError,
   normalizeIdentifier,

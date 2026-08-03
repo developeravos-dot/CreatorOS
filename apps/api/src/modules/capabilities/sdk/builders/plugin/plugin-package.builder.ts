@@ -1,13 +1,13 @@
 import type {
   CapabilityManifestContract,
   CapabilityMetadata,
-} from '../../contracts';
+} from '../../../contracts';
 import type {
   CapabilityProvider,
-} from '../../interfaces';
+} from '../../../interfaces';
 import type {
   PluginPackageContract,
-} from '../../plugin-host';
+} from '../../../plugin-host';
 import {
   CapabilitySdkBuilderValidationError,
   normalizeIdentifier,

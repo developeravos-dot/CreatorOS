@@ -1,6 +1,6 @@
 import type {
   CapabilityPublisherContract,
-} from '../../manifest';
+} from '../../../contracts';
 import {
   CapabilitySdkBuilderValidationError,
   normalizeText,

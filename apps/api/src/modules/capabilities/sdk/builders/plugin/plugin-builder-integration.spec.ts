@@ -2,7 +2,7 @@ import 'reflect-metadata';
 
 import {
   PluginHostEngineService,
-} from '../../plugin-host';
+} from '../../../plugin-host';
 import {
   CapabilityEntrypointBuilder,
   CapabilityManifestBuilder,
