@@ -18,6 +18,7 @@ import {
 } from '../../plugin-host';
 import {
   CapabilityPlatformAuditService,
+  CapabilityPlatformManagementService,
   CapabilityPlatformOperationsService,
   CapabilityPlatformService,
 } from '../services';
@@ -108,6 +109,7 @@ export const CAPABILITY_PRODUCTION_PROVIDERS:
     CapabilityPlatformAuditService,
     CapabilityPlatformService,
     CapabilityPlatformOperationsService,
+    CapabilityPlatformManagementService,
   ];
 
 export const CAPABILITY_PRODUCTION_EXPORTS = [
@@ -120,4 +122,5 @@ export const CAPABILITY_PRODUCTION_EXPORTS = [
   CapabilityPlatformAuditService,
   CapabilityPlatformService,
   CapabilityPlatformOperationsService,
+  CapabilityPlatformManagementService,
 ] as const;

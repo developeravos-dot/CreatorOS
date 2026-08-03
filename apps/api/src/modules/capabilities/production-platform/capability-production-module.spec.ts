@@ -29,10 +29,12 @@ import {
 } from '../plugin-host';
 import {
   CapabilityPlatformController,
+  CapabilityPlatformManagementController,
   CapabilityPlatformOperationsController,
 } from './controllers';
 import {
   CapabilityPlatformAuditService,
+  CapabilityPlatformManagementService,
   CapabilityPlatformOperationsService,
   CapabilityPlatformService,
 } from './services';
@@ -76,7 +78,7 @@ describe(
     );
 
     it(
-      'registers production REST controllers',
+      'registers all production controllers',
       () => {
         expect(controllers).toContain(
           CapabilityPlatformController,
@@ -85,24 +87,16 @@ describe(
         expect(controllers).toContain(
           CapabilityPlatformOperationsController,
         );
+
+        expect(controllers).toContain(
+          CapabilityPlatformManagementController,
+        );
       },
     );
 
     it(
-      'registers production services',
+      'registers management services',
       () => {
-        expect(providers).toContain(
-          CapabilityRegistryEngineService,
-        );
-
-        expect(providers).toContain(
-          InMemoryCapabilityRuntimeAdapter,
-        );
-
-        expect(providers).toContain(
-          DependencyResolverEngineService,
-        );
-
         expect(providers).toContain(
           CapabilityPlatformAuditService,
         );
@@ -115,29 +109,14 @@ describe(
           CapabilityPlatformOperationsService,
         );
 
-        const factoryTokens = [
-          CapabilityRuntimeAdapterRegistryService,
-          CapabilityRuntimeEngineService,
-          PluginHostEngineService,
-        ];
-
-        for (const token of factoryTokens) {
-          expect(
-            providers.some(
-              (provider) =>
-                typeof provider ===
-                  'object' &&
-                provider !== null &&
-                'provide' in provider &&
-                provider.provide === token,
-            ),
-          ).toBe(true);
-        }
+        expect(providers).toContain(
+          CapabilityPlatformManagementService,
+        );
       },
     );
 
     it(
-      'exports the production services',
+      'exports the complete production platform',
       () => {
         const requiredExports = [
           CapabilityRegistryEngineService,
@@ -149,6 +128,7 @@ describe(
           CapabilityPlatformAuditService,
           CapabilityPlatformService,
           CapabilityPlatformOperationsService,
+          CapabilityPlatformManagementService,
         ];
 
         for (

@@ -13,6 +13,7 @@ import {
 } from './capability.service';
 import {
   CapabilityPlatformController,
+  CapabilityPlatformManagementController,
   CapabilityPlatformOperationsController,
   CAPABILITY_PRODUCTION_EXPORTS,
   CAPABILITY_PRODUCTION_PROVIDERS,
@@ -26,6 +27,7 @@ import {
     CapabilityController,
     CapabilityPlatformController,
     CapabilityPlatformOperationsController,
+    CapabilityPlatformManagementController,
   ],
   providers: [
     CapabilityService,
