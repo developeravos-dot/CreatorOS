@@ -12,7 +12,7 @@ describe(
   "projects enterprise release manifest",
   () => {
     it(
-      "defines the stable Projects Workspace release",
+      "defines the stable Projects Workspace 2.1 release",
       () => {
         expect(
           PROJECTS_ENTERPRISE_RELEASE.product,
@@ -22,7 +22,7 @@ describe(
 
         expect(
           PROJECTS_ENTERPRISE_RELEASE.version,
-        ).toBe("2.0.0");
+        ).toBe("2.1.0");
 
         expect(
           PROJECTS_ENTERPRISE_RELEASE.status,
@@ -31,24 +31,36 @@ describe(
     );
 
     it(
-      "contains the major enterprise capabilities",
+      "contains production integration capabilities",
       () => {
         expect(
           PROJECTS_ENTERPRISE_RELEASE.capabilities,
         ).toContain(
-          "Advanced Kanban",
+          "Remote persistence adapter",
         );
 
         expect(
           PROJECTS_ENTERPRISE_RELEASE.capabilities,
         ).toContain(
-          "Project files and assets",
+          "Offline synchronization queue",
         );
 
         expect(
           PROJECTS_ENTERPRISE_RELEASE.capabilities,
         ).toContain(
-          "AI project assistant",
+          "Conflict resolution engine",
+        );
+
+        expect(
+          PROJECTS_ENTERPRISE_RELEASE.capabilities,
+        ).toContain(
+          "Project permissions and ACL",
+        );
+
+        expect(
+          PROJECTS_ENTERPRISE_RELEASE.capabilities,
+        ).toContain(
+          "Production runtime",
         );
       },
     );

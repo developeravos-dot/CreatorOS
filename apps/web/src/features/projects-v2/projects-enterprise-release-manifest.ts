@@ -19,6 +19,14 @@ export interface ProjectsEnterpriseReleaseManifest {
       "passed";
     readonly gitDiff:
       "passed";
+    readonly persistence:
+      "passed";
+    readonly offlineSync:
+      "passed";
+    readonly conflictResolution:
+      "passed";
+    readonly permissions:
+      "passed";
   };
 }
 
@@ -27,13 +35,13 @@ export const PROJECTS_ENTERPRISE_RELEASE:
   product:
     "CreatorOS Projects Workspace",
   version:
-    "2.0.0",
+    "2.1.0",
   releaseName:
-    "Projects Workspace Enterprise 2.0",
+    "Projects Workspace Enterprise 2.1",
   status:
     "stable",
   releasedAt:
-    "2026-08-03T10:01:00+04:00",
+    "2026-08-03T10:33:00+04:00",
   capabilities: [
     "Enterprise projects workspace",
     "Workspace state management",
@@ -44,6 +52,14 @@ export const PROJECTS_ENTERPRISE_RELEASE:
     "Project timeline and activity",
     "Project files and assets",
     "AI project assistant",
+    "Persistence gateway",
+    "Legacy persistence migration",
+    "Remote persistence adapter",
+    "Local fallback orchestration",
+    "Offline synchronization queue",
+    "Conflict resolution engine",
+    "Project permissions and ACL",
+    "Production runtime",
     "Release readiness audit",
   ],
   qualityGates: {
@@ -56,6 +72,14 @@ export const PROJECTS_ENTERPRISE_RELEASE:
     encoding:
       "passed",
     gitDiff:
+      "passed",
+    persistence:
+      "passed",
+    offlineSync:
+      "passed",
+    conflictResolution:
+      "passed",
+    permissions:
       "passed",
   },
 };
