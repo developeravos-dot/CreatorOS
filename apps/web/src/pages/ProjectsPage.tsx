@@ -1,4 +1,4 @@
-﻿import {
+import {
   useEffect,
   useMemo,
   useState,
@@ -13,12 +13,24 @@ import type {
 } from "../enterprise-api";
 
 import {
+  buildProjectsWorkspaceResult,
+  deselectProjects,
+  runBulkAction,
+  loadProjectsWorkspacePreferences,
+  selectProjects,
+  toggleProjectSelection,
   ProjectDetailsPanel,
   ProjectsKanban,
+  ProjectsPagination,
   ProjectsTable,
   ProjectsToolbar,
-  useProjectsQuery,
+  saveProjectsWorkspacePreferences,
+  type ProjectsWorkspacePreferences,
 } from "../features/projects-v2";
+
+import {
+  useProjectsQuery,
+} from "../features/projects-v2/useProjectsQuery";
 
 import "../features/projects-v2/projects-v2.css";
 
@@ -54,6 +66,15 @@ export default function ProjectsPage({
     initialProjects,
   });
 
+  const [
+    preferences,
+    setPreferences,
+  ] = useState<
+    ProjectsWorkspacePreferences
+  >(
+    loadProjectsWorkspacePreferences,
+  );
+
   const [search, setSearch] =
     useState("");
 
@@ -63,12 +84,8 @@ export default function ProjectsPage({
   const [status, setStatus] =
     useState("all");
 
-  const [
-    viewMode,
-    setViewMode,
-  ] = useState<
-    "table" | "kanban"
-  >("table");
+  const [page, setPage] =
+    useState(1);
 
   const [
     selectedProject,
@@ -76,6 +93,21 @@ export default function ProjectsPage({
   ] = useState<
     EnterpriseProject | null
   >(null);
+
+  const [
+    selectedProjectIds,
+    setSelectedProjectIds,
+  ] = useState<
+    Set<string>
+  >(
+    () =>
+      new Set<string>(),
+  );
+
+  const [
+    bulkActionBusy,
+    setBulkActionBusy,
+  ] = useState(false);
 
   const platforms = useMemo(
     () =>
@@ -103,83 +135,383 @@ export default function ProjectsPage({
     [projects],
   );
 
-  const filteredProjects =
-    useMemo(() => {
-      const normalizedSearch =
-        search
-          .trim()
-          .toLowerCase();
+  const workspaceResult =
+    useMemo(
+      () =>
+        buildProjectsWorkspaceResult(
+          projects,
+          {
+            search,
+            platform,
+            status,
+            page,
+          },
+          preferences,
+        ),
+      [
+        page,
+        platform,
+        preferences,
+        projects,
+        search,
+        status,
+      ],
+    );
 
-      return projects.filter(
-        (project) => {
-          const matchesSearch =
-            normalizedSearch.length ===
-              0 ||
-            project.name
-              .toLowerCase()
-              .includes(
-                normalizedSearch,
-              ) ||
-            project.id
-              .toLowerCase()
-              .includes(
-                normalizedSearch,
-              ) ||
-            project.platform
-              .toLowerCase()
-              .includes(
-                normalizedSearch,
-              ) ||
-            project.status
-              .toLowerCase()
-              .includes(
-                normalizedSearch,
-              );
+  useEffect(
+    () => {
+      saveProjectsWorkspacePreferences(
+        preferences,
+      );
+    },
+    [preferences],
+  );
 
-          const matchesPlatform =
-            platform === "all" ||
-            project.platform ===
-              platform;
+  useEffect(
+    () => {
+      if (
+        page !==
+        workspaceResult.page
+      ) {
+        setPage(
+          workspaceResult.page,
+        );
+      }
+    },
+    [
+      page,
+      workspaceResult.page,
+    ],
+  );
 
-          const matchesStatus =
-            status === "all" ||
-            project.status ===
-              status;
+  useEffect(
+    () => {
+      if (
+        selectedProject &&
+        !projects.some(
+          (project) =>
+            project.id ===
+            selectedProject.id,
+        )
+      ) {
+        setSelectedProject(null);
+      }
 
-          return (
-            matchesSearch &&
-            matchesPlatform &&
-            matchesStatus
-          );
+      const availableIds =
+        new Set(
+          projects.map(
+            (project) =>
+              project.id,
+          ),
+        );
+
+      setSelectedProjectIds(
+        (current) => {
+          const next =
+            new Set(
+              [...current].filter(
+                (projectId) =>
+                  availableIds.has(
+                    projectId,
+                  ),
+              ),
+            );
+
+          if (
+            next.size ===
+            current.size
+          ) {
+            return current;
+          }
+
+          return next;
         },
       );
-    }, [
-      platform,
+    },
+    [
       projects,
-      search,
-      status,
-    ]);
-
-  useEffect(() => {
-    if (
-      selectedProject &&
-      !projects.some(
-        (project) =>
-          project.id ===
-          selectedProject.id,
-      )
-    ) {
-      setSelectedProject(null);
-    }
-  }, [
-    projects,
-    selectedProject,
-  ]);
+      selectedProject,
+    ],
+  );
 
   const disabled =
     busy ||
     loading ||
-    refreshing;
+    refreshing ||
+    bulkActionBusy;
+
+  const changeSearch = (
+    value: string,
+  ): void => {
+    setSearch(value);
+    setPage(1);
+  };
+
+  const changePlatform = (
+    value: string,
+  ): void => {
+    setPlatform(value);
+    setPage(1);
+  };
+
+  const changeStatus = (
+    value: string,
+  ): void => {
+    setStatus(value);
+    setPage(1);
+  };
+
+  const changeViewMode = (
+    value:
+      ProjectsWorkspacePreferences[
+        "viewMode"
+      ],
+  ): void => {
+    setPreferences(
+      (current) => ({
+        ...current,
+        viewMode: value,
+      }),
+    );
+  };
+
+  const changeSortField = (
+    value:
+      ProjectsWorkspacePreferences[
+        "sortField"
+      ],
+  ): void => {
+    setPreferences(
+      (current) => {
+        if (
+          current.sortField ===
+          value
+        ) {
+          return {
+            ...current,
+            sortDirection:
+              current.sortDirection ===
+              "asc"
+                ? "desc"
+                : "asc",
+          };
+        }
+
+        return {
+          ...current,
+          sortField: value,
+          sortDirection: "asc",
+        };
+      },
+    );
+
+    setPage(1);
+  };
+
+  const changeSortDirection = (
+    value:
+      ProjectsWorkspacePreferences[
+        "sortDirection"
+      ],
+  ): void => {
+    setPreferences(
+      (current) => ({
+        ...current,
+        sortDirection: value,
+      }),
+    );
+
+    setPage(1);
+  };
+
+  const changePageSize = (
+    value: number,
+  ): void => {
+    setPreferences(
+      (current) => ({
+        ...current,
+        pageSize: value,
+      }),
+    );
+
+    setPage(1);
+  };
+
+  const changePage = (
+    value: number,
+  ): void => {
+    setPage(
+      Math.min(
+        Math.max(
+          value,
+          1,
+        ),
+        workspaceResult.totalPages,
+      ),
+    );
+  };
+
+  const toggleSelection = (
+    projectId: string,
+  ): void => {
+    setSelectedProjectIds(
+      (current) =>
+        toggleProjectSelection(
+          current,
+          projectId,
+        ),
+    );
+  };
+
+  const togglePageSelection = (
+    projectIds:
+      readonly string[],
+    selected: boolean,
+  ): void => {
+    setSelectedProjectIds(
+      (current) =>
+        selected
+          ? selectProjects(
+              current,
+              projectIds,
+            )
+          : deselectProjects(
+              current,
+              projectIds,
+            ),
+    );
+  };
+
+  const clearSelection =
+    (): void => {
+      setSelectedProjectIds(
+        new Set<string>(),
+      );
+    };
+
+  const updateSelectedProjectsStatus =
+    async (): Promise<void> => {
+      const projectIds = [
+        ...selectedProjectIds,
+      ];
+
+      if (
+        projectIds.length === 0
+      ) {
+        return;
+      }
+
+      setBulkActionBusy(true);
+
+      try {
+        const result =
+          await runBulkAction(
+            projectIds,
+            async (
+              projectId,
+            ) => {
+              const project =
+                projects.find(
+                  (item) =>
+                    item.id ===
+                    projectId,
+                );
+
+              if (!project) {
+                return false;
+              }
+
+              await onStatus(
+                project,
+              );
+
+              return true;
+            },
+          );
+
+        setSelectedProjectIds(
+          new Set(
+            result.failed,
+          ),
+        );
+      } finally {
+        setBulkActionBusy(
+          false,
+        );
+      }
+    };
+
+  const deleteSelectedProjects =
+    async (): Promise<void> => {
+      const projectIds = [
+        ...selectedProjectIds,
+      ];
+
+      if (
+        projectIds.length === 0
+      ) {
+        return;
+      }
+
+      const confirmed =
+        window.confirm(
+          `Delete ${projectIds.length} selected projects?`,
+        );
+
+      if (!confirmed) {
+        return;
+      }
+
+      setBulkActionBusy(true);
+
+      try {
+        const result =
+          await runBulkAction(
+            projectIds,
+            async (
+              projectId,
+            ) => {
+              const project =
+                projects.find(
+                  (item) =>
+                    item.id ===
+                    projectId,
+                );
+
+              if (!project) {
+                return false;
+              }
+
+              await onDelete(
+                project,
+              );
+
+              return true;
+            },
+          );
+
+        setSelectedProjectIds(
+          new Set(
+            result.failed,
+          ),
+        );
+
+        if (
+          selectedProject &&
+          result.succeeded.includes(
+            selectedProject.id,
+          )
+        ) {
+          setSelectedProject(
+            null,
+          );
+        }
+      } finally {
+        setBulkActionBusy(
+          false,
+        );
+      }
+    };
 
   return (
     <div className="projects-v2">
@@ -215,7 +547,8 @@ export default function ProjectsPage({
           <div>
             <strong>
               {
-                filteredProjects.length
+                workspaceResult
+                  .totalProjects
               }
             </strong>
 
@@ -269,33 +602,129 @@ export default function ProjectsPage({
         search={search}
         platform={platform}
         status={status}
-        viewMode={viewMode}
+        viewMode={
+          preferences.viewMode
+        }
+        sortField={
+          preferences.sortField
+        }
+        sortDirection={
+          preferences.sortDirection
+        }
         platforms={platforms}
         statuses={statuses}
         disabled={disabled}
-        onSearchChange={setSearch}
-        onPlatformChange={
-          setPlatform
+        onSearchChange={
+          changeSearch
         }
-        onStatusChange={setStatus}
+        onPlatformChange={
+          changePlatform
+        }
+        onStatusChange={
+          changeStatus
+        }
         onViewModeChange={
-          setViewMode
+          changeViewMode
+        }
+        onSortFieldChange={
+          changeSortField
+        }
+        onSortDirectionChange={
+          changeSortDirection
         }
         onCreate={() =>
           void onCreate()
         }
       />
 
+      {selectedProjectIds.size > 0 ? (
+        <section className="projects-v2-selection-bar">
+          <div>
+            <strong>
+              {
+                selectedProjectIds.size
+              }
+            </strong>
+
+            <span>
+              projects selected
+            </span>
+          </div>
+
+          <div className="projects-v2-selection-bar__actions">
+            <button
+              type="button"
+              disabled={
+                bulkActionBusy
+              }
+              onClick={
+                clearSelection
+              }
+            >
+              Clear selection
+            </button>
+
+            <button
+              type="button"
+              disabled={
+                bulkActionBusy
+              }
+              onClick={() =>
+                void updateSelectedProjectsStatus()
+              }
+            >
+              {bulkActionBusy
+                ? "Updating..."
+                : "Update selected status"}
+            </button>
+
+            <button
+              type="button"
+              className="danger"
+              disabled={
+                bulkActionBusy
+              }
+              onClick={() =>
+                void deleteSelectedProjects()
+              }
+            >
+              {bulkActionBusy
+                ? "Deleting..."
+                : "Delete selected"}
+            </button>
+          </div>
+        </section>
+      ) : null}
+
       <section className="projects-v2-content">
-        {viewMode === "table" ? (
+        {preferences.viewMode ===
+        "table" ? (
           <ProjectsTable
             projects={
-              filteredProjects
+              workspaceResult.projects
             }
             selectedId={
               selectedProject?.id
             }
+            selectedIds={
+              selectedProjectIds
+            }
             busy={disabled}
+            sortField={
+              preferences.sortField
+            }
+            sortDirection={
+              preferences.sortDirection
+            }
+            onSort={
+              changeSortField
+            }
+            onToggleSelection={
+              toggleSelection
+            }
+            onTogglePageSelection={
+              togglePageSelection
+            }
             onSelect={
               setSelectedProject
             }
@@ -309,7 +738,7 @@ export default function ProjectsPage({
         ) : (
           <ProjectsKanban
             projects={
-              filteredProjects
+              workspaceResult.projects
             }
             busy={disabled}
             onSelect={
@@ -321,6 +750,28 @@ export default function ProjectsPage({
           />
         )}
       </section>
+
+      <ProjectsPagination
+        page={
+          workspaceResult.page
+        }
+        totalPages={
+          workspaceResult.totalPages
+        }
+        pageSize={
+          workspaceResult.pageSize
+        }
+        totalProjects={
+          workspaceResult.totalProjects
+        }
+        disabled={disabled}
+        onPageChange={
+          changePage
+        }
+        onPageSizeChange={
+          changePageSize
+        }
+      />
 
       <ProjectDetailsPanel
         project={selectedProject}

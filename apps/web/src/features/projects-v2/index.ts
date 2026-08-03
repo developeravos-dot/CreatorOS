@@ -1,6 +1,11 @@
+export * from "./projects-bulk-actions";
+export { default as ProjectsPagination } from "./ProjectsPagination";
 export { default as ProjectDetailsPanel } from "./ProjectDetailsPanel";
 export { default as ProjectsKanban } from "./ProjectsKanban";
 export { default as ProjectsTable } from "./ProjectsTable";
 export { default as ProjectsToolbar } from "./ProjectsToolbar";
 export * from "./projects-query";
 export * from "./useProjectsQuery";
+export * from "./projects-workspace-types";
+export * from "./projects-workspace-engine";
+export * from "./projects-workspace-storage";
