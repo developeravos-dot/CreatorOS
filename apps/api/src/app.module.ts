@@ -64,8 +64,13 @@ import {
   AuditEventTimelineModule,
 } from './modules/audit-event-timeline';
 
+import {
+  LogsExplorerModule,
+} from './modules/logs-explorer';
+
 @Module({
   imports: [
+    LogsExplorerModule,
     AuditEventTimelineModule,
     MonitoringDiagnosticsModule,
     
