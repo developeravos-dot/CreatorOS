@@ -12,3 +12,5 @@ Thumbs.db
 .pnpm-store/
 
 **/tsconfig.tsbuildinfo
+
+.creatoros-pack-inspection/

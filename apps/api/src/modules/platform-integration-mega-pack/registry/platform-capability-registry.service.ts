@@ -7,12 +7,17 @@ export class PlatformCapabilityRegistryService {
   defaults(): PlatformCapability[] {
     return [
       this.create(
+        'platform',
+        'CreatorOS Platform',
+        'Platform',
+        '/platform',
+      ),
+      this.create(
         'media',
         'CreatorOS Media',
         'Media',
         '/media',
       ),
-
       this.create(
         'knowledge',
         'CreatorOS Knowledge',
