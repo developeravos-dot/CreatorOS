@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import {
   CAPABILITY_MANIFEST_SCHEMA_VERSION,
   type CapabilityManifestContract,
