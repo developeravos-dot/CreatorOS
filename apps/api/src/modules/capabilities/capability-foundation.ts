@@ -10,3 +10,4 @@ export * from './registry-engine';
 export * from './runtime-engine';
 export * from './dependency-resolver';
 export * from './plugin-host';
+export * from './sdk';
