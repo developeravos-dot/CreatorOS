@@ -14,9 +14,16 @@ import {
   CapabilitySdkContextFactory,
 } from '../factory';
 
+type Mutable<TValue> = {
+  -readonly [TKey in keyof TValue]: TValue[TKey];
+};
+
+type MutableCapabilitySdkContextInput =
+  Partial<Mutable<CreateCapabilitySdkContextInput>>;
+
 export class CapabilitySdkContextBuilder {
   private readonly input:
-    Partial<CreateCapabilitySdkContextInput> = {};
+    MutableCapabilitySdkContextInput = {};
 
   capability(
     capabilityId: string,
