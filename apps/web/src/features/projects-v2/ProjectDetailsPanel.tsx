@@ -1,16 +1,111 @@
-﻿import type { EnterpriseProject } from "../../enterprise-api";
-import { useTranslation } from "../../hooks";
-import {
-  platformLabels,
-  statusLabels,
-} from "../../utils/contentLabels";
+import type {
+  EnterpriseProject,
+  ProjectStatus,
+} from "../../enterprise-api";
 
 interface ProjectDetailsPanelProps {
   project: EnterpriseProject | null;
   busy: boolean;
   onClose: () => void;
-  onStatus: (project: EnterpriseProject) => void;
-  onDelete: (project: EnterpriseProject) => void;
+  onStatus: (
+    project: EnterpriseProject,
+  ) => void;
+  onDelete: (
+    project: EnterpriseProject,
+  ) => void;
+}
+
+const PROJECT_STATUSES:
+  readonly ProjectStatus[] = [
+  "planning",
+  "active",
+  "paused",
+  "completed",
+];
+
+function formatDate(
+  value: string,
+): string {
+  const date =
+    new Date(value);
+
+  if (
+    Number.isNaN(
+      date.getTime(),
+    )
+  ) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat(
+    "en",
+    {
+      dateStyle: "medium",
+      timeStyle: "short",
+    },
+  ).format(date);
+}
+
+function getNextStatus(
+  status: ProjectStatus,
+): ProjectStatus {
+  const currentIndex =
+    PROJECT_STATUSES.indexOf(
+      status,
+    );
+
+  const nextIndex =
+    currentIndex < 0
+      ? 0
+      : (
+          currentIndex + 1
+        ) %
+        PROJECT_STATUSES.length;
+
+  return (
+    PROJECT_STATUSES[
+      nextIndex
+    ] ?? "planning"
+  );
+}
+
+function getHealthScore(
+  project: EnterpriseProject,
+): number {
+  let score = 40;
+
+  if (
+    project.name.trim().length >=
+    5
+  ) {
+    score += 15;
+  }
+
+  if (
+    project.description
+      .trim()
+      .length >= 20
+  ) {
+    score += 15;
+  }
+
+  if (
+    project.status === "active"
+  ) {
+    score += 20;
+  }
+
+  if (
+    project.status ===
+    "completed"
+  ) {
+    score += 30;
+  }
+
+  return Math.min(
+    score,
+    100,
+  );
 }
 
 export default function ProjectDetailsPanel({
@@ -20,94 +115,255 @@ export default function ProjectDetailsPanel({
   onStatus,
   onDelete,
 }: ProjectDetailsPanelProps) {
-
-  const { t } = useTranslation();
   if (!project) {
     return null;
   }
 
+  const nextStatus =
+    getNextStatus(
+      project.status,
+    );
+
+  const healthScore =
+    getHealthScore(
+      project,
+    );
+
+  const statusProject: EnterpriseProject =
+    {
+      ...project,
+      status: nextStatus,
+      updatedAt:
+        new Date().toISOString(),
+    };
+
   return (
     <div
-      className="projects-v2-details-overlay"
-      onMouseDown={onClose}
+      className="projects-v2-details-backdrop"
+      role="presentation"
+      onMouseDown={(event) => {
+        if (
+          event.target ===
+          event.currentTarget
+        ) {
+          onClose();
+        }
+      }}
     >
       <aside
         className="projects-v2-details"
-        onMouseDown={(event) => event.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="project-details-title"
       >
         <header className="projects-v2-details__header">
           <div>
-            <span>{t("projects.details")}</span>
-            <h2>{project.name}</h2>
+            <span className="projects-v2-details__eyebrow">
+              Project workspace
+            </span>
+
+            <h2 id="project-details-title">
+              {project.name}
+            </h2>
+
+            <p>
+              {project.platform}
+              {" · "}
+              {project.status}
+            </p>
           </div>
 
-          <button type="button" onClick={onClose}>
+          <button
+            type="button"
+            className="projects-v2-details__close"
+            aria-label="Close project details"
+            onClick={onClose}
+          >
             ×
           </button>
         </header>
 
-        <div className="projects-v2-details__identity">
-          <span>{project.name.slice(0, 1).toUpperCase()}</span>
+        <div className="projects-v2-details__content">
+          <section className="projects-v2-details__hero">
+            <div>
+              <span>Project health</span>
 
-          <div>
-            <strong>{project.name}</strong>
-            <small>{project.id}</small>
-          </div>
-        </div>
+              <strong>
+                {healthScore}%
+              </strong>
+            </div>
 
-        <dl className="projects-v2-details__list">
-          <div>
-            <dt>{t("projects.platform")}</dt>
-            <dd>
-              {platformLabels[project.platform] ?? project.platform}
-            </dd>
-          </div>
+            <progress
+              value={healthScore}
+              max={100}
+              aria-label="Project health"
+            />
 
-          <div>
-            <dt>{t("projects.status")}</dt>
-            <dd>
-              {statusLabels[project.status] ?? project.status}
-            </dd>
-          </div>
+            <p>
+              Health is calculated from
+              project completeness and its
+              current workflow status.
+            </p>
+          </section>
 
-          {Object.entries(project)
-            .filter(
-              ([key]) =>
-                !["id", "name", "platform", "status"].includes(key),
-            )
-            .slice(0, 8)
-            .map(([key, value]) => (
-              <div key={key}>
-                <dt>{key}</dt>
+          <section className="projects-v2-details__section">
+            <div className="projects-v2-details__section-heading">
+              <div>
+                <span>Overview</span>
+                <h3>Project information</h3>
+              </div>
+            </div>
+
+            <dl className="projects-v2-details__metadata">
+              <div>
+                <dt>Status</dt>
                 <dd>
-                  {typeof value === "object"
-                    ? JSON.stringify(value)
-                    : String(value ?? "—")}
+                  <span
+                    className={`projects-v2-details__status projects-v2-details__status--${project.status}`}
+                  >
+                    {project.status}
+                  </span>
                 </dd>
               </div>
-            ))}
-        </dl>
 
-        <footer className="projects-v2-details__actions">
+              <div>
+                <dt>Platform</dt>
+                <dd>
+                  {project.platform}
+                </dd>
+              </div>
+
+              <div>
+                <dt>Created</dt>
+                <dd>
+                  {formatDate(
+                    project.createdAt,
+                  )}
+                </dd>
+              </div>
+
+              <div>
+                <dt>Last updated</dt>
+                <dd>
+                  {formatDate(
+                    project.updatedAt,
+                  )}
+                </dd>
+              </div>
+            </dl>
+          </section>
+
+          <section className="projects-v2-details__section">
+            <div className="projects-v2-details__section-heading">
+              <div>
+                <span>Description</span>
+                <h3>Creative brief</h3>
+              </div>
+            </div>
+
+            <p className="projects-v2-details__description">
+              {project.description.trim()
+                ? project.description
+                : "No project description has been added yet."}
+            </p>
+          </section>
+
+          <section className="projects-v2-details__section">
+            <div className="projects-v2-details__section-heading">
+              <div>
+                <span>Workflow</span>
+                <h3>Next recommended state</h3>
+              </div>
+
+              <span className="projects-v2-details__next-status">
+                {nextStatus}
+              </span>
+            </div>
+
+            <p className="projects-v2-details__hint">
+              Move this project to the next
+              workflow stage while keeping the
+              workspace synchronized.
+            </p>
+          </section>
+
+          <section className="projects-v2-details__section">
+            <div className="projects-v2-details__section-heading">
+              <div>
+                <span>Intelligence</span>
+                <h3>AI readiness</h3>
+              </div>
+            </div>
+
+            <div className="projects-v2-details__insights">
+              <article>
+                <strong>
+                  {
+                    project.description
+                      .trim().length >= 20
+                      ? "Ready"
+                      : "Needs brief"
+                  }
+                </strong>
+
+                <span>
+                  Production brief
+                </span>
+              </article>
+
+              <article>
+                <strong>
+                  {project.status ===
+                  "active"
+                    ? "In progress"
+                    : project.status}
+                </strong>
+
+                <span>
+                  Workflow signal
+                </span>
+              </article>
+
+              <article>
+                <strong>
+                  {project.platform}
+                </strong>
+
+                <span>
+                  Primary channel
+                </span>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <footer className="projects-v2-details__footer">
           <button
             type="button"
             disabled={busy}
-            onClick={() => onStatus(project)}
+            onClick={() =>
+              onStatus(
+                statusProject,
+              )
+            }
           >
-            {t("projects.updateStatus")}
+            {busy
+              ? "Updating..."
+              : `Move to ${nextStatus}`}
           </button>
 
           <button
             type="button"
             className="danger"
             disabled={busy}
-            onClick={() => onDelete(project)}
+            onClick={() =>
+              onDelete(project)
+            }
           >
-            {t("projects.deleteProject")}
+            Delete project
           </button>
         </footer>
       </aside>
     </div>
   );
 }
-
