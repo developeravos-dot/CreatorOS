@@ -72,8 +72,12 @@ import {
   NotificationsFoundationModule,
 } from './modules/notifications-foundation';
 
+import {
+  SchedulingJobsModule,
+} from './modules/scheduling-jobs';
 @Module({
   imports: [
+    SchedulingJobsModule,
     NotificationsFoundationModule,
     LogsExplorerModule,
     AuditEventTimelineModule,
