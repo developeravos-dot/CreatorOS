@@ -68,8 +68,13 @@ import {
   LogsExplorerModule,
 } from './modules/logs-explorer';
 
+import {
+  NotificationsFoundationModule,
+} from './modules/notifications-foundation';
+
 @Module({
   imports: [
+    NotificationsFoundationModule,
     LogsExplorerModule,
     AuditEventTimelineModule,
     MonitoringDiagnosticsModule,
