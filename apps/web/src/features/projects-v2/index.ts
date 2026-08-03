@@ -11,3 +11,4 @@ export * from "./projects-workspace-engine";
 export * from "./projects-workspace-storage";
 export * from "./kanban-engine";
 export * from "./projects-workspace-context";
+export * from "./kanban-state-engine";
