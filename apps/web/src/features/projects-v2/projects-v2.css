@@ -1345,3 +1345,72 @@ button:not(.danger) {
     margin-inline-start: 0;
   }
 }
+/* ADVANCED KANBAN UI PACK 2.6.3 */
+
+.projects-v2-kanban-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+  padding: 14px;
+  border: 1px solid rgb(148 163 184 / 14%);
+  border-radius: 16px;
+  background: rgb(15 23 42 / 62%);
+}
+
+.projects-v2-kanban-actions__history,
+.projects-v2-kanban-actions__bulk {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+.projects-v2-kanban-actions button,
+.projects-v2-kanban-actions select {
+  min-height: 38px;
+  border: 1px solid rgb(148 163 184 / 20%);
+  border-radius: 10px;
+  padding: 0 13px;
+  background: rgb(2 6 23 / 62%);
+  color: #e2e8f0;
+}
+
+.projects-v2-kanban-actions button:disabled,
+.projects-v2-kanban-actions select:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.projects-v2-kanban-actions__bulk strong {
+  color: #7dd3fc;
+  font-size: 0.8rem;
+}
+
+.projects-v2-kanban__card--selected {
+  border-color: rgb(56 189 248 / 58%);
+  box-shadow:
+    0 0 0 2px
+    rgb(56 189 248 / 12%);
+}
+
+.projects-v2-kanban__select {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.projects-v2-kanban__select input {
+  width: 15px;
+  height: 15px;
+  accent-color: #38bdf8;
+}
+
+@media (max-width: 840px) {
+  .projects-v2-kanban-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

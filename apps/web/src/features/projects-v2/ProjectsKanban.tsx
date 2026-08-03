@@ -1,6 +1,7 @@
 import {
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -25,15 +26,22 @@ import {
 
 import {
   beginKanbanDrag,
+  bulkMoveKanbanProjects,
+  canRedoKanbanState,
+  canUndoKanbanState,
+  clearKanbanSelection,
   commitKanbanOptimisticUpdate,
   createKanbanState,
   endKanbanDrag,
   getLatestKanbanOptimisticUpdate,
   moveKanbanProject,
+  redoKanbanState,
   replaceKanbanProjects,
   rollbackKanbanOptimisticUpdate,
   setKanbanDragTarget,
+  toggleKanbanProjectSelection,
   type KanbanState,
+  undoKanbanState,
 } from "./kanban-state-engine";
 
 interface ProjectsKanbanProps {
@@ -46,6 +54,14 @@ interface ProjectsKanbanProps {
     project: EnterpriseProject,
   ) => void | Promise<void>;
 }
+
+const BULK_STATUSES:
+  readonly ProjectStatus[] = [
+    "planning",
+    "active",
+    "paused",
+    "completed",
+  ];
 
 function createProjectsSignature(
   projects:
@@ -62,6 +78,42 @@ function createProjectsSignature(
     )
     .sort()
     .join("|");
+}
+
+function findChangedProjects(
+  current:
+    readonly EnterpriseProject[],
+  next:
+    readonly EnterpriseProject[],
+): EnterpriseProject[] {
+  const currentById =
+    new Map(
+      current.map(
+        (project) => [
+          project.id,
+          project,
+        ],
+      ),
+    );
+
+  return next.filter(
+    (project) => {
+      const previous =
+        currentById.get(
+          project.id,
+        );
+
+      return (
+        previous !== undefined &&
+        (
+          previous.status !==
+            project.status ||
+          previous.updatedAt !==
+            project.updatedAt
+        )
+      );
+    },
+  );
 }
 
 export default function ProjectsKanban({
@@ -91,11 +143,23 @@ export default function ProjectsKanban({
   >(null);
 
   const [
+    operationBusy,
+    setOperationBusy,
+  ] = useState(false);
+
+  const [
     moveError,
     setMoveError,
   ] = useState<
     string | null
   >(null);
+
+  const [
+    bulkTargetStatus,
+    setBulkTargetStatus,
+  ] = useState<ProjectStatus>(
+    "active",
+  );
 
   const externalSignature =
     useMemo(
@@ -115,9 +179,26 @@ export default function ProjectsKanban({
       [state.present.projects],
     );
 
+  const lastExternalSignature =
+    useRef(
+      externalSignature,
+    );
+
   useEffect(
     () => {
       if (
+        lastExternalSignature
+          .current ===
+        externalSignature
+      ) {
+        return;
+      }
+
+      lastExternalSignature.current =
+        externalSignature;
+
+      if (
+        operationBusy ||
         updatingProjectId !==
           null ||
         state.optimisticUpdates
@@ -139,6 +220,7 @@ export default function ProjectsKanban({
     [
       externalSignature,
       internalSignature,
+      operationBusy,
       projects,
       state.optimisticUpdates.length,
       updatingProjectId,
@@ -162,6 +244,99 @@ export default function ProjectsKanban({
       [state.present.projects],
     );
 
+  const disabled =
+    busy ||
+    operationBusy ||
+    updatingProjectId !==
+      null;
+
+  const persistTransition =
+    async (
+      previousState:
+        KanbanState,
+      nextState:
+        KanbanState,
+      rollbackWithEngine:
+        boolean,
+    ): Promise<boolean> => {
+      const operation =
+        getLatestKanbanOptimisticUpdate(
+          nextState,
+        );
+
+      if (!operation) {
+        return false;
+      }
+
+      const changedProjects =
+        findChangedProjects(
+          previousState
+            .present.projects,
+          nextState
+            .present.projects,
+        );
+
+      if (
+        changedProjects.length ===
+        0
+      ) {
+        setState(
+          nextState,
+        );
+
+        return false;
+      }
+
+      setMoveError(null);
+      setOperationBusy(true);
+      setState(nextState);
+
+      try {
+        for (
+          const project of
+          changedProjects
+        ) {
+          await onStatus(
+            project,
+          );
+        }
+
+        setState(
+          (current) =>
+            commitKanbanOptimisticUpdate(
+              current,
+              operation.id,
+            ),
+        );
+
+        return true;
+      }
+      catch (
+        error: unknown
+      ) {
+        setState(
+          (current) =>
+            rollbackWithEngine
+              ? rollbackKanbanOptimisticUpdate(
+                  current,
+                  operation.id,
+                )
+              : previousState,
+        );
+
+        setMoveError(
+          error instanceof Error
+            ? error.message
+            : "Kanban operation failed.",
+        );
+
+        return false;
+      }
+      finally {
+        setOperationBusy(false);
+      }
+    };
+
   const runMove =
     async (
       targetStatus:
@@ -172,15 +347,17 @@ export default function ProjectsKanban({
 
       if (
         !projectId ||
-        updatingProjectId !== null ||
-        busy
+        disabled
       ) {
         return;
       }
 
+      const previousState =
+        state;
+
       const movedState =
         moveKanbanProject(
-          state,
+          previousState,
           projectId,
           targetStatus,
         );
@@ -191,13 +368,15 @@ export default function ProjectsKanban({
         );
 
       if (
-        movedState === state ||
+        movedState ===
+          previousState ||
         !operation ||
-        operation.type !== "move"
+        operation.type !==
+          "move"
       ) {
         setState(
           endKanbanDrag(
-            state,
+            previousState,
           ),
         );
 
@@ -205,30 +384,29 @@ export default function ProjectsKanban({
       }
 
       const movedProject =
-        movedState.present.projects.find(
-          (project) =>
-            project.id ===
-            projectId,
-        );
+        movedState.present
+          .projects.find(
+            (project) =>
+              project.id ===
+              projectId,
+          );
 
       if (!movedProject) {
         setState(
           endKanbanDrag(
-            state,
+            previousState,
           ),
         );
 
         return;
       }
 
-      setMoveError(null);
       setUpdatingProjectId(
         projectId,
       );
 
-      setState(
-        movedState,
-      );
+      setMoveError(null);
+      setState(movedState);
 
       try {
         await onStatus(
@@ -267,6 +445,151 @@ export default function ProjectsKanban({
       }
     };
 
+  const runBulkMove =
+    async (): Promise<void> => {
+      if (
+        disabled ||
+        state.selection.size ===
+          0
+      ) {
+        return;
+      }
+
+      const previousState =
+        state;
+
+      const nextState =
+        bulkMoveKanbanProjects(
+          previousState,
+          previousState.selection,
+          bulkTargetStatus,
+        );
+
+      if (
+        nextState ===
+        previousState
+      ) {
+        return;
+      }
+
+      await persistTransition(
+        previousState,
+        nextState,
+        true,
+      );
+    };
+
+  const runUndo =
+    async (): Promise<void> => {
+      if (
+        disabled ||
+        !canUndoKanbanState(
+          state,
+        )
+      ) {
+        return;
+      }
+
+      const previousState =
+        state;
+
+      const nextState =
+        undoKanbanState(
+          previousState,
+        );
+
+      await persistTransition(
+        previousState,
+        nextState,
+        false,
+      );
+    };
+
+  const runRedo =
+    async (): Promise<void> => {
+      if (
+        disabled ||
+        !canRedoKanbanState(
+          state,
+        )
+      ) {
+        return;
+      }
+
+      const previousState =
+        state;
+
+      const nextState =
+        redoKanbanState(
+          previousState,
+        );
+
+      await persistTransition(
+        previousState,
+        nextState,
+        false,
+      );
+    };
+
+  useEffect(
+    () => {
+      const handleKeyDown = (
+        event: KeyboardEvent,
+      ): void => {
+        if (
+          !event.ctrlKey &&
+          !event.metaKey
+        ) {
+          return;
+        }
+
+        const key =
+          event.key.toLowerCase();
+
+        if (
+          key === "z" &&
+          event.shiftKey
+        ) {
+          event.preventDefault();
+
+          void runRedo();
+
+          return;
+        }
+
+        if (key === "z") {
+          event.preventDefault();
+
+          void runUndo();
+
+          return;
+        }
+
+        if (key === "y") {
+          event.preventDefault();
+
+          void runRedo();
+        }
+      };
+
+      window.addEventListener(
+        "keydown",
+        handleKeyDown,
+      );
+
+      return () => {
+        window.removeEventListener(
+          "keydown",
+          handleKeyDown,
+        );
+      };
+    },
+    [
+      disabled,
+      state,
+    ],
+  );
+
   if (
     state.present.projects.length ===
     0
@@ -299,6 +622,11 @@ export default function ProjectsKanban({
         project.id
           ? "projects-v2-kanban__card--dragging"
           : "",
+        state.selection.has(
+          project.id,
+        )
+          ? "projects-v2-kanban__card--selected"
+          : "",
       ]
         .filter(Boolean)
         .join(" ")}
@@ -306,9 +634,7 @@ export default function ProjectsKanban({
       tabIndex={0}
       draggable={
         draggable &&
-        !busy &&
-        updatingProjectId ===
-          null
+        !disabled
       }
       data-project-id={
         project.id
@@ -365,11 +691,38 @@ export default function ProjectsKanban({
       }}
     >
       <div className="projects-v2-kanban__card-top">
-        <span>
-          {project.name
-            .slice(0, 1)
-            .toUpperCase()}
-        </span>
+        <label
+          className="projects-v2-kanban__select"
+          onClick={(event) =>
+            event.stopPropagation()
+          }
+        >
+          <input
+            type="checkbox"
+            aria-label={`Select ${project.name}`}
+            checked={
+              state.selection.has(
+                project.id,
+              )
+            }
+            disabled={disabled}
+            onChange={() => {
+              setState(
+                (current) =>
+                  toggleKanbanProjectSelection(
+                    current,
+                    project.id,
+                  ),
+              );
+            }}
+          />
+
+          <span>
+            {project.name
+              .slice(0, 1)
+              .toUpperCase()}
+          </span>
+        </label>
 
         <small>
           {platformLabels[
@@ -424,6 +777,103 @@ export default function ProjectsKanban({
 
   return (
     <div className="projects-v2-kanban-shell">
+      <div className="projects-v2-kanban-actions">
+        <div className="projects-v2-kanban-actions__history">
+          <button
+            type="button"
+            disabled={
+              disabled ||
+              !canUndoKanbanState(
+                state,
+              )
+            }
+            onClick={() => {
+              void runUndo();
+            }}
+          >
+            Undo
+          </button>
+
+          <button
+            type="button"
+            disabled={
+              disabled ||
+              !canRedoKanbanState(
+                state,
+              )
+            }
+            onClick={() => {
+              void runRedo();
+            }}
+          >
+            Redo
+          </button>
+        </div>
+
+        <div className="projects-v2-kanban-actions__bulk">
+          <strong>
+            {state.selection.size}
+            {" selected"}
+          </strong>
+
+          <select
+            aria-label="Bulk move status"
+            value={bulkTargetStatus}
+            disabled={disabled}
+            onChange={(event) => {
+              setBulkTargetStatus(
+                event.target.value as
+                  ProjectStatus,
+              );
+            }}
+          >
+            {BULK_STATUSES.map(
+              (status) => (
+                <option
+                  key={status}
+                  value={status}
+                >
+                  {status}
+                </option>
+              ),
+            )}
+          </select>
+
+          <button
+            type="button"
+            disabled={
+              disabled ||
+              state.selection.size ===
+                0
+            }
+            onClick={() => {
+              void runBulkMove();
+            }}
+          >
+            Move selected
+          </button>
+
+          <button
+            type="button"
+            disabled={
+              disabled ||
+              state.selection.size ===
+                0
+            }
+            onClick={() => {
+              setState(
+                (current) =>
+                  clearKanbanSelection(
+                    current,
+                  ),
+              );
+            }}
+          >
+            Clear selection
+          </button>
+        </div>
+      </div>
+
       {moveError ? (
         <div
           className="projects-v2-kanban-error"
