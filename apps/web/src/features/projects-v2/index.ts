@@ -19,3 +19,5 @@ export * from "./project-ai-assistant-engine";
 export * from "./project-ai-assistant-storage";
 export * from "./projects-enterprise-release-audit";
 export * from "./projects-enterprise-release-manifest";
+export * from "./projects-persistence-gateway";
+export * from "./projects-persistence-migration";
