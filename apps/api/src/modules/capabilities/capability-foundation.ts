@@ -6,3 +6,4 @@ export * from './dto';
 export * from './lifecycle';
 export * from './validation';
 export * from './events';
+export * from './registry-engine';
