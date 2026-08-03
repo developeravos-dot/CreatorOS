@@ -3,6 +3,7 @@ import type {
 } from "react";
 
 import ProjectActivityTimeline from "./ProjectActivityTimeline";
+import ProjectAIAssistantWorkspace from "./ProjectAIAssistantWorkspace";
 import ProjectAssetsWorkspace from "./ProjectAssetsWorkspace";
 import ProjectDetailsPanelBase from "./ProjectDetailsPanelBase";
 
@@ -26,6 +27,10 @@ export default function ProjectDetailsPanel(
     <div className="projects-v2-details-workspace">
       <ProjectDetailsPanelBase
         {...props}
+      />
+
+      <ProjectAIAssistantWorkspace
+        project={props.project}
       />
 
       <ProjectActivityTimeline
