@@ -17,3 +17,5 @@ export * from "./project-assets-engine";
 export * from "./project-assets-storage";
 export * from "./project-ai-assistant-engine";
 export * from "./project-ai-assistant-storage";
+export * from "./projects-enterprise-release-audit";
+export * from "./projects-enterprise-release-manifest";
