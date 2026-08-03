@@ -8,3 +8,4 @@ export * from './validation';
 export * from './events';
 export * from './registry-engine';
 export * from './runtime-engine';
+export * from './dependency-resolver';
