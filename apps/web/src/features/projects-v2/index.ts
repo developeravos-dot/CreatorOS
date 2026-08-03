@@ -21,3 +21,6 @@ export * from "./projects-enterprise-release-audit";
 export * from "./projects-enterprise-release-manifest";
 export * from "./projects-persistence-gateway";
 export * from "./projects-persistence-migration";
+export * from "./projects-remote-persistence-adapter";
+export * from "./projects-persistence-orchestrator";
+export * from "./projects-offline-sync-queue";
