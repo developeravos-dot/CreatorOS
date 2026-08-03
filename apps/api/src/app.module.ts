@@ -1,4 +1,4 @@
-﻿import { AiFoundationModule } from './enterprise/ai-foundation/ai-foundation.module';
+import { AiFoundationModule } from './enterprise/ai-foundation/ai-foundation.module';
 import { EnterpriseFoundationModule } from "./enterprise-foundation/enterprise-foundation.module";
 import { CreatorDashboardModule } from "./creator-dashboard/creator-dashboard.module";
 import { FinalProductionModule } from './modules/final-production-mega-pack-e/final-production.module';
@@ -57,8 +57,12 @@ import { SponsorshipBusinessIntelligenceModule } from "./enterprise/sponsorship-
 import { AiStudioRuntimeModule } from "./enterprise/ai-studio-runtime";
 import { AiOrganizationPersistenceModule } from "./enterprise/ai-organization-persistence";
 import { AiTeamExecutionModule } from "./enterprise/ai-team-execution/ai-team-execution.module";
+import {
+  MonitoringDiagnosticsModule,
+} from './modules/monitoring-diagnostics';
 @Module({
   imports: [
+    MonitoringDiagnosticsModule,
     
     
     AiTeamExecutionModule,AiOrganizationPersistenceModule,AiStudioRuntimeModule,
