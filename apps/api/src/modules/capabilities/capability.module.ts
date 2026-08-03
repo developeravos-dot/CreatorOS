@@ -1,10 +1,33 @@
-﻿import { Module } from '@nestjs/common';
-import { CapabilityController } from './capability.controller';
-import { CapabilityService } from './capability.service';
+import { Module } from '@nestjs/common';
+
+import {
+  PersistenceModule,
+} from '../persistence';
+import {
+  CapabilityController,
+} from './capability.controller';
+import {
+  CapabilityService,
+} from './capability.service';
+import {
+  CAPABILITY_PRODUCTION_EXPORTS,
+  CAPABILITY_PRODUCTION_PROVIDERS,
+} from './production-platform';
 
 @Module({
-  controllers: [CapabilityController],
-  providers: [CapabilityService],
-  exports: [CapabilityService],
+  imports: [
+    PersistenceModule,
+  ],
+  controllers: [
+    CapabilityController,
+  ],
+  providers: [
+    CapabilityService,
+    ...CAPABILITY_PRODUCTION_PROVIDERS,
+  ],
+  exports: [
+    CapabilityService,
+    ...CAPABILITY_PRODUCTION_EXPORTS,
+  ],
 })
 export class CapabilityModule {}
