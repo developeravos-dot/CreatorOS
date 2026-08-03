@@ -1,28 +1,25 @@
 import type {
   CapabilityCompatibilityContract,
-  CapabilityManifestContract,
-  CapabilityPublisherContract,
-  CreateCapabilityManifestInput,
-} from '../../../manifest';
-import {
-  CapabilityManifestFactory,
-  createDefaultCapabilityPolicy,
-} from '../../../manifest';
-import type {
   CapabilityDependencyContract,
   CapabilityDomain,
   CapabilityEntrypointContract,
   CapabilityKind,
+  CapabilityManifestContract,
   CapabilityMetadata,
+  CapabilityPublisherContract,
   CapabilityResourcePolicyContract,
 } from '../../../contracts';
+import {
+  CapabilityManifestFactory,
+  createDefaultCapabilityPolicy,
+  type CreateCapabilityManifestInput,
+} from '../../../manifest';
 import {
   CapabilitySdkBuilderValidationError,
   normalizeIdentifier,
   normalizeTags,
   normalizeText,
 } from '../shared';
-
 type MutableManifestDraft = {
   id?: string;
   name?: string;
