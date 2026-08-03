@@ -18,6 +18,7 @@ import {
 } from '../../plugin-host';
 import {
   CapabilityPlatformAuditService,
+  CapabilityPlatformOperationsService,
   CapabilityPlatformService,
 } from '../services';
 
@@ -77,6 +78,7 @@ export const CAPABILITY_PRODUCTION_PROVIDERS:
         CapabilityRuntimeAdapterRegistryService,
         CapabilityRuntimeEngineService,
         DependencyResolverEngineService,
+        InMemoryCapabilityRuntimeAdapter,
       ],
       useFactory: (
         registry:
@@ -87,17 +89,25 @@ export const CAPABILITY_PRODUCTION_PROVIDERS:
           CapabilityRuntimeEngineService,
         resolver:
           DependencyResolverEngineService,
+        runtimeAdapter:
+          InMemoryCapabilityRuntimeAdapter,
       ) =>
         new PluginHostEngineService(
           registry,
           adapters,
           runtime,
           resolver,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          runtimeAdapter,
         ),
     },
 
     CapabilityPlatformAuditService,
     CapabilityPlatformService,
+    CapabilityPlatformOperationsService,
   ];
 
 export const CAPABILITY_PRODUCTION_EXPORTS = [
@@ -109,4 +119,5 @@ export const CAPABILITY_PRODUCTION_EXPORTS = [
   PluginHostEngineService,
   CapabilityPlatformAuditService,
   CapabilityPlatformService,
+  CapabilityPlatformOperationsService,
 ] as const;

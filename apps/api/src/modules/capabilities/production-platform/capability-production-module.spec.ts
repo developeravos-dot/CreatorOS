@@ -29,9 +29,11 @@ import {
 } from '../plugin-host';
 import {
   CapabilityPlatformController,
+  CapabilityPlatformOperationsController,
 } from './controllers';
 import {
   CapabilityPlatformAuditService,
+  CapabilityPlatformOperationsService,
   CapabilityPlatformService,
 } from './services';
 
@@ -57,7 +59,7 @@ describe(
       ) as readonly unknown[];
 
     it(
-      'preserves the existing controller and service',
+      'preserves the persistent registry API',
       () => {
         expect(controllers).toContain(
           CapabilityController,
@@ -74,10 +76,14 @@ describe(
     );
 
     it(
-      'registers the production REST controller',
+      'registers production REST controllers',
       () => {
         expect(controllers).toContain(
           CapabilityPlatformController,
+        );
+
+        expect(controllers).toContain(
+          CapabilityPlatformOperationsController,
         );
       },
     );
@@ -105,16 +111,17 @@ describe(
           CapabilityPlatformService,
         );
 
+        expect(providers).toContain(
+          CapabilityPlatformOperationsService,
+        );
+
         const factoryTokens = [
           CapabilityRuntimeAdapterRegistryService,
           CapabilityRuntimeEngineService,
           PluginHostEngineService,
         ];
 
-        for (
-          const token
-          of factoryTokens
-        ) {
+        for (const token of factoryTokens) {
           expect(
             providers.some(
               (provider) =>
@@ -122,8 +129,7 @@ describe(
                   'object' &&
                 provider !== null &&
                 'provide' in provider &&
-                provider.provide ===
-                  token,
+                provider.provide === token,
             ),
           ).toBe(true);
         }
@@ -131,7 +137,7 @@ describe(
     );
 
     it(
-      'exports all production services',
+      'exports the production services',
       () => {
         const requiredExports = [
           CapabilityRegistryEngineService,
@@ -142,6 +148,7 @@ describe(
           PluginHostEngineService,
           CapabilityPlatformAuditService,
           CapabilityPlatformService,
+          CapabilityPlatformOperationsService,
         ];
 
         for (
