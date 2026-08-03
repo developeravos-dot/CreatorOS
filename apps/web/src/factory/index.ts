@@ -7,3 +7,4 @@ export * from "./validation";
 export * from "./configuration";
 export * from "./integration";
 export * from "./release";
+export * from "./intelligence";
