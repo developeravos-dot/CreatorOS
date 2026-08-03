@@ -84,6 +84,8 @@ export class PluginHostEngineService {
       PluginPackageValidatorService,
     catalogFactory?:
       PluginDependencyCatalogFactory,
+    runtimeAdapter?:
+      InMemoryCapabilityRuntimeAdapter,
   ) {
     this.registry =
       registry ??
@@ -94,6 +96,7 @@ export class PluginHostEngineService {
       new CapabilityRuntimeAdapterRegistryService();
 
     this.runtimeAdapter =
+      runtimeAdapter ??
       new InMemoryCapabilityRuntimeAdapter();
 
     if (!this.adapterRegistry.has('node')) {
