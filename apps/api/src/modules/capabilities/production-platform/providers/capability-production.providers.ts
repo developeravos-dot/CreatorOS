@@ -17,6 +17,7 @@ import {
   PluginHostEngineService,
 } from '../../plugin-host';
 import {
+  CapabilityPlatformAuditService,
   CapabilityPlatformService,
 } from '../services';
 
@@ -69,7 +70,8 @@ export const CAPABILITY_PRODUCTION_PROVIDERS:
     DependencyResolverEngineService,
 
     {
-      provide: PluginHostEngineService,
+      provide:
+        PluginHostEngineService,
       inject: [
         CapabilityRegistryEngineService,
         CapabilityRuntimeAdapterRegistryService,
@@ -94,6 +96,7 @@ export const CAPABILITY_PRODUCTION_PROVIDERS:
         ),
     },
 
+    CapabilityPlatformAuditService,
     CapabilityPlatformService,
   ];
 
@@ -104,5 +107,6 @@ export const CAPABILITY_PRODUCTION_EXPORTS = [
   CapabilityRuntimeEngineService,
   DependencyResolverEngineService,
   PluginHostEngineService,
+  CapabilityPlatformAuditService,
   CapabilityPlatformService,
 ] as const;

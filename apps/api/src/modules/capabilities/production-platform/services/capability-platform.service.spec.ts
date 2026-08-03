@@ -15,6 +15,9 @@ import {
   PluginHostEngineService,
 } from '../../plugin-host';
 import {
+  CapabilityPlatformAuditService,
+} from './capability-platform-audit.service';
+import {
   CapabilityPlatformService,
 } from './capability-platform.service';
 
@@ -50,12 +53,16 @@ describe(
           resolver,
         );
 
+      const audit =
+        new CapabilityPlatformAuditService();
+
       const service =
         new CapabilityPlatformService(
           registry,
           runtime,
           resolver,
           pluginHost,
+          audit,
         );
 
       return {
@@ -64,6 +71,7 @@ describe(
         runtime,
         resolver,
         pluginHost,
+        audit,
       };
     }
 
@@ -76,6 +84,7 @@ describe(
           runtime,
           resolver,
           pluginHost,
+          audit,
         } = setup();
 
         expect(service.registry).toBe(
@@ -93,13 +102,20 @@ describe(
         expect(service.pluginHost).toBe(
           pluginHost,
         );
+
+        expect(service.audit).toBe(
+          audit,
+        );
       },
     );
 
     it(
-      'returns an operational empty-platform status',
+      'returns operational status',
       async () => {
-        const { service } = setup();
+        const {
+          service,
+          audit,
+        } = setup();
 
         const status =
           await service.status();
@@ -126,27 +142,85 @@ describe(
           },
         });
 
-        expect(
-          status.generatedAt,
-        ).toBeTruthy();
+        expect(audit.count()).toBe(1);
       },
     );
 
     it(
-      'reports all production systems',
+      'returns healthy component status',
       async () => {
         const { service } = setup();
 
-        const status =
-          await service.status();
+        const health =
+          await service.health();
 
-        expect(status.systems).toEqual({
-          registryEngine: true,
-          runtimeEngine: true,
-          dependencyResolver: true,
-          pluginHost: true,
-          persistentRegistry: true,
+        expect(health.status).toBe(
+          'healthy',
+        );
+
+        expect(
+          health.components.registry.status,
+        ).toBe('healthy');
+
+        expect(
+          health.components.runtime.status,
+        ).toBe('healthy');
+
+        expect(
+          health.components
+            .dependencyResolver.status,
+        ).toBe('healthy');
+
+        expect(
+          health.components
+            .pluginHost.status,
+        ).toBe('healthy');
+
+        expect(
+          health.components.audit.status,
+        ).toBe('healthy');
+      },
+    );
+
+    it(
+      'returns accurate empty metrics',
+      async () => {
+        const { service } = setup();
+
+        const metrics =
+          await service.metrics();
+
+        expect(metrics).toMatchObject({
+          registeredCapabilities: 0,
+          runtimeInstances: 0,
+          activeRuntimeInstances: 0,
+          stoppedRuntimeInstances: 0,
+          failedRuntimeInstances: 0,
+          installedPlugins: 0,
+          activePlugins: 0,
+          inactivePlugins: 0,
+          failedPlugins: 0,
+          auditEvents: 0,
         });
+      },
+    );
+
+    it(
+      'returns audit history',
+      async () => {
+        const {
+          service,
+          audit,
+        } = setup();
+
+        await service.status();
+        await service.health();
+
+        const records =
+          service.auditRecords();
+
+        expect(records).toHaveLength(2);
+        expect(audit.count()).toBe(3);
       },
     );
   },

@@ -8,6 +8,9 @@ import {
   CapabilityModule,
 } from '../capability.module';
 import {
+  CapabilityController,
+} from '../capability.controller';
+import {
   CapabilityService,
 } from '../capability.service';
 import {
@@ -25,12 +28,22 @@ import {
   PluginHostEngineService,
 } from '../plugin-host';
 import {
+  CapabilityPlatformController,
+} from './controllers';
+import {
+  CapabilityPlatformAuditService,
   CapabilityPlatformService,
 } from './services';
 
 describe(
   'CapabilityModule production composition',
   () => {
+    const controllers =
+      Reflect.getMetadata(
+        MODULE_METADATA.CONTROLLERS,
+        CapabilityModule,
+      ) as readonly unknown[];
+
     const providers =
       Reflect.getMetadata(
         MODULE_METADATA.PROVIDERS,
@@ -44,8 +57,12 @@ describe(
       ) as readonly unknown[];
 
     it(
-      'preserves the persistent capability service',
+      'preserves the existing controller and service',
       () => {
+        expect(controllers).toContain(
+          CapabilityController,
+        );
+
         expect(providers).toContain(
           CapabilityService,
         );
@@ -57,7 +74,16 @@ describe(
     );
 
     it(
-      'registers production capability providers',
+      'registers the production REST controller',
+      () => {
+        expect(controllers).toContain(
+          CapabilityPlatformController,
+        );
+      },
+    );
+
+    it(
+      'registers production services',
       () => {
         expect(providers).toContain(
           CapabilityRegistryEngineService,
@@ -72,46 +98,40 @@ describe(
         );
 
         expect(providers).toContain(
+          CapabilityPlatformAuditService,
+        );
+
+        expect(providers).toContain(
           CapabilityPlatformService,
         );
 
-        expect(
-          providers.some(
-            (provider) =>
-              typeof provider === 'object' &&
-              provider !== null &&
-              'provide' in provider &&
-              provider.provide ===
-                CapabilityRuntimeAdapterRegistryService,
-          ),
-        ).toBe(true);
+        const factoryTokens = [
+          CapabilityRuntimeAdapterRegistryService,
+          CapabilityRuntimeEngineService,
+          PluginHostEngineService,
+        ];
 
-        expect(
-          providers.some(
-            (provider) =>
-              typeof provider === 'object' &&
-              provider !== null &&
-              'provide' in provider &&
-              provider.provide ===
-                CapabilityRuntimeEngineService,
-          ),
-        ).toBe(true);
-
-        expect(
-          providers.some(
-            (provider) =>
-              typeof provider === 'object' &&
-              provider !== null &&
-              'provide' in provider &&
-              provider.provide ===
-                PluginHostEngineService,
-          ),
-        ).toBe(true);
+        for (
+          const token
+          of factoryTokens
+        ) {
+          expect(
+            providers.some(
+              (provider) =>
+                typeof provider ===
+                  'object' &&
+                provider !== null &&
+                'provide' in provider &&
+                provider.provide ===
+                  token,
+            ),
+          ).toBe(true);
+        }
       },
     );
 
     it(
-      'exports the complete production composition',
+      'exports all production services',
       () => {
         const requiredExports = [
           CapabilityRegistryEngineService,
@@ -120,6 +140,7 @@ describe(
           CapabilityRuntimeEngineService,
           DependencyResolverEngineService,
           PluginHostEngineService,
+          CapabilityPlatformAuditService,
           CapabilityPlatformService,
         ];
 

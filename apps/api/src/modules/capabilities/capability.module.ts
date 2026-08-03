@@ -1,4 +1,6 @@
-import { Module } from '@nestjs/common';
+import {
+  Module,
+} from '@nestjs/common';
 
 import {
   PersistenceModule,
@@ -10,6 +12,7 @@ import {
   CapabilityService,
 } from './capability.service';
 import {
+  CapabilityPlatformController,
   CAPABILITY_PRODUCTION_EXPORTS,
   CAPABILITY_PRODUCTION_PROVIDERS,
 } from './production-platform';
@@ -20,6 +23,7 @@ import {
   ],
   controllers: [
     CapabilityController,
+    CapabilityPlatformController,
   ],
   providers: [
     CapabilityService,
