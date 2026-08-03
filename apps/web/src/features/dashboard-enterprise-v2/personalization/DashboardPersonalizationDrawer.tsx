@@ -196,7 +196,7 @@ export default function DashboardPersonalizationDrawer({
             aria-label="Close dashboard personalization"
             onClick={onClose}
           >
-            Ã—
+            {"\u00D7"}
           </button>
         </div>
 

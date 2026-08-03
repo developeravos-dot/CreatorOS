@@ -1,4 +1,4 @@
-﻿import {
+import {
   describe,
   expect,
   it,
@@ -233,6 +233,57 @@ describe(
       },
     );
 
+    it(
+      "keeps snapshot references stable until data changes",
+      () => {
+        const client =
+          new QueryClient();
+
+        const first =
+          client.getSnapshot(
+            "stable",
+          );
+
+        const second =
+          client.getSnapshot(
+            "stable",
+          );
+
+        expect(
+          second,
+        ).toBe(first);
+
+        client.setQueryData(
+          "stable",
+          {
+            value: 42,
+          },
+        );
+
+        const third =
+          client.getSnapshot<{
+            value: number;
+          }>(
+            "stable",
+          );
+
+        expect(
+          third,
+        ).not.toBe(first);
+
+        expect(
+          client.getSnapshot(
+            "stable",
+          ),
+        ).toBe(third);
+
+        expect(
+          third.data,
+        ).toEqual({
+          value: 42,
+        });
+      },
+    );
     it(
       "invalidates query groups by prefix",
       async () => {

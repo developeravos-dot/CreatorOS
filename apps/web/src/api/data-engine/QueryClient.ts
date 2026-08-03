@@ -51,6 +51,9 @@ export class QueryClient {
   private readonly listeners =
     new Map<QueryKey, Set<QueryListener>>();
 
+  private readonly snapshots =
+    new Map<QueryKey, QuerySnapshot>();
+
   /**
    * Backward-compatible signature:
    *
@@ -227,19 +230,65 @@ export class QueryClient {
         | undefined) ??
       createIdleEntry();
 
-    return {
+    const next:
+      QuerySnapshot<T> = {
       key,
-      data: entry.data as T | undefined,
-      error: entry.error,
-      status: entry.status,
-      updatedAt: entry.updatedAt,
+      data:
+        entry.data as
+          | T
+          | undefined,
+
+      error:
+        entry.error,
+
+      status:
+        entry.status,
+
+      updatedAt:
+        entry.updatedAt,
+
       isInvalidated:
-        entry.invalidatedAt !== undefined &&
+        entry.invalidatedAt !==
+          undefined &&
         entry.invalidatedAt >=
           entry.updatedAt,
+
       isFetching:
-        entry.promise !== undefined,
+        entry.promise !==
+        undefined,
     };
+
+    const previous =
+      this.snapshots.get(
+        key,
+      ) as
+        | QuerySnapshot<T>
+        | undefined;
+
+    if (
+      previous &&
+      previous.data ===
+        next.data &&
+      previous.error ===
+        next.error &&
+      previous.status ===
+        next.status &&
+      previous.updatedAt ===
+        next.updatedAt &&
+      previous.isInvalidated ===
+        next.isInvalidated &&
+      previous.isFetching ===
+        next.isFetching
+    ) {
+      return previous;
+    }
+
+    this.snapshots.set(
+      key,
+      next,
+    );
+
+    return next;
   }
 
   invalidate(
@@ -281,6 +330,7 @@ export class QueryClient {
     key: QueryKey,
   ): void {
     this.cache.delete(key);
+    this.snapshots.delete(key);
     this.notify(key);
   }
 
@@ -324,8 +374,6 @@ export class QueryClient {
       listeners,
     );
 
-    listener(this.getSnapshot(key));
-
     return () => {
       const current =
         this.listeners.get(key);
@@ -344,6 +392,7 @@ export class QueryClient {
     ];
 
     this.cache.clear();
+    this.snapshots.clear();
 
     for (const key of keys) {
       this.notify(key);

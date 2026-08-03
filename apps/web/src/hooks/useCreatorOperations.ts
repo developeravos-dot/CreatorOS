@@ -1,58 +1,40 @@
-import {
-  useCallback,
-  useState,
-} from "react";
+﻿import { useState } from "react";
 
-import type {
-  EnterpriseDashboard,
-  EnterpriseProject,
-  EnterpriseScript,
-  ProjectStatus,
-  ScriptStatus,
+import {
+  enterpriseApi,
+  type EnterpriseDashboard,
+  type EnterpriseProject,
+  type EnterpriseScript,
 } from "../enterprise-api";
 
-import {
-  calendarApi,
-} from "../api/services/calendar";
+import type {
+  CreateProjectValues,
+  CreatePromptValues,
+  CreateScriptValues,
+  EditScriptValues,
+  ScheduleContentValues,
+  UpdateProjectStatusValues,
+  UpdateScriptStatusValues,
+} from "../dialogs";
 
-import {
-  projectsApi,
-} from "../api/services/projects";
-
-import {
-  promptsApi,
-} from "../api/services/ai";
-
-import {
-  scriptsApi,
-} from "../api/services/scripts";
-
-
-import {
-  invalidateProjects,
-} from "../features/projects-v2/projects-query";
-
-import {
-  invalidateScripts,
-} from "../features/scripts-v2/scripts-query";
-
-import {
-  invalidateCalendar,
-} from "../features/calendar-v2/calendar-query";
 interface UseCreatorOperationsOptions {
   dashboard: EnterpriseDashboard;
-  setError: (value: string) => void;
+  setError: (message: string) => void;
   runAction: (
     action: () => Promise<unknown>,
     successMessage: string,
   ) => Promise<void>;
 }
 
-export function useCreatorOperations({
-  dashboard,
-  setError,
-  runAction,
-}: UseCreatorOperationsOptions) {
+export function useCreatorOperations(
+  options: UseCreatorOperationsOptions,
+) {
+  const {
+    dashboard,
+    setError,
+    runAction,
+  } = options;
+
   const [
     createProjectDialogOpen,
     setCreateProjectDialogOpen,
@@ -93,262 +75,217 @@ export function useCreatorOperations({
     setSelectedScriptForEdit,
   ] = useState<EnterpriseScript | null>(null);
 
-  const createProject = useCallback(
-    async (): Promise<void> => {
-      setError("");
-      setCreateProjectDialogOpen(true);
-    },
-    [setError],
-  );
+  const createProject = async () => {
+    setError("");
+    setCreateProjectDialogOpen(true);
+  };
 
-  const createScript = useCallback(
-    async (): Promise<void> => {
-      setError("");
+  const submitCreateProject = async (
+    values: CreateProjectValues,
+  ) => {
+    setCreateProjectDialogOpen(false);
 
-      if (dashboard.projects.length === 0) {
-        setError(
-          "Ã˜Â£Ã™â€ Ã˜Â´Ã˜Â¦ Ã™â€¦Ã˜Â´Ã˜Â±Ã™Ë†Ã˜Â¹Ã™â€¹Ã˜Â§ Ã˜Â£Ã™Ë†Ã™â€žÃ™â€¹Ã˜Â§ Ã™â€šÃ˜Â¨Ã™â€ž Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© Ã˜Â³Ã™Æ’Ã˜Â±Ã˜Â¨Ã˜Âª.",
-        );
+    await runAction(
+      () =>
+        enterpriseApi.createProject({
+          name: values.name,
+          description: values.description,
+          platform: values.platform,
+        }),
+      "تم إنشاء المشروع بنجاح.",
+    );
+  };
 
-        return;
-      }
+  const createScript = async () => {
+    if (dashboard.projects.length === 0) {
+      setError("أنشئ مشروعًا أولًا قبل إضافة السكربت.");
+      return;
+    }
 
-      setCreateScriptDialogOpen(true);
-    },
-    [dashboard.projects.length, setError],
-  );
+    setError("");
+    setCreateScriptDialogOpen(true);
+  };
 
-  const scheduleContent = useCallback(
-    async (): Promise<void> => {
-      setError("");
+  const submitCreateScript = async (
+    values: CreateScriptValues,
+  ) => {
+    setCreateScriptDialogOpen(false);
 
-      if (dashboard.projects.length === 0) {
-        setError(
-          "Ã˜Â£Ã™â€ Ã˜Â´Ã˜Â¦ Ã™â€¦Ã˜Â´Ã˜Â±Ã™Ë†Ã˜Â¹Ã™â€¹Ã˜Â§ Ã˜Â£Ã™Ë†Ã™â€žÃ™â€¹Ã˜Â§ Ã™â€šÃ˜Â¨Ã™â€ž Ã˜Â¬Ã˜Â¯Ã™Ë†Ã™â€žÃ˜Â© Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â­Ã˜ÂªÃ™Ë†Ã™â€°.",
-        );
+    await runAction(
+      () =>
+        enterpriseApi.createScript({
+          projectId: values.projectId,
+          title: values.title,
+          content: values.content,
+        }),
+      "تم إنشاء السكربت بنجاح.",
+    );
+  };
 
-        return;
-      }
+  const scheduleContent = async () => {
+    if (dashboard.projects.length === 0) {
+      setError("أنشئ مشروعًا أولًا قبل جدولة المحتوى.");
+      return;
+    }
 
-      setScheduleContentDialogOpen(true);
-    },
-    [dashboard.projects.length, setError],
-  );
+    setError("");
+    setScheduleContentDialogOpen(true);
+  };
 
-  const createPrompt = useCallback(
-    async (): Promise<void> => {
-      setError("");
-      setCreatePromptDialogOpen(true);
-    },
-    [setError],
-  );
+  const submitScheduleContent = async (
+    values: ScheduleContentValues,
+  ) => {
+    if (
+      !values.scheduledAt ||
+      Number.isNaN(Date.parse(values.scheduledAt))
+    ) {
+      setError("موعد النشر غير صالح.");
+      return;
+    }
 
-  const changeProjectStatus = useCallback(
-    async (
-      project: EnterpriseProject,
-    ): Promise<void> => {
-      setError("");
-      setSelectedProjectForStatus(project);
-    },
-    [setError],
-  );
+    setScheduleContentDialogOpen(false);
 
-  const deleteProject = useCallback(
-    async (
-      project: EnterpriseProject,
-    ): Promise<void> => {
-      setError("");
-      setSelectedProjectForDelete(project);
-    },
-    [setError],
-  );
+    await runAction(
+      () =>
+        enterpriseApi.scheduleContent({
+          projectId: values.projectId,
+          title: values.title,
+          scheduledAt: new Date(
+            values.scheduledAt,
+          ).toISOString(),
+          platform: values.platform,
+        }),
+      "تمت جدولة المحتوى بنجاح.",
+    );
+  };
 
-  const changeScriptStatus = useCallback(
-    async (
-      script: EnterpriseScript,
-    ): Promise<void> => {
-      setError("");
-      setSelectedScriptForStatus(script);
-    },
-    [setError],
-  );
+  const createPrompt = async () => {
+    setError("");
+    setCreatePromptDialogOpen(true);
+  };
 
-  const editScript = useCallback(
-    async (
-      script: EnterpriseScript,
-    ): Promise<void> => {
-      setError("");
-      setSelectedScriptForEdit(script);
-    },
-    [setError],
-  );
+  const submitCreatePrompt = async (
+    values: CreatePromptValues,
+  ) => {
+    setCreatePromptDialogOpen(false);
 
-  const submitCreateProject = useCallback(
-    async (input: {
-      name: string;
-      description: string;
-      platform: EnterpriseProject["platform"];
-    }): Promise<void> => {
-      await runAction(
-        () => projectsApi.create(input),
-        "Ã˜ÂªÃ™â€¦ Ã˜Â¥Ã™â€ Ã˜Â´Ã˜Â§Ã˜Â¡ Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â´Ã˜Â±Ã™Ë†Ã˜Â¹ Ã˜Â¨Ã™â€ Ã˜Â¬Ã˜Â§Ã˜Â­.",
-      );
+    await runAction(
+      () =>
+        enterpriseApi.createPrompt({
+          name: values.name,
+          purpose: values.purpose,
+          prompt: values.prompt,
+        }),
+      "تم حفظ القالب الذكي بنجاح.",
+    );
+  };
 
-      invalidateProjects();
-      setCreateProjectDialogOpen(false);
-    },
-    [runAction],
-  );
+  const changeProjectStatus = async (
+    project: EnterpriseProject,
+  ) => {
+    setError("");
+    setSelectedProjectForStatus(project);
+  };
 
-  const submitCreateScript = useCallback(
-    async (input: {
-      projectId: string;
-      title: string;
-      content: string;
-    }): Promise<void> => {
-      await runAction(
-        () => scriptsApi.create(input),
-        "Ã˜ÂªÃ™â€¦ Ã˜Â¥Ã™â€ Ã˜Â´Ã˜Â§Ã˜Â¡ Ã˜Â§Ã™â€žÃ˜Â³Ã™Æ’Ã˜Â±Ã˜Â¨Ã˜Âª Ã˜Â¨Ã™â€ Ã˜Â¬Ã˜Â§Ã˜Â­.",
-      );
+  const submitProjectStatus = async (
+    values: UpdateProjectStatusValues,
+  ) => {
+    const project = selectedProjectForStatus;
 
-      setCreateScriptDialogOpen(false);
-    },
-    [runAction],
-  );
+    if (!project) {
+      return;
+    }
 
-  const submitScheduleContent = useCallback(
-    async (input: {
-      projectId: string;
-      title: string;
-      scheduledAt: string;
-      platform: EnterpriseProject["platform"];
-    }): Promise<void> => {
-      await runAction(
-        () => calendarApi.schedule(input),
-        "Ã˜ÂªÃ™â€¦Ã˜Âª Ã˜Â¬Ã˜Â¯Ã™Ë†Ã™â€žÃ˜Â© Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â­Ã˜ÂªÃ™Ë†Ã™â€° Ã˜Â¨Ã™â€ Ã˜Â¬Ã˜Â§Ã˜Â­.",
-      );
+    setSelectedProjectForStatus(null);
 
-      setScheduleContentDialogOpen(false);
-    },
-    [runAction],
-  );
+    await runAction(
+      () =>
+        enterpriseApi.updateProjectStatus(
+          project.id,
+          values.status,
+        ),
+      "تم تحديث حالة المشروع.",
+    );
+  };
 
-  const submitCreatePrompt = useCallback(
-    async (input: {
-      name: string;
-      purpose: string;
-      prompt: string;
-    }): Promise<void> => {
-      await runAction(
-        () => promptsApi.create(input),
-        "Ã˜ÂªÃ™â€¦ Ã˜Â¥Ã™â€ Ã˜Â´Ã˜Â§Ã˜Â¡ Ã˜Â§Ã™â€žÃ™â€šÃ˜Â§Ã™â€žÃ˜Â¨ Ã˜Â§Ã™â€žÃ˜Â°Ã™Æ’Ã™Å  Ã˜Â¨Ã™â€ Ã˜Â¬Ã˜Â§Ã˜Â­.",
-      );
+  const deleteProject = async (
+    project: EnterpriseProject,
+  ) => {
+    setError("");
+    setSelectedProjectForDelete(project);
+  };
 
-      setCreatePromptDialogOpen(false);
-    },
-    [runAction],
-  );
+  const confirmDeleteProject = async () => {
+    const project = selectedProjectForDelete;
 
-  const submitProjectStatus = useCallback(
-    async (input: {
-      status: ProjectStatus;
-    }): Promise<void> => {
-      if (!selectedProjectForStatus) {
-        return;
-      }
+    if (!project) {
+      return;
+    }
 
-      await runAction(
-        () =>
-          projectsApi.updateStatus(
-            selectedProjectForStatus.id,
-            input.status,
-          ),
-        "Ã˜ÂªÃ™â€¦ Ã˜ÂªÃ˜Â­Ã˜Â¯Ã™Å Ã˜Â« Ã˜Â­Ã˜Â§Ã™â€žÃ˜Â© Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â´Ã˜Â±Ã™Ë†Ã˜Â¹.",
-      );
+    setSelectedProjectForDelete(null);
 
-      invalidateProjects();
-      setSelectedProjectForStatus(null);
-    },
-    [runAction, selectedProjectForStatus],
-  );
+    await runAction(
+      () => enterpriseApi.deleteProject(project.id),
+      "تم حذف المشروع.",
+    );
+  };
 
-  const confirmDeleteProject = useCallback(
-    async (): Promise<void> => {
-      if (!selectedProjectForDelete) {
-        return;
-      }
+  const changeScriptStatus = async (
+    script: EnterpriseScript,
+  ) => {
+    setError("");
+    setSelectedScriptForStatus(script);
+  };
 
-      await runAction(
-        () =>
-          projectsApi.delete(
-            selectedProjectForDelete.id,
-          ),
-        "Ã˜ÂªÃ™â€¦ Ã˜Â­Ã˜Â°Ã™Â Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â´Ã˜Â±Ã™Ë†Ã˜Â¹.",
-      );
+  const submitScriptStatus = async (
+    values: UpdateScriptStatusValues,
+  ) => {
+    const script = selectedScriptForStatus;
 
-      invalidateProjects();
-      setSelectedProjectForDelete(null);
-    },
-    [runAction, selectedProjectForDelete],
-  );
+    if (!script) {
+      return;
+    }
 
-  const submitScriptStatus = useCallback(
-    async (input: {
-      status: ScriptStatus;
-    }): Promise<void> => {
-      if (!selectedScriptForStatus) {
-        return;
-      }
+    setSelectedScriptForStatus(null);
 
-      await runAction(
-        () =>
-          scriptsApi.update(
-            selectedScriptForStatus.id,
-            {
-              status: input.status,
-            },
-          ),
-        "Ã˜ÂªÃ™â€¦ Ã˜ÂªÃ˜Â­Ã˜Â¯Ã™Å Ã˜Â« Ã™â€¦Ã˜Â±Ã˜Â­Ã™â€žÃ˜Â© Ã˜Â§Ã™â€žÃ˜Â³Ã™Æ’Ã˜Â±Ã˜Â¨Ã˜Âª.",
-      );
+    await runAction(
+      () =>
+        enterpriseApi.updateScript(script.id, {
+          status: values.status,
+        }),
+      "تم تحديث حالة السكربت.",
+    );
+  };
 
-      setSelectedScriptForStatus(null);
-    },
-    [runAction, selectedScriptForStatus],
-  );
+  const editScript = async (
+    script: EnterpriseScript,
+  ) => {
+    setError("");
+    setSelectedScriptForEdit(script);
+  };
 
-  const submitEditScript = useCallback(
-    async (input: {
-      title: string;
-      content: string;
-    }): Promise<void> => {
-      if (!selectedScriptForEdit) {
-        return;
-      }
+  const submitEditScript = async (
+    values: EditScriptValues,
+  ) => {
+    const script = selectedScriptForEdit;
 
-      await runAction(
-        () =>
-          scriptsApi.update(
-            selectedScriptForEdit.id,
-            input,
-          ),
-        "Ã˜ÂªÃ™â€¦ Ã˜Â­Ã™ÂÃ˜Â¸ Ã˜ÂªÃ˜Â¹Ã˜Â¯Ã™Å Ã™â€žÃ˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ˜Â³Ã™Æ’Ã˜Â±Ã˜Â¨Ã˜Âª.",
-      );
+    if (!script) {
+      return;
+    }
 
-      setSelectedScriptForEdit(null);
-    },
-    [runAction, selectedScriptForEdit],
-  );
+    setSelectedScriptForEdit(null);
+
+    await runAction(
+      () =>
+        enterpriseApi.updateScript(script.id, {
+          title: values.title,
+          content: values.content,
+        }),
+      "تم حفظ تعديلات السكربت.",
+    );
+  };
 
   return {
-    createProject,
-    createScript,
-    scheduleContent,
-    createPrompt,
-    changeProjectStatus,
-    deleteProject,
-    changeScriptStatus,
-    editScript,
-
     createProjectDialogOpen,
     setCreateProjectDialogOpen,
 
@@ -373,73 +310,28 @@ export function useCreatorOperations({
     selectedScriptForEdit,
     setSelectedScriptForEdit,
 
+    createProject,
     submitCreateProject,
+
+    createScript,
     submitCreateScript,
+
+    scheduleContent,
     submitScheduleContent,
+
+    createPrompt,
     submitCreatePrompt,
+
+    changeProjectStatus,
     submitProjectStatus,
+
+    deleteProject,
     confirmDeleteProject,
+
+    changeScriptStatus,
     submitScriptStatus,
+
+    editScript,
     submitEditScript,
-
-    /*
-     * Compatibility aliases for newer internal naming.
-     * Existing UI continues using the original contract.
-     */
-    createProjectOpen:
-      createProjectDialogOpen,
-
-    createScriptOpen:
-      createScriptDialogOpen,
-
-    scheduleContentOpen:
-      scheduleContentDialogOpen,
-
-    createPromptOpen:
-      createPromptDialogOpen,
-
-    selectedProject:
-      selectedProjectForStatus ??
-      selectedProjectForDelete,
-
-    selectedScript:
-      selectedScriptForStatus ??
-      selectedScriptForEdit,
-
-    updateProjectStatusOpen:
-      selectedProjectForStatus !== null,
-
-    deleteProjectOpen:
-      selectedProjectForDelete !== null,
-
-    updateScriptStatusOpen:
-      selectedScriptForStatus !== null,
-
-    editScriptOpen:
-      selectedScriptForEdit !== null,
-
-    closeCreateProject: () =>
-      setCreateProjectDialogOpen(false),
-
-    closeCreateScript: () =>
-      setCreateScriptDialogOpen(false),
-
-    closeScheduleContent: () =>
-      setScheduleContentDialogOpen(false),
-
-    closeCreatePrompt: () =>
-      setCreatePromptDialogOpen(false),
-
-    closeProjectStatus: () =>
-      setSelectedProjectForStatus(null),
-
-    closeDeleteProject: () =>
-      setSelectedProjectForDelete(null),
-
-    closeScriptStatus: () =>
-      setSelectedScriptForStatus(null),
-
-    closeEditScript: () =>
-      setSelectedScriptForEdit(null),
   };
 }
