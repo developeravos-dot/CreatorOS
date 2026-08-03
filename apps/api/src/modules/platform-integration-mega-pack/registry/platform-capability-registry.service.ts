@@ -12,12 +12,7 @@ export class PlatformCapabilityRegistryService {
         'Media',
         '/media',
       ),
-      this.create(
-        'factory',
-        'CreatorOS Factory',
-        'Production',
-        '/factory',
-      ),
+
       this.create(
         'knowledge',
         'CreatorOS Knowledge',

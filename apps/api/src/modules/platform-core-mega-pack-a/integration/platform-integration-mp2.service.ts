@@ -65,25 +65,7 @@ export class PlatformIntegrationMp2Service {
           domain: 'knowledge',
         },
       },
-      {
-        key: 'factory',
-        name: 'CreatorOS Factory',
-        version: '1.0.0',
-        dependencies: ['platform'],
-        commands: [
-          'generate-project',
-          'validate-project',
-        ],
-        eventsProduced: [
-          'factory.project.generated',
-        ],
-        eventsConsumed: [
-          'workflow.started',
-        ],
-        metadata: {
-          domain: 'factory',
-        },
-      },
+
       {
         key: 'live',
         name: 'CreatorOS Live',
@@ -118,7 +100,7 @@ export class PlatformIntegrationMp2Service {
     for (const key of [
       'media',
       'knowledge',
-      'factory',
+
       'live',
     ]) {
       this.fabric.activate(key);
