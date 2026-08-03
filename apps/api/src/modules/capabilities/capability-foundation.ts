@@ -3,3 +3,6 @@ export * from './interfaces';
 export * from './domain';
 export * from './manifest';
 export * from './dto';
+export * from './lifecycle';
+export * from './validation';
+export * from './events';
