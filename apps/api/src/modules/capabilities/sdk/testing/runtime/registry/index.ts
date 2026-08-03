@@ -1,0 +1,1 @@
+export * from './mock-capability-runtime-registry';
