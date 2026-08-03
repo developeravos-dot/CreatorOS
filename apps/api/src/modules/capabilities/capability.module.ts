@@ -12,9 +12,14 @@ import {
   CapabilityService,
 } from './capability.service';
 import {
+  CapabilityDependencyManagementController,
+  CapabilityManagementController,
   CapabilityPlatformController,
   CapabilityPlatformManagementController,
   CapabilityPlatformOperationsController,
+  CapabilityPluginLifecycleController,
+  CapabilityRegistryAdministrationController,
+  CapabilityRuntimeManagementController,
   CAPABILITY_PRODUCTION_EXPORTS,
   CAPABILITY_PRODUCTION_PROVIDERS,
 } from './production-platform';
@@ -28,6 +33,11 @@ import {
     CapabilityPlatformController,
     CapabilityPlatformOperationsController,
     CapabilityPlatformManagementController,
+    CapabilityManagementController,
+    CapabilityRuntimeManagementController,
+    CapabilityRegistryAdministrationController,
+    CapabilityDependencyManagementController,
+    CapabilityPluginLifecycleController,
   ],
   providers: [
     CapabilityService,

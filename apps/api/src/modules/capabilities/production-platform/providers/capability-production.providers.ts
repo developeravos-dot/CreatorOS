@@ -17,10 +17,15 @@ import {
   PluginHostEngineService,
 } from '../../plugin-host';
 import {
+  CapabilityDependencyManagementService,
+  CapabilityManagementService,
   CapabilityPlatformAuditService,
   CapabilityPlatformManagementService,
   CapabilityPlatformOperationsService,
   CapabilityPlatformService,
+  CapabilityPluginLifecycleService,
+  CapabilityRegistryAdministrationService,
+  CapabilityRuntimeManagementService,
 } from '../services';
 
 export const CAPABILITY_PRODUCTION_PROVIDERS:
@@ -110,6 +115,11 @@ export const CAPABILITY_PRODUCTION_PROVIDERS:
     CapabilityPlatformService,
     CapabilityPlatformOperationsService,
     CapabilityPlatformManagementService,
+    CapabilityManagementService,
+    CapabilityRuntimeManagementService,
+    CapabilityRegistryAdministrationService,
+    CapabilityDependencyManagementService,
+    CapabilityPluginLifecycleService,
   ];
 
 export const CAPABILITY_PRODUCTION_EXPORTS = [
@@ -123,4 +133,9 @@ export const CAPABILITY_PRODUCTION_EXPORTS = [
   CapabilityPlatformService,
   CapabilityPlatformOperationsService,
   CapabilityPlatformManagementService,
+  CapabilityManagementService,
+  CapabilityRuntimeManagementService,
+  CapabilityRegistryAdministrationService,
+  CapabilityDependencyManagementService,
+  CapabilityPluginLifecycleService,
 ] as const;

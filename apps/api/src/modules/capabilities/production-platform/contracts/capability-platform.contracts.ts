@@ -12,7 +12,12 @@ export type CapabilityPlatformAuditOperation =
   | 'platform.health-read'
   | 'platform.metrics-read'
   | 'platform.audit-read'
-  | 'operation.failed';
+  | 'operation.failed'
+  | `capability.${string}`
+  | `runtime.${string}`
+  | `dependencies.${string}`
+  | `plugin.${string}`
+  | `management.${string}`;
 
 export interface CapabilityPlatformStatus {
   readonly name: 'CreatorOS Capability Platform';
