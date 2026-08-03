@@ -60,8 +60,13 @@ import { AiTeamExecutionModule } from "./enterprise/ai-team-execution/ai-team-ex
 import {
   MonitoringDiagnosticsModule,
 } from './modules/monitoring-diagnostics';
+import {
+  AuditEventTimelineModule,
+} from './modules/audit-event-timeline';
+
 @Module({
   imports: [
+    AuditEventTimelineModule,
     MonitoringDiagnosticsModule,
     
     
