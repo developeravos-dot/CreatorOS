@@ -8,6 +8,7 @@ import {
 
 import { WorkflowEngineModule } from "./workflow-engine/workflow-engine.module";
 
+import { WorkflowExecutionModule } from './workflow-engine/api';
 import {
   AiTeamExecutionController,
 } from "./ai-team-execution.controller";
@@ -50,6 +51,7 @@ import {
 
 @Module({
   imports: [
+    WorkflowExecutionModule,
     AiStudioRuntimeModule,
     WorkflowEngineModule,
   ],
@@ -81,5 +83,6 @@ import {
   ],
 })
 export class AiTeamExecutionModule {}
+
 
 
