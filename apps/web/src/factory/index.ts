@@ -5,3 +5,5 @@ export * from "./registry";
 export * from "./execution";
 export * from "./validation";
 export * from "./configuration";
+export * from "./integration";
+export * from "./release";
