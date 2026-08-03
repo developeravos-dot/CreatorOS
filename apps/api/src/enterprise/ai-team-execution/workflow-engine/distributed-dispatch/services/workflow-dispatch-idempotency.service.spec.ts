@@ -1,4 +1,4 @@
-﻿import {
+import {
   WorkflowDispatchIdempotencyService,
 } from './workflow-dispatch-idempotency.service';
 

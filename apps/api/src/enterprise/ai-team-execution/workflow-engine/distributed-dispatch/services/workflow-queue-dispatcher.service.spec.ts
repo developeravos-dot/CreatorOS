@@ -1,4 +1,4 @@
-﻿import {
+import {
   Test,
 } from '@nestjs/testing';
 import {
@@ -253,6 +253,3 @@ describe('WorkflowQueueDispatcherService', () => {
     ).toBe('original');
   });
 });
-
-
-

@@ -18,6 +18,7 @@ export type WorkflowDispatchKind =
 
 export interface WorkflowExecutionJobPayload
   extends Record<string, unknown> {
+  dispatchId?: string;
   executionId: string;
   workflowId: string;
   requestedAt: string;
@@ -29,6 +30,7 @@ export interface WorkflowExecutionJobPayload
 
 export interface WorkflowStepJobPayload
   extends Record<string, unknown> {
+  dispatchId?: string;
   executionId: string;
   workflowId: string;
   stepId: string;
@@ -39,6 +41,7 @@ export interface WorkflowStepJobPayload
 
 export interface WorkflowRetryJobPayload
   extends Record<string, unknown> {
+  dispatchId?: string;
   executionId: string;
   workflowId: string;
   stepId: string;
@@ -75,5 +78,4 @@ export interface WorkflowDispatchResult {
   idempotencyKey: string;
   createdAt: Date;
 }
-
 

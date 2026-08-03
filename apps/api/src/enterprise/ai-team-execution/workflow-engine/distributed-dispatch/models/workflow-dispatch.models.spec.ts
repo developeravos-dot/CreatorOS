@@ -1,4 +1,4 @@
-﻿import {
+import {
   createEmptyWorkflowDispatchMetrics,
   WorkflowDispatchRecord,
 } from './workflow-dispatch.models';

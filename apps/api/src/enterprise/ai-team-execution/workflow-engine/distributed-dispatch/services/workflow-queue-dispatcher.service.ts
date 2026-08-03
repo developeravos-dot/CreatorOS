@@ -1,4 +1,4 @@
-﻿import {
+import {
   Inject,
   Injectable,
   NotFoundException,
@@ -315,10 +315,15 @@ export class WorkflowQueueDispatcherService {
     }
 
     try {
+      const queuePayload = {
+        ...request.payload,
+        dispatchId,
+      };
+
       const queueJob = await this.queueProvider.add(
         request.queueName,
         request.jobName,
-        request.payload,
+        queuePayload,
         {
           jobId: dispatchId,
           delayMs:
@@ -474,5 +479,3 @@ export class WorkflowQueueDispatcherService {
     );
   }
 }
-
-

@@ -1,1 +1,1 @@
-﻿export * from './workflow-dispatch.contracts';
+export * from './workflow-dispatch.contracts';
