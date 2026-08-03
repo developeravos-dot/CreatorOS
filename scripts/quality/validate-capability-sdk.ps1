@@ -138,7 +138,7 @@ Invoke-CheckedCommand "API TYPECHECK" {
 Invoke-CheckedCommand "SDK TESTS" {
     pnpm --filter @creatoros/api test -- `
         --runInBand `
-        --testPathPatterns="capability-sdk-builders.spec.ts|plugin-builder-integration.spec.ts|capability-sdk-context.spec.ts"
+        --testPathPatterns="capability-sdk|plugin-builder-integration.spec.ts"
 }
 
 Invoke-CheckedCommand "CAPABILITY REGRESSION TESTS" {
