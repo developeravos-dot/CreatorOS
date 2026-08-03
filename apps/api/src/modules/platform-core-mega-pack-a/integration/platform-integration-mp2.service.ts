@@ -65,7 +65,6 @@ export class PlatformIntegrationMp2Service {
           domain: 'knowledge',
         },
       },
-
       {
         key: 'live',
         name: 'CreatorOS Live',
@@ -85,6 +84,25 @@ export class PlatformIntegrationMp2Service {
           domain: 'live',
         },
       },
+      {
+        key: 'organization',
+        name: 'CreatorOS Organization',
+        version: '1.0.0',
+        dependencies: ['platform'],
+        commands: [
+          'coordinate-agents',
+          'manage-organization',
+        ],
+        eventsProduced: [
+          'organization.updated',
+        ],
+        eventsConsumed: [
+          'platform.ready',
+        ],
+        metadata: {
+          domain: 'organization',
+        },
+      },
     ];
 
     for (const capability of defaults) {
@@ -100,8 +118,8 @@ export class PlatformIntegrationMp2Service {
     for (const key of [
       'media',
       'knowledge',
-
       'live',
+      'organization',
     ]) {
       this.fabric.activate(key);
     }
