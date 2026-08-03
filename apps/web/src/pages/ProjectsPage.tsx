@@ -2,6 +2,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  type SetStateAction,
 } from "react";
 
 import {
@@ -10,6 +11,8 @@ import {
 
 import type {
   EnterpriseProject,
+  EnterprisePlatform,
+  ProjectStatus,
 } from "../enterprise-api";
 
 import {
@@ -26,6 +29,8 @@ import {
   ProjectsToolbar,
   saveProjectsWorkspacePreferences,
   type ProjectsWorkspacePreferences,
+  ProjectsWorkspaceProvider,
+  useProjectsWorkspace,
 } from "../features/projects-v2";
 
 import {
@@ -46,7 +51,7 @@ interface ProjectsPageProps {
   ) => Promise<void>;
 }
 
-export default function ProjectsPage({
+function ProjectsPageContent({
   projects: initialProjects,
   busy,
   onCreate,
@@ -66,44 +71,148 @@ export default function ProjectsPage({
     initialProjects,
   });
 
-  const [
-    preferences,
-    setPreferences,
-  ] = useState<
-    ProjectsWorkspacePreferences
-  >(
-    loadProjectsWorkspacePreferences,
-  );
+  const {
+    state: workspaceState,
+    actions: workspaceActions,
+  } = useProjectsWorkspace();
 
-  const [search, setSearch] =
-    useState("");
+  const search =
+    workspaceState.filters.search;
 
-  const [platform, setPlatform] =
-    useState("all");
+  const platform =
+    workspaceState.filters.platform;
 
-  const [status, setStatus] =
-    useState("all");
+  const status =
+    workspaceState.filters.status;
 
-  const [page, setPage] =
-    useState(1);
+  const page =
+    workspaceState.page;
 
-  const [
-    selectedProject,
-    setSelectedProject,
-  ] = useState<
-    EnterpriseProject | null
-  >(null);
+  const selectedProject =
+    workspaceState.currentProject;
 
-  const [
-    selectedProjectIds,
-    setSelectedProjectIds,
-  ] = useState<
-    Set<string>
-  >(
-    () =>
-      new Set<string>(),
-  );
+  const selectedProjectIds =
+    workspaceState.selectedIds;
 
+  const preferences =
+    useMemo<
+      ProjectsWorkspacePreferences
+    >(
+      () => ({
+        viewMode:
+          workspaceState.viewMode,
+        sortField:
+          workspaceState.sortField,
+        sortDirection:
+          workspaceState.sortDirection,
+        pageSize:
+          workspaceState.pageSize,
+      }),
+      [
+        workspaceState.pageSize,
+        workspaceState.sortDirection,
+        workspaceState.sortField,
+        workspaceState.viewMode,
+      ],
+    );
+
+  const setSearch =
+    workspaceActions.setSearch;
+
+  const setPage =
+    workspaceActions.setPage;
+
+  const setSelectedProject =
+    workspaceActions.setCurrentProject;
+
+  const setPlatform = (
+    value: string,
+  ): void => {
+    workspaceActions.setPlatform(
+      value as
+        | EnterprisePlatform
+        | "all",
+    );
+  };
+
+  const setStatus = (
+    value: string,
+  ): void => {
+    workspaceActions.setStatus(
+      value as
+        | ProjectStatus
+        | "all",
+    );
+  };
+
+  const setPreferences = (
+    value:
+      SetStateAction<
+        ProjectsWorkspacePreferences
+      >,
+  ): void => {
+    const next =
+      typeof value === "function"
+        ? value(preferences)
+        : value;
+
+    if (
+      next.viewMode !==
+      workspaceState.viewMode
+    ) {
+      workspaceActions.setViewMode(
+        next.viewMode,
+      );
+    }
+
+    if (
+      next.sortField !==
+      workspaceState.sortField
+    ) {
+      workspaceActions.setSortField(
+        next.sortField,
+      );
+    }
+
+    if (
+      next.sortDirection !==
+      workspaceState.sortDirection
+    ) {
+      workspaceActions.setSortDirection(
+        next.sortDirection,
+      );
+    }
+
+    if (
+      next.pageSize !==
+      workspaceState.pageSize
+    ) {
+      workspaceActions.setPageSize(
+        next.pageSize,
+      );
+    }
+  };
+
+  const setSelectedProjectIds = (
+    value:
+      SetStateAction<
+        Set<string>
+      >,
+  ): void => {
+    const current =
+      new Set(
+        workspaceState.selectedIds,
+      );
+
+    const next =
+      typeof value === "function"
+        ? value(current)
+        : value;
+
+    workspaceActions.replaceSelectedIds(
+      next,
+    );
+  };
   const [
     bulkActionBusy,
     setBulkActionBusy,
@@ -787,5 +896,30 @@ export default function ProjectsPage({
         }
       />
     </div>
+  );
+}
+export default function ProjectsPage(
+  props: ProjectsPageProps,
+) {
+  const storedPreferences =
+    loadProjectsWorkspacePreferences();
+
+  return (
+    <ProjectsWorkspaceProvider
+      initialState={{
+        viewMode:
+          storedPreferences.viewMode,
+        sortField:
+          storedPreferences.sortField,
+        sortDirection:
+          storedPreferences.sortDirection,
+        pageSize:
+          storedPreferences.pageSize,
+      }}
+    >
+      <ProjectsPageContent
+        {...props}
+      />
+    </ProjectsWorkspaceProvider>
   );
 }
