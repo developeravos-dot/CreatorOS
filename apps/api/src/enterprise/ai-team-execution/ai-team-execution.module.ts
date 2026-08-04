@@ -9,6 +9,9 @@ import {
   EnterpriseControlPlaneModule,
 } from '../enterprise-control-plane';
 import {
+  EnterpriseIntelligenceModule,
+} from '../enterprise-intelligence';
+import {
   AiTeamExecutionController,
 } from './ai-team-execution.controller';
 import {
@@ -61,6 +64,7 @@ import {
     WorkflowEngineModule,
     DistributedRuntimeModule,
     EnterpriseControlPlaneModule,
+    EnterpriseIntelligenceModule,
   ],
   controllers: [
     AiTeamExecutionController,
