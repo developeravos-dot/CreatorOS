@@ -6,6 +6,9 @@ import {
   AiStudioRuntimeModule,
 } from '../ai-studio-runtime/ai-studio-runtime.module';
 import {
+  EnterpriseControlPlaneModule,
+} from '../enterprise-control-plane';
+import {
   AiTeamExecutionController,
 } from './ai-team-execution.controller';
 import {
@@ -57,6 +60,7 @@ import {
     AiStudioRuntimeModule,
     WorkflowEngineModule,
     DistributedRuntimeModule,
+    EnterpriseControlPlaneModule,
   ],
   controllers: [
     AiTeamExecutionController,
