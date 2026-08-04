@@ -27,20 +27,43 @@ import {
 
 @Injectable()
 export class DependencyResolverEngineService {
-  constructor(
-    private readonly graphBuilder =
-      new DependencyGraphBuilderService(),
-    private readonly missingDetector =
-      new DependencyMissingDetectorService(),
-    private readonly cycleDetector =
-      new DependencyCycleDetectorService(),
-    private readonly topologicalSort =
-      new DependencyTopologicalSortService(),
-    private readonly versionResolver =
-      new DependencyVersionResolverService(),
-    private readonly planBuilder =
-      new DependencyResolutionPlanBuilderService(),
-  ) {}
+  private readonly graphBuilder:
+    DependencyGraphBuilderService;
+
+  private readonly missingDetector:
+    DependencyMissingDetectorService;
+
+  private readonly cycleDetector:
+    DependencyCycleDetectorService;
+
+  private readonly topologicalSort:
+    DependencyTopologicalSortService;
+
+  private readonly versionResolver:
+    DependencyVersionResolverService;
+
+  private readonly planBuilder:
+    DependencyResolutionPlanBuilderService;
+
+  constructor() {
+    this.graphBuilder =
+      new DependencyGraphBuilderService();
+
+    this.missingDetector =
+      new DependencyMissingDetectorService();
+
+    this.cycleDetector =
+      new DependencyCycleDetectorService();
+
+    this.topologicalSort =
+      new DependencyTopologicalSortService();
+
+    this.versionResolver =
+      new DependencyVersionResolverService();
+
+    this.planBuilder =
+      new DependencyResolutionPlanBuilderService();
+  }
 
   resolve(
     request: DependencyResolutionRequest,

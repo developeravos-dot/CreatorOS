@@ -29,14 +29,25 @@ import {
 export class CapabilityRegistryEngineService
   implements CapabilityRegistry
 {
-  constructor(
-    private readonly repository =
-      new InMemoryCapabilityRegistryRepository(),
-    private readonly validationPipeline =
-      new CapabilityValidationPipelineService(),
-    private readonly lifecycleManager =
-      new CapabilityLifecycleManagerService(),
-  ) {}
+  private readonly repository:
+    InMemoryCapabilityRegistryRepository;
+
+  private readonly validationPipeline:
+    CapabilityValidationPipelineService;
+
+  private readonly lifecycleManager:
+    CapabilityLifecycleManagerService;
+
+  constructor() {
+    this.repository =
+      new InMemoryCapabilityRegistryRepository();
+
+    this.validationPipeline =
+      new CapabilityValidationPipelineService();
+
+    this.lifecycleManager =
+      new CapabilityLifecycleManagerService();
+  }
 
   async register(
     manifest: CapabilityManifestContract,
