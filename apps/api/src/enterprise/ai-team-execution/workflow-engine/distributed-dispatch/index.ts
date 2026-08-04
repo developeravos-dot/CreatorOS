@@ -5,3 +5,4 @@ export * from './runtime';
 export * from './services';
 export * from './workflow-dispatch.module';
 export * from './integration';
+export * from './cluster';
