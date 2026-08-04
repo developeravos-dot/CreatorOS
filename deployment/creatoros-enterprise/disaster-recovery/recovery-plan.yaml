@@ -1,0 +1,12 @@
+apiVersion: creatoros.io/v1
+kind: RecoveryPlan
+metadata:
+  name: creatoros-enterprise
+spec:
+  rpoMinutes: 15
+  rtoMinutes: 30
+  automatedFailover: true
+  healthCheckIntervalSeconds: 30
+  regions:
+    primary: uae-north
+    secondary: eu-west

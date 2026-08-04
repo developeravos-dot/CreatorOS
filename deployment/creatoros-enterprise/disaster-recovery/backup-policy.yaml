@@ -1,0 +1,12 @@
+apiVersion: creatoros.io/v1
+kind: BackupPolicy
+metadata:
+  name: creatoros-production
+spec:
+  schedule: "0 */6 * * *"
+  retentionDays: 30
+  encryption: true
+  regions:
+    - uae-north
+    - eu-west
+  verifyRestore: true

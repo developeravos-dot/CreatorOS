@@ -12,6 +12,9 @@ import {
   EnterpriseIntelligenceModule,
 } from '../enterprise-intelligence';
 import {
+  EnterpriseReleaseModule,
+} from '../enterprise-release';
+import {
   AiTeamExecutionController,
 } from './ai-team-execution.controller';
 import {
@@ -65,6 +68,7 @@ import {
     DistributedRuntimeModule,
     EnterpriseControlPlaneModule,
     EnterpriseIntelligenceModule,
+    EnterpriseReleaseModule,
   ],
   controllers: [
     AiTeamExecutionController,

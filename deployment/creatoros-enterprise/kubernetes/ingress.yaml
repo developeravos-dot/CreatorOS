@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: creatoros-api
+  namespace: creatoros
+spec:
+  rules:
+    - host: api.creatoros.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: creatoros-api
+                port:
+                  number: 80
