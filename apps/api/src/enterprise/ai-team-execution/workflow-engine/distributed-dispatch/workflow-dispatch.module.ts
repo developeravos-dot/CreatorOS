@@ -1,9 +1,13 @@
 import {
   Module,
 } from '@nestjs/common';
+
 import {
   QueueInfrastructureModule,
 } from '../../../../modules/queue-infrastructure';
+import {
+  DistributedRuntimeModule,
+} from '../distributed-runtime';
 import {
   WorkflowExecutionEngineService,
 } from '../execution-engine';
@@ -31,6 +35,7 @@ import {
 @Module({
   imports: [
     QueueInfrastructureModule,
+    DistributedRuntimeModule,
   ],
   providers: [
     WorkflowSchedulerService,
@@ -46,6 +51,7 @@ import {
     DistributedWorkerCoordinatorService,
   ],
   exports: [
+    DistributedRuntimeModule,
     WorkflowDispatchIdempotencyService,
     WorkflowQueueDispatcherService,
     WorkflowExecutionConsumer,
