@@ -3,6 +3,9 @@ import {
 } from '@nestjs/common';
 
 import {
+  RuntimeProductionModule,
+} from './production';
+import {
   DistributedRetryEngineService,
   DistributedWorkerRuntimeService,
   ExecutionEventBusService,
@@ -27,11 +30,15 @@ const DISTRIBUTED_RUNTIME_PROVIDERS = [
 ] as const;
 
 @Module({
+  imports: [
+    RuntimeProductionModule,
+  ],
   providers: [
     ...DISTRIBUTED_RUNTIME_PROVIDERS,
   ],
   exports: [
     ...DISTRIBUTED_RUNTIME_PROVIDERS,
+    RuntimeProductionModule,
   ],
 })
 export class DistributedRuntimeModule {}
