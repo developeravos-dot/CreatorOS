@@ -420,11 +420,28 @@ describe('Distributed workflow execution integration', () => {
       }),
     );
 
-    await executeQueuedJob(
-      'workflow-retry',
-      'distributed-retry-worker',
+    const orchestratorClock =
+      jest.spyOn(
+        orchestrator as unknown as {
+          now: () => Date;
+        },
+        'now',
+      );
+
+    orchestratorClock.mockReturnValue(
+      new Date(
+        '9999-12-31T23:59:59.999Z',
+      ),
     );
 
+    try {
+      await executeQueuedJob(
+        'workflow-retry',
+        'distributed-retry-worker',
+      );
+    } finally {
+      orchestratorClock.mockRestore();
+    }
     const execution =
       orchestrator.getExecution(
         'distributed-retry-execution',
