@@ -1,4 +1,4 @@
-import {
+﻿import {
   Module,
 } from '@nestjs/common';
 
@@ -57,6 +57,9 @@ import {
   DistributedRuntimeModule,
 } from './workflow-engine/distributed-runtime';
 import {
+  WorkflowPersistenceModule,
+} from './workflow-engine/persistence';
+import {
   WorkflowEngineModule,
 } from './workflow-engine/workflow-engine.module';
 
@@ -65,6 +68,7 @@ import {
     WorkflowExecutionModule,
     AiStudioRuntimeModule,
     WorkflowEngineModule,
+    WorkflowPersistenceModule,
     DistributedRuntimeModule,
     EnterpriseControlPlaneModule,
     EnterpriseIntelligenceModule,
@@ -87,6 +91,7 @@ import {
     ExecutionJobRunnerService,
   ],
   exports: [
+    WorkflowPersistenceModule,
     DistributedRuntimeModule,
     AiTeamExecutionService,
     ExecutionSchedulerService,

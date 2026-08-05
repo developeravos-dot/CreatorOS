@@ -476,7 +476,12 @@ export const ModelName = {
   ExecutionJob: 'ExecutionJob',
   ExecutionStep: 'ExecutionStep',
   ExecutionResult: 'ExecutionResult',
-  ExecutionAuditEvent: 'ExecutionAuditEvent'
+  ExecutionAuditEvent: 'ExecutionAuditEvent',
+  WorkflowExecutionPersistence: 'WorkflowExecutionPersistence',
+  WorkflowCheckpointPersistence: 'WorkflowCheckpointPersistence',
+  WorkflowStepStatePersistence: 'WorkflowStepStatePersistence',
+  WorkflowEventPersistence: 'WorkflowEventPersistence',
+  WorkflowRecoveryPersistence: 'WorkflowRecoveryPersistence'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -492,7 +497,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "runtimePlugin" | "blueprint" | "blueprintVersion" | "approvalGate" | "executionPlan" | "knowledgeNode" | "knowledgeEdge" | "capability" | "organizationUnit" | "agent" | "integration" | "auditLog" | "creatorUser" | "creatorRole" | "creatorPermission" | "creatorUserRole" | "creatorRolePermission" | "creatorRefreshToken" | "creatorOutboxEvent" | "creatorIdempotencyKey" | "creatorJobRun" | "creatorUserProfile" | "creatorSession" | "creatorApiKey" | "creatorPersonalAccessToken" | "governancePolicy" | "governanceDecision" | "governanceRisk" | "governanceComplianceRule" | "governanceAssessment" | "governanceChangeRequest" | "opsService" | "opsIncident" | "opsRunbook" | "opsSla" | "opsDeployment" | "integrationEndpoint" | "integrationEventDefinition" | "integrationEvent" | "integrationWebhook" | "integrationDelivery" | "integrationSaga" | "knowledgeSource" | "knowledgeEvidence" | "knowledgeInsight" | "agentTeam" | "agentTeamMember" | "agentMission" | "agentMissionAssignment" | "agentDecision" | "eventTopic" | "eventSubscription" | "eventMessage" | "eventDelivery" | "eventDeadLetter" | "eventReplay" | "obsMetric" | "obsHealthCheck" | "obsLogEntry" | "obsTraceSpan" | "obsAlertRule" | "obsAlertEvent" | "productionPlan" | "mediaProject" | "mediaChannelFamily" | "mediaChannel" | "mediaContentIdea" | "mediaHumanApproval" | "mediaDomainEvent" | "mediaResearch" | "mediaTrend" | "mediaCompetitor" | "mediaAudienceProfile" | "mediaOpportunity" | "aiOrganizationWorkspaceState" | "executionSession" | "executionJob" | "executionStep" | "executionResult" | "executionAuditEvent"
+    modelProps: "runtimePlugin" | "blueprint" | "blueprintVersion" | "approvalGate" | "executionPlan" | "knowledgeNode" | "knowledgeEdge" | "capability" | "organizationUnit" | "agent" | "integration" | "auditLog" | "creatorUser" | "creatorRole" | "creatorPermission" | "creatorUserRole" | "creatorRolePermission" | "creatorRefreshToken" | "creatorOutboxEvent" | "creatorIdempotencyKey" | "creatorJobRun" | "creatorUserProfile" | "creatorSession" | "creatorApiKey" | "creatorPersonalAccessToken" | "governancePolicy" | "governanceDecision" | "governanceRisk" | "governanceComplianceRule" | "governanceAssessment" | "governanceChangeRequest" | "opsService" | "opsIncident" | "opsRunbook" | "opsSla" | "opsDeployment" | "integrationEndpoint" | "integrationEventDefinition" | "integrationEvent" | "integrationWebhook" | "integrationDelivery" | "integrationSaga" | "knowledgeSource" | "knowledgeEvidence" | "knowledgeInsight" | "agentTeam" | "agentTeamMember" | "agentMission" | "agentMissionAssignment" | "agentDecision" | "eventTopic" | "eventSubscription" | "eventMessage" | "eventDelivery" | "eventDeadLetter" | "eventReplay" | "obsMetric" | "obsHealthCheck" | "obsLogEntry" | "obsTraceSpan" | "obsAlertRule" | "obsAlertEvent" | "productionPlan" | "mediaProject" | "mediaChannelFamily" | "mediaChannel" | "mediaContentIdea" | "mediaHumanApproval" | "mediaDomainEvent" | "mediaResearch" | "mediaTrend" | "mediaCompetitor" | "mediaAudienceProfile" | "mediaOpportunity" | "aiOrganizationWorkspaceState" | "executionSession" | "executionJob" | "executionStep" | "executionResult" | "executionAuditEvent" | "workflowExecutionPersistence" | "workflowCheckpointPersistence" | "workflowStepStatePersistence" | "workflowEventPersistence" | "workflowRecoveryPersistence"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -6416,6 +6421,376 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    WorkflowExecutionPersistence: {
+      payload: Prisma.$WorkflowExecutionPersistencePayload<ExtArgs>
+      fields: Prisma.WorkflowExecutionPersistenceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WorkflowExecutionPersistenceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowExecutionPersistencePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WorkflowExecutionPersistenceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowExecutionPersistencePayload>
+        }
+        findFirst: {
+          args: Prisma.WorkflowExecutionPersistenceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowExecutionPersistencePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WorkflowExecutionPersistenceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowExecutionPersistencePayload>
+        }
+        findMany: {
+          args: Prisma.WorkflowExecutionPersistenceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowExecutionPersistencePayload>[]
+        }
+        create: {
+          args: Prisma.WorkflowExecutionPersistenceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowExecutionPersistencePayload>
+        }
+        createMany: {
+          args: Prisma.WorkflowExecutionPersistenceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WorkflowExecutionPersistenceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowExecutionPersistencePayload>[]
+        }
+        delete: {
+          args: Prisma.WorkflowExecutionPersistenceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowExecutionPersistencePayload>
+        }
+        update: {
+          args: Prisma.WorkflowExecutionPersistenceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowExecutionPersistencePayload>
+        }
+        deleteMany: {
+          args: Prisma.WorkflowExecutionPersistenceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WorkflowExecutionPersistenceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WorkflowExecutionPersistenceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowExecutionPersistencePayload>[]
+        }
+        upsert: {
+          args: Prisma.WorkflowExecutionPersistenceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowExecutionPersistencePayload>
+        }
+        aggregate: {
+          args: Prisma.WorkflowExecutionPersistenceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWorkflowExecutionPersistence>
+        }
+        groupBy: {
+          args: Prisma.WorkflowExecutionPersistenceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkflowExecutionPersistenceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WorkflowExecutionPersistenceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkflowExecutionPersistenceCountAggregateOutputType> | number
+        }
+      }
+    }
+    WorkflowCheckpointPersistence: {
+      payload: Prisma.$WorkflowCheckpointPersistencePayload<ExtArgs>
+      fields: Prisma.WorkflowCheckpointPersistenceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WorkflowCheckpointPersistenceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowCheckpointPersistencePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WorkflowCheckpointPersistenceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowCheckpointPersistencePayload>
+        }
+        findFirst: {
+          args: Prisma.WorkflowCheckpointPersistenceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowCheckpointPersistencePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WorkflowCheckpointPersistenceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowCheckpointPersistencePayload>
+        }
+        findMany: {
+          args: Prisma.WorkflowCheckpointPersistenceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowCheckpointPersistencePayload>[]
+        }
+        create: {
+          args: Prisma.WorkflowCheckpointPersistenceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowCheckpointPersistencePayload>
+        }
+        createMany: {
+          args: Prisma.WorkflowCheckpointPersistenceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WorkflowCheckpointPersistenceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowCheckpointPersistencePayload>[]
+        }
+        delete: {
+          args: Prisma.WorkflowCheckpointPersistenceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowCheckpointPersistencePayload>
+        }
+        update: {
+          args: Prisma.WorkflowCheckpointPersistenceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowCheckpointPersistencePayload>
+        }
+        deleteMany: {
+          args: Prisma.WorkflowCheckpointPersistenceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WorkflowCheckpointPersistenceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WorkflowCheckpointPersistenceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowCheckpointPersistencePayload>[]
+        }
+        upsert: {
+          args: Prisma.WorkflowCheckpointPersistenceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowCheckpointPersistencePayload>
+        }
+        aggregate: {
+          args: Prisma.WorkflowCheckpointPersistenceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWorkflowCheckpointPersistence>
+        }
+        groupBy: {
+          args: Prisma.WorkflowCheckpointPersistenceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkflowCheckpointPersistenceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WorkflowCheckpointPersistenceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkflowCheckpointPersistenceCountAggregateOutputType> | number
+        }
+      }
+    }
+    WorkflowStepStatePersistence: {
+      payload: Prisma.$WorkflowStepStatePersistencePayload<ExtArgs>
+      fields: Prisma.WorkflowStepStatePersistenceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WorkflowStepStatePersistenceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowStepStatePersistencePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WorkflowStepStatePersistenceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowStepStatePersistencePayload>
+        }
+        findFirst: {
+          args: Prisma.WorkflowStepStatePersistenceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowStepStatePersistencePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WorkflowStepStatePersistenceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowStepStatePersistencePayload>
+        }
+        findMany: {
+          args: Prisma.WorkflowStepStatePersistenceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowStepStatePersistencePayload>[]
+        }
+        create: {
+          args: Prisma.WorkflowStepStatePersistenceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowStepStatePersistencePayload>
+        }
+        createMany: {
+          args: Prisma.WorkflowStepStatePersistenceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WorkflowStepStatePersistenceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowStepStatePersistencePayload>[]
+        }
+        delete: {
+          args: Prisma.WorkflowStepStatePersistenceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowStepStatePersistencePayload>
+        }
+        update: {
+          args: Prisma.WorkflowStepStatePersistenceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowStepStatePersistencePayload>
+        }
+        deleteMany: {
+          args: Prisma.WorkflowStepStatePersistenceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WorkflowStepStatePersistenceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WorkflowStepStatePersistenceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowStepStatePersistencePayload>[]
+        }
+        upsert: {
+          args: Prisma.WorkflowStepStatePersistenceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowStepStatePersistencePayload>
+        }
+        aggregate: {
+          args: Prisma.WorkflowStepStatePersistenceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWorkflowStepStatePersistence>
+        }
+        groupBy: {
+          args: Prisma.WorkflowStepStatePersistenceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkflowStepStatePersistenceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WorkflowStepStatePersistenceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkflowStepStatePersistenceCountAggregateOutputType> | number
+        }
+      }
+    }
+    WorkflowEventPersistence: {
+      payload: Prisma.$WorkflowEventPersistencePayload<ExtArgs>
+      fields: Prisma.WorkflowEventPersistenceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WorkflowEventPersistenceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowEventPersistencePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WorkflowEventPersistenceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowEventPersistencePayload>
+        }
+        findFirst: {
+          args: Prisma.WorkflowEventPersistenceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowEventPersistencePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WorkflowEventPersistenceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowEventPersistencePayload>
+        }
+        findMany: {
+          args: Prisma.WorkflowEventPersistenceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowEventPersistencePayload>[]
+        }
+        create: {
+          args: Prisma.WorkflowEventPersistenceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowEventPersistencePayload>
+        }
+        createMany: {
+          args: Prisma.WorkflowEventPersistenceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WorkflowEventPersistenceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowEventPersistencePayload>[]
+        }
+        delete: {
+          args: Prisma.WorkflowEventPersistenceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowEventPersistencePayload>
+        }
+        update: {
+          args: Prisma.WorkflowEventPersistenceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowEventPersistencePayload>
+        }
+        deleteMany: {
+          args: Prisma.WorkflowEventPersistenceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WorkflowEventPersistenceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WorkflowEventPersistenceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowEventPersistencePayload>[]
+        }
+        upsert: {
+          args: Prisma.WorkflowEventPersistenceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowEventPersistencePayload>
+        }
+        aggregate: {
+          args: Prisma.WorkflowEventPersistenceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWorkflowEventPersistence>
+        }
+        groupBy: {
+          args: Prisma.WorkflowEventPersistenceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkflowEventPersistenceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WorkflowEventPersistenceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkflowEventPersistenceCountAggregateOutputType> | number
+        }
+      }
+    }
+    WorkflowRecoveryPersistence: {
+      payload: Prisma.$WorkflowRecoveryPersistencePayload<ExtArgs>
+      fields: Prisma.WorkflowRecoveryPersistenceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WorkflowRecoveryPersistenceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowRecoveryPersistencePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WorkflowRecoveryPersistenceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowRecoveryPersistencePayload>
+        }
+        findFirst: {
+          args: Prisma.WorkflowRecoveryPersistenceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowRecoveryPersistencePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WorkflowRecoveryPersistenceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowRecoveryPersistencePayload>
+        }
+        findMany: {
+          args: Prisma.WorkflowRecoveryPersistenceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowRecoveryPersistencePayload>[]
+        }
+        create: {
+          args: Prisma.WorkflowRecoveryPersistenceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowRecoveryPersistencePayload>
+        }
+        createMany: {
+          args: Prisma.WorkflowRecoveryPersistenceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WorkflowRecoveryPersistenceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowRecoveryPersistencePayload>[]
+        }
+        delete: {
+          args: Prisma.WorkflowRecoveryPersistenceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowRecoveryPersistencePayload>
+        }
+        update: {
+          args: Prisma.WorkflowRecoveryPersistenceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowRecoveryPersistencePayload>
+        }
+        deleteMany: {
+          args: Prisma.WorkflowRecoveryPersistenceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WorkflowRecoveryPersistenceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WorkflowRecoveryPersistenceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowRecoveryPersistencePayload>[]
+        }
+        upsert: {
+          args: Prisma.WorkflowRecoveryPersistenceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkflowRecoveryPersistencePayload>
+        }
+        aggregate: {
+          args: Prisma.WorkflowRecoveryPersistenceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWorkflowRecoveryPersistence>
+        }
+        groupBy: {
+          args: Prisma.WorkflowRecoveryPersistenceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkflowRecoveryPersistenceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WorkflowRecoveryPersistenceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkflowRecoveryPersistenceCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -7812,6 +8187,89 @@ export const ExecutionAuditEventScalarFieldEnum = {
 export type ExecutionAuditEventScalarFieldEnum = (typeof ExecutionAuditEventScalarFieldEnum)[keyof typeof ExecutionAuditEventScalarFieldEnum]
 
 
+export const WorkflowExecutionPersistenceScalarFieldEnum = {
+  id: 'id',
+  workflowId: 'workflowId',
+  status: 'status',
+  maxParallelSteps: 'maxParallelSteps',
+  context: 'context',
+  metadata: 'metadata',
+  activeStepIds: 'activeStepIds',
+  failureReason: 'failureReason',
+  startedAt: 'startedAt',
+  pausedAt: 'pausedAt',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  version: 'version'
+} as const
+
+export type WorkflowExecutionPersistenceScalarFieldEnum = (typeof WorkflowExecutionPersistenceScalarFieldEnum)[keyof typeof WorkflowExecutionPersistenceScalarFieldEnum]
+
+
+export const WorkflowCheckpointPersistenceScalarFieldEnum = {
+  id: 'id',
+  executionId: 'executionId',
+  sequence: 'sequence',
+  state: 'state',
+  completedStepIds: 'completedStepIds',
+  activeStepIds: 'activeStepIds',
+  checksum: 'checksum',
+  createdAt: 'createdAt'
+} as const
+
+export type WorkflowCheckpointPersistenceScalarFieldEnum = (typeof WorkflowCheckpointPersistenceScalarFieldEnum)[keyof typeof WorkflowCheckpointPersistenceScalarFieldEnum]
+
+
+export const WorkflowStepStatePersistenceScalarFieldEnum = {
+  id: 'id',
+  executionId: 'executionId',
+  stepId: 'stepId',
+  status: 'status',
+  attempt: 'attempt',
+  input: 'input',
+  output: 'output',
+  errorMessage: 'errorMessage',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  version: 'version'
+} as const
+
+export type WorkflowStepStatePersistenceScalarFieldEnum = (typeof WorkflowStepStatePersistenceScalarFieldEnum)[keyof typeof WorkflowStepStatePersistenceScalarFieldEnum]
+
+
+export const WorkflowEventPersistenceScalarFieldEnum = {
+  id: 'id',
+  executionId: 'executionId',
+  sequence: 'sequence',
+  type: 'type',
+  payload: 'payload',
+  metadata: 'metadata',
+  occurredAt: 'occurredAt'
+} as const
+
+export type WorkflowEventPersistenceScalarFieldEnum = (typeof WorkflowEventPersistenceScalarFieldEnum)[keyof typeof WorkflowEventPersistenceScalarFieldEnum]
+
+
+export const WorkflowRecoveryPersistenceScalarFieldEnum = {
+  id: 'id',
+  executionId: 'executionId',
+  checkpointId: 'checkpointId',
+  status: 'status',
+  attempt: 'attempt',
+  reason: 'reason',
+  restoredStepIds: 'restoredStepIds',
+  errorMessage: 'errorMessage',
+  requestedAt: 'requestedAt',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt'
+} as const
+
+export type WorkflowRecoveryPersistenceScalarFieldEnum = (typeof WorkflowRecoveryPersistenceScalarFieldEnum)[keyof typeof WorkflowRecoveryPersistenceScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -8677,6 +9135,11 @@ export type GlobalOmitConfig = {
   executionStep?: Prisma.ExecutionStepOmit
   executionResult?: Prisma.ExecutionResultOmit
   executionAuditEvent?: Prisma.ExecutionAuditEventOmit
+  workflowExecutionPersistence?: Prisma.WorkflowExecutionPersistenceOmit
+  workflowCheckpointPersistence?: Prisma.WorkflowCheckpointPersistenceOmit
+  workflowStepStatePersistence?: Prisma.WorkflowStepStatePersistenceOmit
+  workflowEventPersistence?: Prisma.WorkflowEventPersistenceOmit
+  workflowRecoveryPersistence?: Prisma.WorkflowRecoveryPersistenceOmit
 }
 
 /* Types for Logging */

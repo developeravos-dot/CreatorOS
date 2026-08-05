@@ -130,7 +130,12 @@ export const ModelName = {
   ExecutionJob: 'ExecutionJob',
   ExecutionStep: 'ExecutionStep',
   ExecutionResult: 'ExecutionResult',
-  ExecutionAuditEvent: 'ExecutionAuditEvent'
+  ExecutionAuditEvent: 'ExecutionAuditEvent',
+  WorkflowExecutionPersistence: 'WorkflowExecutionPersistence',
+  WorkflowCheckpointPersistence: 'WorkflowCheckpointPersistence',
+  WorkflowStepStatePersistence: 'WorkflowStepStatePersistence',
+  WorkflowEventPersistence: 'WorkflowEventPersistence',
+  WorkflowRecoveryPersistence: 'WorkflowRecoveryPersistence'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1504,6 +1509,89 @@ export const ExecutionAuditEventScalarFieldEnum = {
 } as const
 
 export type ExecutionAuditEventScalarFieldEnum = (typeof ExecutionAuditEventScalarFieldEnum)[keyof typeof ExecutionAuditEventScalarFieldEnum]
+
+
+export const WorkflowExecutionPersistenceScalarFieldEnum = {
+  id: 'id',
+  workflowId: 'workflowId',
+  status: 'status',
+  maxParallelSteps: 'maxParallelSteps',
+  context: 'context',
+  metadata: 'metadata',
+  activeStepIds: 'activeStepIds',
+  failureReason: 'failureReason',
+  startedAt: 'startedAt',
+  pausedAt: 'pausedAt',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  version: 'version'
+} as const
+
+export type WorkflowExecutionPersistenceScalarFieldEnum = (typeof WorkflowExecutionPersistenceScalarFieldEnum)[keyof typeof WorkflowExecutionPersistenceScalarFieldEnum]
+
+
+export const WorkflowCheckpointPersistenceScalarFieldEnum = {
+  id: 'id',
+  executionId: 'executionId',
+  sequence: 'sequence',
+  state: 'state',
+  completedStepIds: 'completedStepIds',
+  activeStepIds: 'activeStepIds',
+  checksum: 'checksum',
+  createdAt: 'createdAt'
+} as const
+
+export type WorkflowCheckpointPersistenceScalarFieldEnum = (typeof WorkflowCheckpointPersistenceScalarFieldEnum)[keyof typeof WorkflowCheckpointPersistenceScalarFieldEnum]
+
+
+export const WorkflowStepStatePersistenceScalarFieldEnum = {
+  id: 'id',
+  executionId: 'executionId',
+  stepId: 'stepId',
+  status: 'status',
+  attempt: 'attempt',
+  input: 'input',
+  output: 'output',
+  errorMessage: 'errorMessage',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  version: 'version'
+} as const
+
+export type WorkflowStepStatePersistenceScalarFieldEnum = (typeof WorkflowStepStatePersistenceScalarFieldEnum)[keyof typeof WorkflowStepStatePersistenceScalarFieldEnum]
+
+
+export const WorkflowEventPersistenceScalarFieldEnum = {
+  id: 'id',
+  executionId: 'executionId',
+  sequence: 'sequence',
+  type: 'type',
+  payload: 'payload',
+  metadata: 'metadata',
+  occurredAt: 'occurredAt'
+} as const
+
+export type WorkflowEventPersistenceScalarFieldEnum = (typeof WorkflowEventPersistenceScalarFieldEnum)[keyof typeof WorkflowEventPersistenceScalarFieldEnum]
+
+
+export const WorkflowRecoveryPersistenceScalarFieldEnum = {
+  id: 'id',
+  executionId: 'executionId',
+  checkpointId: 'checkpointId',
+  status: 'status',
+  attempt: 'attempt',
+  reason: 'reason',
+  restoredStepIds: 'restoredStepIds',
+  errorMessage: 'errorMessage',
+  requestedAt: 'requestedAt',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt'
+} as const
+
+export type WorkflowRecoveryPersistenceScalarFieldEnum = (typeof WorkflowRecoveryPersistenceScalarFieldEnum)[keyof typeof WorkflowRecoveryPersistenceScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -1,10 +1,13 @@
-﻿import {
+import {
   BadRequestException,
   ConflictException,
   Injectable,
+  Logger,
+  Optional,
   NotFoundException,
 } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
+import { WorkflowExecutionPersistenceEngineService } from '../persistence/execution-persistence';
 import {
   WorkflowSchedule,
   WorkflowSchedulerService,
@@ -136,11 +139,15 @@ const SECRET_CONTAINER_KEYS = new Set<string>([
 
 @Injectable()
 export class WorkflowStepOrchestratorService {
+  private readonly logger = new Logger(WorkflowStepOrchestratorService.name);
+
   private readonly executions =
     new Map<string, WorkflowExecutionRuntime>();
 
   constructor(
     private readonly scheduler: WorkflowSchedulerService,
+    @Optional()
+    private readonly persistenceEngine?: WorkflowExecutionPersistenceEngineService,
   ) {}
 
   createExecution(
@@ -579,6 +586,19 @@ export class WorkflowStepOrchestratorService {
     this.persist(execution);
 
     return this.cloneExecution(execution);
+  }
+
+  restoreExecutionRuntime(
+    execution: WorkflowExecutionRuntime,
+  ): WorkflowExecutionRuntime {
+    if (!execution.id?.trim()) {
+      throw new BadRequestException('Recovered execution id is required.');
+    }
+
+    const restored = this.cloneExecution(execution);
+    this.executions.set(restored.id, restored);
+
+    return this.cloneExecution(restored);
   }
 
   removeExecution(executionId: string): boolean {

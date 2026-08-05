@@ -1787,3 +1787,109 @@ model ExecutionAuditEvent {
   @@index([runtimeProviderId])
   @@index([occurredAt])
 }
+model WorkflowExecutionPersistence {
+  id               String   @id
+  workflowId       String
+  status           String   @default("pending")
+  maxParallelSteps Int      @default(1)
+  context          Json
+  metadata         Json
+  activeStepIds    String[]
+  failureReason    String?
+  startedAt        DateTime?
+  pausedAt         DateTime?
+  completedAt      DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  version          Int      @default(1)
+
+  checkpoints WorkflowCheckpointPersistence[]
+  stepStates  WorkflowStepStatePersistence[]
+  events      WorkflowEventPersistence[]
+  recoveries  WorkflowRecoveryPersistence[]
+
+  @@index([workflowId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+
+model WorkflowCheckpointPersistence {
+  id               String   @id
+  executionId      String
+  sequence         Int
+  state            Json
+  completedStepIds String[]
+  activeStepIds    String[]
+  checksum         String
+  createdAt        DateTime @default(now())
+
+  execution  WorkflowExecutionPersistence @relation(fields: [executionId], references: [id], onDelete: Cascade)
+  recoveries WorkflowRecoveryPersistence[]
+
+  @@unique([executionId, sequence])
+  @@index([executionId])
+  @@index([createdAt])
+}
+
+model WorkflowStepStatePersistence {
+  id           String   @id
+  executionId  String
+  stepId       String
+  status       String   @default("pending")
+  attempt      Int      @default(0)
+  input        Json
+  output       Json?
+  errorMessage String?
+  startedAt    DateTime?
+  completedAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  version      Int      @default(1)
+
+  execution WorkflowExecutionPersistence @relation(fields: [executionId], references: [id], onDelete: Cascade)
+
+  @@unique([executionId, stepId])
+  @@index([executionId])
+  @@index([status])
+  @@index([updatedAt])
+}
+
+model WorkflowEventPersistence {
+  id          String   @id
+  executionId String
+  sequence    Int
+  type        String
+  payload     Json
+  metadata    Json
+  occurredAt  DateTime @default(now())
+
+  execution WorkflowExecutionPersistence @relation(fields: [executionId], references: [id], onDelete: Cascade)
+
+  @@unique([executionId, sequence])
+  @@index([executionId])
+  @@index([type])
+  @@index([occurredAt])
+}
+
+model WorkflowRecoveryPersistence {
+  id              String   @id
+  executionId     String
+  checkpointId    String?
+  status          String   @default("pending")
+  attempt         Int      @default(1)
+  reason          String
+  restoredStepIds String[]
+  errorMessage    String?
+  requestedAt     DateTime @default(now())
+  startedAt       DateTime?
+  completedAt     DateTime?
+
+  execution  WorkflowExecutionPersistence  @relation(fields: [executionId], references: [id], onDelete: Cascade)
+  checkpoint WorkflowCheckpointPersistence? @relation(fields: [checkpointId], references: [id], onDelete: SetNull)
+
+  @@index([executionId])
+  @@index([checkpointId])
+  @@index([status])
+  @@index([requestedAt])
+}
